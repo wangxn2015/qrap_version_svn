@@ -284,6 +284,8 @@ void RapDbCommunicator::LoadTableHeaders(QTableWidget* table,
 
 
 //********************************************************************************
+// e.g. QVariant val( r[i][fieldName].c_str() );
+
 void RapDbCommunicator::GetCellDataType(std::string tableName,
 					std::string fieldName,
 					QVariant& val,
@@ -293,12 +295,12 @@ void RapDbCommunicator::GetCellDataType(std::string tableName,
 	cDatabase::FieldDataType type;
 	UnitType unit;
 	
-	if(dbs[tableName].mFields.count(fieldName)>0)
+	if(dbs[tableName].mFields.count(fieldName)>0) //! field字段的数量
 	{
 		uiType = gDb.GetFieldUiType(tableName,fieldName);
 		type = gDb.GetFieldDataType(tableName,fieldName);
 		if(dbs[tableName].mFields.count(fieldName)>0)
-			unit = dbs[tableName].mFields[fieldName].mUnitType;
+			unit = dbs[tableName].mFields[fieldName].mUnitType; //! 从数据库结构定义中获取单位类型
 		else unit = utNone;
 	}
 	else
@@ -396,13 +398,17 @@ void RapDbCommunicator::GetCellDataType(std::string tableName,
 
 //*************************************************************************
 // Populate the selected table
+//赋值的参数为(mCurrentTable->GetTable(),"antennadevice","",-1,false)
 void RapDbCommunicator::PopulateTable (QTableWidget* table,
 				       const QString& tableName,
-				       const QString& keyField,
-				       int currentId,
-				       bool site,
+				       const QString& keyField,	//""
+				       int currentId,			//-1
+				       bool site,				//false
 				       bool view,
 				       string search)
+					  	// bool site = false,
+					    // bool view = false,
+					    // std::string search = ""
 {
 	cout << "Entering RapDbCommunicator::PopulateTable tableName = " << tableName.toStdString().c_str() << endl;
 	if(table!=NULL)
@@ -576,8 +582,8 @@ void RapDbCommunicator::PopulateTable (QTableWidget* table,
 					// Get the necessary data
 					string fieldName = table->horizontalHeaderItem(j)->data(Qt::UserRole).toString().toStdString();
 //					cout << "RapDbCommunicator::PopulateTable	fieldname =" << fieldName.c_str() << endl;
-					QVariant val( r[i][fieldName].c_str() );
-					index = tableModel->index(i,j);
+					QVariant val( r[i][fieldName].c_str() ); //! 第i行，第j个元素
+					index = tableModel->index(i,j); //! index
 //					cout << "RapDbCommunicator::PopulateTable	field =" << r[i][fieldName].c_str() << endl;
 					if ((site) && (j == 0) && (filterRes.size() > 0))
 					{
@@ -610,7 +616,7 @@ void RapDbCommunicator::PopulateTable (QTableWidget* table,
 
 //					cout << "RapDbCommunicator::PopulateTable 	val = " <<val.toString().toStdString().c_str() << endl;
 //					cout << "RapDbCommunicator::PopulateTable	voor tableModel->setData" << endl;
-					tableModel->setData(index,val,Qt::DisplayRole);
+					tableModel->setData(index,val,Qt::DisplayRole); //! 设置数据
 //					cout << "RapDbCommunicator::PopulateTable	after tableModel->setData" << endl;
 					//Check if the item has read access or not
 					if(dbs[tableName.toStdString()].mFields.count(fieldName)>0)

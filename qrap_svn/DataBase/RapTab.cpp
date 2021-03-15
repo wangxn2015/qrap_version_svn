@@ -33,7 +33,7 @@ using namespace Qrap;
 // Constructor that creates all the GuiEngine classes for each database table
 RapTab::RapTab (QWidget* parent) : QTabWidget(parent)
 {
-	cout << "Entering RapTab::RapTab " << endl;
+	cout << "Entering RapTab::RapTab " << endl; //! 新建多个tab
 	mSites = new cRapSites(this);
 	mCells = new cRapCells(this);
 	mInventory = new cRapInventory(this);
@@ -63,6 +63,7 @@ RapTab::RapTab (QWidget* parent) : QTabWidget(parent)
 	setGeometry(QRect(0,0,900,400));
 	
 	cout << "RapTab::RapTab connecting TabIndexChanged" << endl;
+	//! 关联切换Tab时的处理
 		connect(this,SIGNAL(currentChanged(int)),this,SLOT(TabIndexChanged(int)));
 	
 	// Make sure that the initial signals and slots are connected

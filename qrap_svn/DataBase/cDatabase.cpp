@@ -273,6 +273,8 @@ bool cDatabase::PerformRawSql (const string& command)
 }
 
 //*******************************************************************************
+//! e.g. ("*", tableName, "id=0", "id", true, false)  
+//!	where: id=0; orderBy id; ascending; hideDefault: false
 bool cDatabase::Select (const string& columns, const string& tableName, const string& where,
 	const string& orderBy, bool ascending, bool hideDefault)
 {
@@ -282,12 +284,15 @@ bool cDatabase::Select (const string& columns, const string& tableName, const st
 	string      fixedCols, actTable, whereStr;
 	int         i, count;
 	
-	
 	msAlertCode = acOk;
 	
 	// if all columns are to be selected
 	if (columns == "*")
 	{
+		//-----------------
+			// typedef std::map<std::string, DbField>    DbFieldMap;
+			// typedef DbFieldMap::iterator              DbFieldMapIterator;
+		//---------------
 		for (DbFieldMapIterator field=mStructure[tableName].mFields.begin();
 			field != mStructure[tableName].mFields.end(); field++)
 		{
@@ -330,7 +335,7 @@ bool cDatabase::Select (const string& columns, const string& tableName, const st
 	}
 	cols = newCols;
 	
-	// put the columns back together
+	// put the columns back together //! 组成查询语句
 	count = cols.size();
 	for (i=0;i<count;i++)
 	{
@@ -360,7 +365,7 @@ bool cDatabase::Select (const string& columns, const string& tableName, const st
 	}
 	whereStr += where;
 	if (whereStr.length() > 0)
-		whereStr = " where "+whereStr;
+		whereStr = " where "+whereStr; //! where id==0
 	
 	// put the query together
 	if (!PerformRawSql("select "+fixedCols+" from "+actTable+
@@ -987,7 +992,7 @@ bool cDatabase::GetDefaults (const string& tableName, StringMap& output)
 	if(mLastResult.size() == 0)
 		return true;
 	
-	// run through the fields
+	// run through the fields //! 
 	for (pqxx::const_tuple_iterator field=mLastResult[0].begin();
 		field != mLastResult[0].end(); field++)
 	{

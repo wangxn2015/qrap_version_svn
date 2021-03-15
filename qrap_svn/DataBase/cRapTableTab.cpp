@@ -33,7 +33,7 @@ using namespace Qrap;
 // Constructor that creates all the GuiEngine classes for each database table
 cRapTableTab::cRapTableTab (QWidget* parent, QString table) : QTabWidget(parent)
 {
-	mTableName = table;
+	mTableName = table; //! 如 "technology"
 	mForm = NULL;
 	mInserting = false;
 	mTableView = new QTableWidget(0,1,this);
@@ -53,7 +53,7 @@ cRapTableTab::cRapTableTab (QWidget* parent, QString table) : QTabWidget(parent)
 	setTabShape(QTabWidget::Triangular);
 	setTabPosition(QTabWidget::West);
 	
-	
+	//! This signal is emitted whenever the current page index changes
 	connect(this,SIGNAL(currentChanged(int)),this,SLOT(TabIndexChanged(int)));
 
 }
@@ -101,7 +101,7 @@ void cRapTableTab::TabIndexChanged (int index)
 	{
 		case 0:
 			// Destroy the formWidget
-			formWidget = mScroller->takeWidget();
+			formWidget = mScroller->takeWidget(); //!Removes the scroll area's widget, and passes ownership of the widget to the caller.
 			//formWidget->close();
 			mForm = NULL;
 			mInserting = false;
@@ -109,7 +109,7 @@ void cRapTableTab::TabIndexChanged (int index)
 			break;
 		case 1:
 			// Check if there is data in the tableview
-			if(mTableView->rowCount()<=0)
+			if(mTableView->rowCount()<=0) //! 如，什么tech都没有时
 			{
 				mInserting = true;
 			}
@@ -118,7 +118,7 @@ void cRapTableTab::TabIndexChanged (int index)
 			if(mInserting)
 			{
 				cout << "cRapTableTab::TabIndexChanged:  Voor vorm ... inserting" << endl;
-				mForm = new cRapFormBuilder(mRef,this,mTableName,mTableView,mInserting);
+				mForm = new cRapFormBuilder(mRef,this,mTableName,mTableView,mInserting); //
 				mForm->SetReferences(mRef);
 			}
 			else

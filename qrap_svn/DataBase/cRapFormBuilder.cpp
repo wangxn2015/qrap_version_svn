@@ -39,6 +39,7 @@ using namespace Qrap;
 
 //*************************************************************************
 // Constructor that creates all the GuiEngine classes for each database mTable
+//e.g. (this,mTableName,mTableView,mInserting=false)
 cRapFormBuilder::cRapFormBuilder (QWidget* parent, QString tableName, QTableWidget* tableWidget, bool insert) : QWidget(parent)
 {
 	cout << "Entering cRapFormBuilder::cRapFormBuilder" << endl;
@@ -191,6 +192,7 @@ cRapFormBuilder::cRapFormBuilder (QWidget* parent, QString tableName, QTableWidg
 }
 
 //**********************************************************************
+//! e.g (mRef,this,mTableName,mTableView,mInserting)
 cRapFormBuilder::cRapFormBuilder (StringMap ref, QWidget* parent,
 				QString tableName,
 				QTableWidget* tableWidget,
@@ -198,7 +200,7 @@ cRapFormBuilder::cRapFormBuilder (StringMap ref, QWidget* parent,
 {
 	mReferences = ref;
 	mTableView = tableWidget;
-	mTable = tableName;
+	mTable = tableName; //! mTable
 	mCurrentRecordID=0;
 	mFindNewHeight = false;
 	
@@ -303,16 +305,16 @@ cRapFormBuilder::cRapFormBuilder (StringMap ref, QWidget* parent,
 		mDefaultRadiosButton->setEnabled(true);
 	}
 
-        if (mTable == "radioinstallation")
-        {
-               mCalculateRxLossesButton->setVisible(true);
-               mCalculateRxLossesButton->setEnabled(true);
-               mCalculateTxLossesButton->setVisible(true);
-               mCalculateTxLossesButton->setEnabled(true);
-        }
+	if (mTable == "radioinstallation")
+	{
+			mCalculateRxLossesButton->setVisible(true);
+			mCalculateRxLossesButton->setEnabled(true);
+			mCalculateTxLossesButton->setVisible(true);
+			mCalculateTxLossesButton->setEnabled(true);
+	}
 
 	// Get the database structure
-	gDb.GetDbStructure(mDbs);
+	gDb.GetDbStructure(mDbs); //! mDbs 获取了数据库结构
 	
 //	cout << "cRapFormBuilder::cRapFormBuilder Voor rowCount:"<< mTableView->rowCount() << endl;
 	if(mTableView->rowCount()<=0)
@@ -323,7 +325,7 @@ cRapFormBuilder::cRapFormBuilder (StringMap ref, QWidget* parent,
 
 //		cout << "cRapFormBuilder::cRapFormBuilder overloaded insert is TRUE" << endl;	
 		// Get the default values for the mTable
-		if(!gDb.GetDefaults(mTable.toStdString(),mDefaults))
+		if(!gDb.GetDefaults(mTable.toStdString(),mDefaults)) //! 进行了数据库搜索, 把值都放在了mDefaults中
 		{
 			cout << "Could not load the mDefaults." << endl;
 			return;
@@ -2199,18 +2201,18 @@ void cRapFormBuilder::CreateGenericInsertForm ()
 	mUpdateButton->setVisible(false);
 	mUpdateButton->setEnabled(false);
 
-	mFormLabels.insert("title",new QLabel("Insert Form"),this);
+	mFormLabels.insert("title",new QLabel("Insert Form"),this);		//! definition		QMap<QString,QLabel*>	mFormLabels;
 //	mFormLabels["title"]->setFont(font);
-	mFormLayout->addWidget(mFormLabels["title"],2,0,1,1,Qt::AlignLeft);
+	mFormLayout->addWidget(mFormLabels["title"],2,0,1,1,Qt::AlignLeft);	//! QGridLayout*		mFormLayout;
 
-	int size = mTableView->columnCount();
+	int size = mTableView->columnCount(); //!获得显示的列数 size
 	mLayoutRow = 2;
 	if (size<0) 
 		mTableView->setCurrentCell(0,0);
 
 	for( int i=0 ; i<size ; i++ )
 	{
-		QTableWidgetItem* header = mTableView->horizontalHeaderItem(i);
+		QTableWidgetItem* header = mTableView->horizontalHeaderItem(i); //! 获得第i个header
 		
 		// Add the widget to the form
 		cDatabase::FieldDataType type;

@@ -287,9 +287,9 @@ void cRapSupportingTables::PopulateTableList ()
 	antennaDeviceItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
 	antennaPatternItem->setData(Qt::UserRole,QVariant("antennapattern"));
 	antennaPatternItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
-receiverCapabilitiesItem->setData(Qt::UserRole,QVariant("receiver_capabilities"));
+	receiverCapabilitiesItem->setData(Qt::UserRole,QVariant("receiver_capabilities"));
 	receiverCapabilitiesItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
-        heightCostsItem->setData(Qt::UserRole,QVariant("height_costs"));
+    heightCostsItem->setData(Qt::UserRole,QVariant("height_costs"));
 	heightCostsItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
 	cableTypeItem->setData(Qt::UserRole,QVariant("cable_type"));
 	cableTypeItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
@@ -309,7 +309,7 @@ receiverCapabilitiesItem->setData(Qt::UserRole,QVariant("receiver_capabilities")
 	mTableList->addItem(antennaDeviceItem);
 	mTableList->addItem(antennaPatternItem);
 	mTableList->addItem(receiverCapabilitiesItem);
-        mTableList->addItem(heightCostsItem);
+    mTableList->addItem(heightCostsItem);
 	mTableList->addItem(cableTypeItem);
 	mTableList->addItem(combinerSplitterTypeItem);
 	mTableList->addItem(equipmentTypeItem);
@@ -324,7 +324,7 @@ receiverCapabilitiesItem->setData(Qt::UserRole,QVariant("receiver_capabilities")
 	mTables.insert("antennadevice",new cRapTableTab(this,"antennadevice"));
 	mTables.insert("antennapattern",new cRapTableTab(this,"antennapattern"));
 	mTables.insert("receiver_capabilities",new cRapTableTab(this,"receiver_capabilities"));
-        mTables.insert("height_costs",new cRapTableTab(this,"height_costs"));
+    mTables.insert("height_costs",new cRapTableTab(this,"height_costs"));
 	mTables.insert("cable_type",new cRapTableTab(this,"cable_type"));
 	mTables.insert("combiner_splitter_type",new cRapTableTab(this,"combiner_splitter_type"));
 	mTables.insert("equipmenttype",new cRapTableTab(this,"equipmenttype"));
@@ -337,7 +337,7 @@ receiverCapabilitiesItem->setData(Qt::UserRole,QVariant("receiver_capabilities")
 	{
 		it.next();
 		
-		// Setup the table
+		// Setup the table //! GetTable返回对应的mTableView
 		it.value()->GetTable()->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked);
 		it.value()->GetTable()->setSelectionBehavior(QAbstractItemView::SelectRows);
 		it.value()->GetTable()->setSelectionMode(QAbstractItemView::ContiguousSelection);
@@ -352,14 +352,14 @@ receiverCapabilitiesItem->setData(Qt::UserRole,QVariant("receiver_capabilities")
 	
 	// Make sure that the site table is visible
 	mMainLayout->addWidget(mTables["antennadevice"],0,1);
-	mTables["antennadevice"]->show();
-	mCurrentTable = mTables["antennadevice"];
+	mTables["antennadevice"]->show();1
+	mCurrentTable = mTables["antennadevice"];	//! cRapTableTab*	mCurrentTable;	
 	
 	
 	// Make sure that no update signals are triggered
 	disconnect(mCurrentTable->GetTable(),SIGNAL(cellChanged(int,int)),0,0);
 	
-	// Populate the site table first
+	// Populate the site table first //! 显示表中数据
 	mDbCommunicator->PopulateTable(mCurrentTable->GetTable(),"antennadevice","",-1,false);
 	
 	// Reconnect the update signals
