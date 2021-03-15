@@ -2205,7 +2205,7 @@ void cRapFormBuilder::CreateGenericInsertForm ()
 //	mFormLabels["title"]->setFont(font);
 	mFormLayout->addWidget(mFormLabels["title"],2,0,1,1,Qt::AlignLeft);	//! QGridLayout*		mFormLayout;
 
-	int size = mTableView->columnCount(); //!获得显示的列数 size
+	int size = mTableView->columnCount(); //!获得显示的列数 size //!test test
 	mLayoutRow = 2;
 	if (size<0) 
 		mTableView->setCurrentCell(0,0);
