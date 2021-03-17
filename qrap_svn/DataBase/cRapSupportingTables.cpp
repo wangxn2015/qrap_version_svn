@@ -37,7 +37,7 @@ using namespace std;
 cRapSupportingTables::cRapSupportingTables (QWidget* parent) : QWidget(parent)
 {
 	// Create all the widget required
-	mTableList = new QListWidget(this);
+	mTableList = new QListWidget(this); //左侧的table list
 	
 	// Setup the mTableList
 	mTableList->setMinimumSize(140,400);
@@ -204,7 +204,7 @@ void cRapSupportingTables::ExecuteSearch (string search)
 }
 
 
-// Make sure that the correct table is made visible
+// Make sure that the correct table is made visible //! 显示
 void cRapSupportingTables::TableSelectionChanged ()
 {
 	QListWidgetItem* selectedItem = mTableList->currentItem();
@@ -315,7 +315,7 @@ void cRapSupportingTables::PopulateTableList ()
 	mTableList->addItem(equipmentTypeItem);
 	mTableList->addItem(signalenvelopeItem);
 	
-	// Create the different table widgets
+	// Create the different table widgets //! 左侧每个项对应中部一个cRapTableTap
 	mTables.insert("projects",new cRapTableTab(this,"projects"));
 	mTables.insert("flagx",new cRapTableTab(this,"flagx"));
 	mTables.insert("flagz",new cRapTableTab(this,"flagz"));
@@ -337,7 +337,7 @@ void cRapSupportingTables::PopulateTableList ()
 	{
 		it.next();
 		
-		// Setup the table //! GetTable返回对应的mTableView
+		// Setup the table //! GetTable返回对应cRapTableTap的mTableView
 		it.value()->GetTable()->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked);
 		it.value()->GetTable()->setSelectionBehavior(QAbstractItemView::SelectRows);
 		it.value()->GetTable()->setSelectionMode(QAbstractItemView::ContiguousSelection);
@@ -352,7 +352,7 @@ void cRapSupportingTables::PopulateTableList ()
 	
 	// Make sure that the site table is visible
 	mMainLayout->addWidget(mTables["antennadevice"],0,1);
-	mTables["antennadevice"]->show();1
+	mTables["antennadevice"]->show(); //
 	mCurrentTable = mTables["antennadevice"];	//! cRapTableTab*	mCurrentTable;	
 	
 	

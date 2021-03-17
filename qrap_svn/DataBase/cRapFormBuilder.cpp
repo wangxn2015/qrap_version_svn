@@ -167,7 +167,7 @@ cRapFormBuilder::cRapFormBuilder (QWidget* parent, QString tableName, QTableWidg
 
 	if(insert)
 	{
-		// Get the default values for the mTable
+		//! Get the default values for the mTable 默认值一般读取table的第一个 id=0
 ///		cout << "cRapFormBuilder::cRapFormBuilder insert is TRUE" << endl;
 		if(!gDb.GetDefaults(mTable.toStdString(),mDefaults))
 		{
@@ -192,7 +192,7 @@ cRapFormBuilder::cRapFormBuilder (QWidget* parent, QString tableName, QTableWidg
 }
 
 //**********************************************************************
-//! e.g (mRef,this,mTableName,mTableView,mInserting)
+//! e.g (mRef,this,mTableName,mTableView,mInserting)		mFormWidgets 每次tab在表和scroll之间切换时会生成新的cRapFormBuilder对象
 cRapFormBuilder::cRapFormBuilder (StringMap ref, QWidget* parent,
 				QString tableName,
 				QTableWidget* tableWidget,
@@ -200,12 +200,12 @@ cRapFormBuilder::cRapFormBuilder (StringMap ref, QWidget* parent,
 {
 	mReferences = ref;
 	mTableView = tableWidget;
-	mTable = tableName; //! mTable
+	mTable = tableName; //! mTable 表名
 	mCurrentRecordID=0;
 	mFindNewHeight = false;
 	
 	// Create the form grid layout
-	mFormLayout = new QGridLayout(this);
+	mFormLayout = new QGridLayout(this); //!
 
 //	QString fieldName="Date";
 //	mFormWidgets.insert(fieldName,static_cast<QWidget*>(new QDateEdit(this)));
@@ -236,10 +236,10 @@ cRapFormBuilder::cRapFormBuilder (StringMap ref, QWidget* parent,
 	mFormLayout->addWidget(mPreviousButton,mButtonRow,1,1,1,Qt::AlignRight);
 	connect(mPreviousButton,SIGNAL(clicked()),this,SLOT(PreviousRecord()));
 
-	mCommitButton = new QPushButton("Comm&it",this);
+	mCommitButton = new QPushButton("Comm&it",this); 
 	mCommitButton->setToolTip("Commit the new entry to the database");
 	mFormLayout->addWidget(mCommitButton,mButtonRow,0,1,1,Qt::AlignRight);
-	connect(mCommitButton,SIGNAL(clicked()),this,SLOT(Insert()));
+	connect(mCommitButton,SIGNAL(clicked()),this,SLOT(Insert())); //! 在此处关联按键
 	mCommitButton->setVisible(false); 
 	mCommitButton->setEnabled(false);
 
@@ -325,7 +325,7 @@ cRapFormBuilder::cRapFormBuilder (StringMap ref, QWidget* parent,
 
 //		cout << "cRapFormBuilder::cRapFormBuilder overloaded insert is TRUE" << endl;	
 		// Get the default values for the mTable
-		if(!gDb.GetDefaults(mTable.toStdString(),mDefaults)) //! 进行了数据库搜索, 把值都放在了mDefaults中
+		if(!gDb.GetDefaults(mTable.toStdString(),mDefaults)) //! 进行了数据库搜索, 把某表中的参数名和值 都放在了mDefaults中
 		{
 			cout << "Could not load the mDefaults." << endl;
 			return;
@@ -334,7 +334,7 @@ cRapFormBuilder::cRapFormBuilder (StringMap ref, QWidget* parent,
 		if(mTable=="antennadevice")
 			CreateAntennaDeviceForm();
 		else
-			CreateGenericInsertForm();
+			CreateGenericInsertForm(); //! 一般运行 生成widget
 	} // if insert
 	else
 	{
@@ -352,6 +352,7 @@ void cRapFormBuilder::TableItemSelectionChanged ()
 
 //****************************************************************************
 // Perform the insert query
+//! e.g. int TempID = InsertData(mTable, mFormWidgets)
 int cRapFormBuilder::InsertData (const QString& tableName, QMap<QString,QWidget*> &widgets, 
 					bool antennaDevice, int antdevicekey)
 {
@@ -1161,8 +1162,8 @@ void cRapFormBuilder::PopulateForm ()
 //***********************************************************************
 void cRapFormBuilder::Insert ()
 {
-	int TempID = InsertData(mTable, mFormWidgets);
-	if (TempID>-1)
+	int TempID = InsertData(mTable, mFormWidgets); //! QMap<QString,QWidget*>	mFormWidgets;
+	if (TempID>-1) //!提交成功
 	{
 		mCurrentRecordID = TempID;
 //		cout << "In cRapFormBuilder::Insert ()  mCurrentRecordID = " << mCurrentRecordID << endl;
@@ -1170,7 +1171,7 @@ void cRapFormBuilder::Insert ()
 		mCommitButton->setEnabled(false);
 		mCommitAddNextButton->setVisible(false);
 		mCommitAddNextButton->setEnabled(false);
-		emit InsertComplete(TempID);
+		emit InsertComplete(TempID); //! commit完成后发送信号
 //		Clear();
 	
 		// Create the form grid layout
@@ -2194,23 +2195,23 @@ void cRapFormBuilder::CreateGenericInsertForm ()
 */	
 	mCommitButton->move(mButtonRow*mLayoutDelta,mButtonPosX0);
 	mCommitButton->setVisible(true);
-	mCommitButton->setEnabled(true);
+	mCommitButton->setEnabled(true); //! 设置提交按钮可见
 	mCommitAddNextButton->move(mButtonRow*mLayoutDelta,mButtonPosX1);
 	mCommitAddNextButton->setVisible(true);
 	mCommitAddNextButton->setEnabled(true);
 	mUpdateButton->setVisible(false);
 	mUpdateButton->setEnabled(false);
 
-	mFormLabels.insert("title",new QLabel("Insert Form"),this);		//! definition		QMap<QString,QLabel*>	mFormLabels;
+	mFormLabels.insert("title",new QLabel("Insert Form"),this);		//! definition		QMap<QString,QLabel*>	mFormLabels; //名称和对应QLable
 //	mFormLabels["title"]->setFont(font);
 	mFormLayout->addWidget(mFormLabels["title"],2,0,1,1,Qt::AlignLeft);	//! QGridLayout*		mFormLayout;
 
-	int size = mTableView->columnCount(); //!获得显示的列数 size //!test test
+	int size = mTableView->columnCount(); //!获得要显示的列数 size //!test test
 	mLayoutRow = 2;
 	if (size<0) 
 		mTableView->setCurrentCell(0,0);
 
-	for( int i=0 ; i<size ; i++ )
+	for( int i=0 ; i<size ; i++ ) //!
 	{
 		QTableWidgetItem* header = mTableView->horizontalHeaderItem(i); //! 获得第i个header
 		
@@ -2219,9 +2220,9 @@ void cRapFormBuilder::CreateGenericInsertForm ()
 		UnitType unit;
 		cDatabase::FieldUiType uiType;
 		QVariant val;
-		QString fieldName = header->data(Qt::UserRole).toString();
-		
-		if(mDbs[mTable.toStdString()].mFields.count(fieldName.toStdString())>0)
+		QString fieldName = header->data(Qt::UserRole).toString(); //字段名
+		//!  mTable:如 "technology"
+		if(mDbs[mTable.toStdString()].mFields.count(fieldName.toStdString())>0) //!e.g. 科技table的某字段出现的次数>0
 		{
 			uiType = gDb.GetFieldUiType(mTable.toStdString(),fieldName.toStdString());
 			type = gDb.GetFieldDataType(mTable.toStdString(),fieldName.toStdString());
@@ -2236,7 +2237,7 @@ void cRapFormBuilder::CreateGenericInsertForm ()
 			unit = utNone;
 		}
 
-		if(mDefaults.size()>0) 
+		if(mDefaults.size()>0) //! 读取的表中id=0的默认参数的 数量
 		{
 			if(unit!=utNone)
 			{
@@ -2268,7 +2269,7 @@ void cRapFormBuilder::CreateGenericInsertForm ()
 				else if (setting=="W") wyswaarde = pow(10,(atof(mDefaults[fieldName.toStdString()].c_str())-30.0)/10.0);
 				else wyswaarde = atof(mDefaults[fieldName.toStdString()].c_str());
 				gcvt(wyswaarde,10,text);
-				val.setValue(QString::fromStdString(text));			
+				val.setValue(QString::fromStdString(text));		//! 为val赋值，值由text转化	
 			}
 			else			
 				val.setValue(QString::fromStdString(mDefaults[fieldName.toStdString()]));
@@ -2300,7 +2301,7 @@ void cRapFormBuilder::CreateGenericInsertForm ()
 				mFormWidgets.insert("azimuth",static_cast<QWidget*>(mAzimuthTable));
 				mFormLabels.insert("azimuth",new QLabel("Azimuth Pattern"));
 				
-				mFormLayout->addWidget(mFormLabels["azimuth"],mLayoutRow,0,1,1,Qt::AlignTop);
+				mFormLayout->addWidget(mFormLabels["azimuth"],mLayoutRow,0,1,1,Qt::AlignTop);	//添加对应的标签
 				mFormLayout->addWidget(mFormWidgets["azimuth"],mLayoutRow++,1,1,1,Qt::AlignLeft);
 				
 				connect(mAzimuthTable,SIGNAL(cellChanged(int,int)),this,SLOT(CreateAzimuthRow(int,int)));
@@ -2386,13 +2387,13 @@ void cRapFormBuilder::CreateGenericInsertForm ()
 				
 				
 				QComboBox* combo = static_cast<QComboBox*>(mFormWidgets[fieldName]);
-	// 			if(type==cDatabase::dtBoolean)
-	// 			{
-	// 				if(mDefaults[fieldName.toStdString()] == "t")
-	// 					combo->setCurrentIndex(combo->findText("1:TRUE",Qt::MatchCaseSensitive));
-	// 				else
-	// 					combo->setCurrentIndex(combo->findText("0:FALSE",Qt::MatchCaseSensitive));
-	// 			} // if type
+					// 			if(type==cDatabase::dtBoolean)
+					// 			{
+					// 				if(mDefaults[fieldName.toStdString()] == "t")
+					// 					combo->setCurrentIndex(combo->findText("1:TRUE",Qt::MatchCaseSensitive));
+					// 				else
+					// 					combo->setCurrentIndex(combo->findText("0:FALSE",Qt::MatchCaseSensitive));
+					// 			} // if type
 				
 				int j=0;
 				if(uiType==cDatabase::utDropdownTable)
@@ -2460,7 +2461,7 @@ void cRapFormBuilder::CreateGenericInsertForm ()
 		mLayoutDelta = mButtonPosY/mButtonRow;
 	else mLayoutDelta = mButtonPosY;
 	delete [] text;
-	connect(this,SIGNAL(InsertComplete(int)),parentWidget(),SLOT(setCurrentIndex(int)));
+	connect(this,SIGNAL(InsertComplete(int)),parentWidget(),SLOT(setCurrentIndex(int))); //!关联信号(commit完成后发送)，返回到其父cRapTableTab？ 用setCurrentIndex(int) to show a particular page
 	setLayout(mFormLayout);
 }
 

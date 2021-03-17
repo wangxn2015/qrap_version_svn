@@ -984,7 +984,7 @@ bool cDatabase::ViewExists (const string& viewName)
 //*****************************************************************************
 bool cDatabase::GetDefaults (const string& tableName, StringMap& output)
 {
-	if (!Select("*", tableName, "id=0", "id", true, false))
+	if (!Select("*", tableName, "id=0", "id", true, false)) //! 
 		return false;
 	
 	string fieldName, fieldVal;

@@ -107,7 +107,7 @@ void cRapTableTab::TabIndexChanged (int index)
 			mInserting = false;
 			*mTableViewSelected = true;
 			break;
-		case 1:
+		case 1: //! 切换到scroll时会新建cRapFormBuilder对象
 			// Check if there is data in the tableview
 			if(mTableView->rowCount()<=0) //! 如，什么tech都没有时
 			{
@@ -118,7 +118,7 @@ void cRapTableTab::TabIndexChanged (int index)
 			if(mInserting)
 			{
 				cout << "cRapTableTab::TabIndexChanged:  Voor vorm ... inserting" << endl;
-				mForm = new cRapFormBuilder(mRef,this,mTableName,mTableView,mInserting); //
+				mForm = new cRapFormBuilder(mRef,this,mTableName,mTableView,mInserting); //mTableName =  //! 如 "technology"
 				mForm->SetReferences(mRef);
 			}
 			else
@@ -128,7 +128,7 @@ void cRapTableTab::TabIndexChanged (int index)
 				mForm->SetReferences(mRef);
 			}
 			cout << "cRapTableTab::TabIndexChanged:  Na vorm." << endl;
-			mScroller->setWidget(mForm);
+			mScroller->setWidget(mForm); //!添加到mScroller中
 			*mTableViewSelected = false;
 			break;
 		default:
