@@ -47,7 +47,7 @@ cLoadFiles::~cLoadFiles()
 }
 
 //********************************************
-void cLoadFiles::on_pushButtonBrowse_clicked()
+void cLoadFiles::on_pushButtonBrowse_clicked() //! 浏览按键按下时触发
 {
 	pushButtonImport->setEnabled(true);
 	int currentRow = tableWidgetFileSets->currentRow();
@@ -294,9 +294,9 @@ void cLoadFiles::on_comboBoxProjection_currentIndexChanged()
 //******************************************************
 void cLoadFiles::Setup()
 {
-	setupUi(this);
-	CLoadThread = new cLoadThread(this);
-	LoadData();
+	setupUi(this); //! initiate the ui
+	CLoadThread = new cLoadThread(this); //! open a thread
+	LoadData(); //! 查询数据库数据，显示
 }
 
 //*****************************************************
@@ -306,7 +306,7 @@ void cLoadFiles::LoadData()
 	{
 		tableWidgetFileSets->removeRow(0);
 	}
-	string query = "SELECT * FROM filesets ";
+	string query = "SELECT * FROM filesets "; 
 	query += "WHERE ";
 	query += "filetype = '";
 	query += comboBoxFileType->currentText().toStdString();
@@ -330,7 +330,7 @@ void cLoadFiles::LoadData()
 	}
 	else
 	{
-		gDb.GetLastResult(r);
+		gDb.GetLastResult(r); // 搜索结果
 		for (int i = 0; i < r.size() ; i++)
 		{
 			int Col = 0;

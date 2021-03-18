@@ -92,7 +92,8 @@ public:
         tableWidgetFileSets->setAutoFillBackground(true);
         tableWidgetFileSets->setSelectionBehavior(QAbstractItemView::SelectRows);
         tableWidgetFileSets->setWordWrap(false);
-        listWidgetFiles = new QListWidget(LoadFiles);
+
+        listWidgetFiles = new QListWidget(LoadFiles); //! widget for "files to be imported"
         listWidgetFiles->setObjectName(QString::fromUtf8("listWidgetFiles"));
         listWidgetFiles->setGeometry(QRect(510, 200, 181, 121));
         horizontalLayout = new QWidget(LoadFiles);
@@ -101,7 +102,7 @@ public:
         hboxLayout = new QHBoxLayout(horizontalLayout);
         hboxLayout->setObjectName(QString::fromUtf8("hboxLayout"));
         hboxLayout->setContentsMargins(0, 0, 0, 0);
-        label = new QLabel(horizontalLayout);
+        label = new QLabel(horizontalLayout);   //! label for "file type
         label->setObjectName(QString::fromUtf8("label"));
 
         hboxLayout->addWidget(label);
@@ -112,7 +113,7 @@ public:
         hboxLayout->addWidget(comboBoxFileType);
 
         label_2 = new QLabel(horizontalLayout);
-        label_2->setObjectName(QString::fromUtf8("label_2"));
+        label_2->setObjectName(QString::fromUtf8("label_2")); //! label for "file format"
 
         hboxLayout->addWidget(label_2);
 
@@ -122,7 +123,7 @@ public:
         hboxLayout->addWidget(comboBoxFileFormat);
 
         label_3 = new QLabel(horizontalLayout);
-        label_3->setObjectName(QString::fromUtf8("label_3"));
+        label_3->setObjectName(QString::fromUtf8("label_3")); //! projection
 
         hboxLayout->addWidget(label_3);
 
@@ -131,11 +132,11 @@ public:
 
         hboxLayout->addWidget(comboBoxProjection);
 
-        label_6 = new QLabel(LoadFiles);
+        label_6 = new QLabel(LoadFiles); //! files to be imported
         label_6->setObjectName(QString::fromUtf8("label_6"));
         label_6->setGeometry(QRect(510, 180, 161, 18));
         pushButtonImport = new QPushButton(LoadFiles);
-        pushButtonImport->setObjectName(QString::fromUtf8("pushButtonImport"));
+        pushButtonImport->setObjectName(QString::fromUtf8("pushButtonImport")); //! import button
         pushButtonImport->setEnabled(false);
         pushButtonImport->setGeometry(QRect(580, 330, 111, 27));
         gridLayout = new QWidget(LoadFiles);
@@ -150,7 +151,7 @@ public:
         gridLayout1->addWidget(label_4, 0, 0, 1, 1);
 
         pushButtonBrowse = new QPushButton(gridLayout);
-        pushButtonBrowse->setObjectName(QString::fromUtf8("pushButtonBrowse"));
+        pushButtonBrowse->setObjectName(QString::fromUtf8("pushButtonBrowse")); //! 浏览文件目录
 
         gridLayout1->addWidget(pushButtonBrowse, 0, 2, 1, 2);
 
@@ -210,7 +211,7 @@ public:
 
         gridLayout1->addWidget(widgetORT, 1, 0, 1, 3);
 
-        labelDirectory = new QLineEdit(gridLayout);
+        labelDirectory = new QLineEdit(gridLayout); //! 目录地址
         labelDirectory->setObjectName(QString::fromUtf8("labelDirectory"));
         labelDirectory->setReadOnly(true);
 

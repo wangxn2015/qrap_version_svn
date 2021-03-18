@@ -309,7 +309,7 @@ void MainWindow::CreateActions ()
 	antennaImportAct->setStatusTip(tr("Import antenna files."));
 	connect(antennaImportAct,SIGNAL(triggered()),this,SLOT(ImportAntennas()));
 	
-	rasterImportAct = new QAction(tr("Raster Files"),this);
+	rasterImportAct = new QAction(tr("Raster Files"),this); //!
 	rasterImportAct->setStatusTip(tr("Import raster files."));
 	connect(rasterImportAct,SIGNAL(triggered()),this,SLOT(ImportRasters()));
 
@@ -346,7 +346,7 @@ void MainWindow::CreateMenus ()
 	fileMenu->addAction(connectAct);
 	importMenu = fileMenu->addMenu(tr("&Import"));
 	importMenu->addAction(antennaImportAct);
-	importMenu->addAction(rasterImportAct);
+	importMenu->addAction(rasterImportAct); //!
 	importMenu->addAction(csvImportAct);
 	importMenu->addAction(measImportAct);
 	

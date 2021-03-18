@@ -45,15 +45,15 @@ cLoadRasterFiles::~cLoadRasterFiles()
 }
 
 //********************************************************
-void cLoadRasterFiles::on_treeWidget_currentItemChanged()
+void cLoadRasterFiles::on_treeWidget_currentItemChanged() //! 发生item改变
 {
 	QTreeWidgetItem *myItem = treeWidget->currentItem();
-	if (myItem->text(0) == "Load Files into the Database")
+	if (myItem->text(0) == "Load Files into the Database") //! 将文件载入数据库
 	{
 		CreateDataSet->LoadData();
 		CutSet->LoadData();
-		LoadFiles->LoadData();
-		LoadFiles->show();
+		LoadFiles->LoadData();	//! 加载数据
+		LoadFiles->show();		//! 显示
 		//progressBar->show();
 		CutSet->hide();
 		CreateDataSet->hide();
@@ -99,7 +99,7 @@ void cLoadRasterFiles::Setup()
 {
 	setupUi(this);
 	LoadFiles = new cLoadFiles(widgetContainer);
-	connect(LoadFiles,SIGNAL(GiveFeedback(int,QString)),this,SLOT(GiveFeedback(int,QString)));
+	connect(LoadFiles,SIGNAL(GiveFeedback(int,QString)),this,SLOT(GiveFeedback(int,QString)));//! 建立信号的连接。
 	CutSet = new cCutSet(widgetContainer);
 	CreateDataSet = new cCreateDataSet(widgetContainer);
 	OrderArray = new cOrderArray(widgetContainer);
@@ -154,7 +154,7 @@ void cLoadRasterFiles::Setup()
 }
 
 //**************************************************************
-void cLoadRasterFiles::GiveFeedback(int Per,QString Mes)
+void cLoadRasterFiles::GiveFeedback(int Per,QString Mes) //! 反馈的处理信号，显示用
 {
 	if (Per != 100)
 	{

@@ -63,7 +63,7 @@ public slots:
 	void on_tableWidgetFileSets_currentCellChanged ( int currentRow, int currentColumn, int previousRow, int previousColumn );
 	
 signals:
-	void GiveFeedback(int Counter,QString msgs);
+	void GiveFeedback(int Counter,QString msgs); //!
 	
 	
 private:
