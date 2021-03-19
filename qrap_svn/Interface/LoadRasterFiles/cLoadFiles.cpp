@@ -49,7 +49,7 @@ cLoadFiles::~cLoadFiles()
 //********************************************
 void cLoadFiles::on_pushButtonBrowse_clicked() //! 浏览按键按下时触发
 {
-	pushButtonImport->setEnabled(true);
+	pushButtonImport->setEnabled(true); //! 使能导入按键
 	int currentRow = tableWidgetFileSets->currentRow();
 	QTableWidgetItem *FileType = static_cast<QTableWidgetItem*>(tableWidgetFileSets->item(currentRow,3));
 	if (FileType != NULL)
