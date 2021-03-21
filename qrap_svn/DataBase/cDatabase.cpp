@@ -1763,7 +1763,7 @@ cDatabase::FieldUiType cDatabase::GetFieldUiType (const string& tableName, const
 				// extract the first parameter from the string to check what type of combo it is
 				ddType = ExtractKeyword(paramStr, 0);
 			
-				if (ddType == "fixed")
+				if (ddType == "fixed") //! enter this
 					return cDatabase::utDropdownFixed;
 				if (ddType == "fromtable")
 					return cDatabase::utDropdownTable;

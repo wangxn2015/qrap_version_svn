@@ -46,18 +46,18 @@ QString Qrap::FindLatLon(QString lat,QString lon)
 	QString longInput;
 		
 	// if the degrees minutes seconds radio is checked then do the relevant conversion
-	if(setting=="DD:MM:SS" )
+	if(setting=="DD:MM:SS" )//!
 	{				
 //		locationFormat = dfDegMinSec;
 				
 		// Get the latitude value
 		latInput = lat;
-		if( (latitude = QString::fromStdString(ExtractDecimalDegrees(latInput.toStdString(),dfDegMinSec,true)))=="" )
+		if( (latitude = QString::fromStdString(ExtractDecimalDegrees(latInput.toStdString(),dfDegMinSec,true,true)))=="" ) //! 原本只有三个参数
 			return latitude;
 			
 		// Get the longitude value
 		longInput = lon;
-		if( (longitude = QString::fromStdString(ExtractDecimalDegrees(longInput.toStdString(),dfDegMinSec,false)))=="" )
+		if( (longitude = QString::fromStdString(ExtractDecimalDegrees(longInput.toStdString(),dfDegMinSec,true,false)))=="" ) //! 修改同上
 			return "";
 				
 		// Get the value to send to the table view
@@ -548,7 +548,7 @@ double Qrap::GetDecimalDegrees (const string& val, DegreeFormat format, bool dir
 	{
 		if ((deg > 90.0) || (deg < -90.0))
 		{
-			QRAP_ERROR_CODE("Latitudes must be between -90 and +90 degrees.", acInvalidInputFormat);
+			QRAP_ERROR_CODE("Latitudes must be between -90 and +90 degrees.", acInvalidInputFormat); //!  纬度
 			return 0;
 		}
 	} else
@@ -556,7 +556,7 @@ double Qrap::GetDecimalDegrees (const string& val, DegreeFormat format, bool dir
 		// if it's a longitude
 		if ((deg > 180.0) || (deg < -180.0))
 		{
-			QRAP_ERROR_CODE("Longitudes must be between -180 and +180 degrees.", acInvalidInputFormat);
+			QRAP_ERROR_CODE("Longitudes must be between -180 and +180 degrees.", acInvalidInputFormat); //! 经度
 			return 0;
 		}
 	}
@@ -645,6 +645,7 @@ double Qrap::GetDecimalDegrees (const string& val, DegreeFormat format, bool dir
 
 
 //**************************************************************************
+//! e.g. 例子为 parse data from "POINT(45.2603 2.02811)" 经度lon在前，维度lat在后
 bool Qrap::ExtractLatLongFromPoint (const string& pointStr, double& latitude, double& longitude)
 {
 	int    i, len = pointStr.length();
@@ -655,17 +656,17 @@ bool Qrap::ExtractLatLongFromPoint (const string& pointStr, double& latitude, do
 		return false;
 	
 	// find the first co-ordinate
-	i = FindNonWhitespace(pointStr, 6);
-	if (i >= len)
+	i = FindNonWhitespace(pointStr, 6);// ! 从pointStr 的第6个开始
+	if (i >= len) //! return i = 6;
 		return false;
 	
 	// extract the longitude
-	temp = ExtractLiteral(pointStr, i);
-	longitude = atof(temp.c_str());
-	i += temp.length();
+	temp = ExtractLiteral(pointStr, i); //! 提取,从i=6开始
+	longitude = atof(temp.c_str()); //! 转化
+	i += temp.length(); //! i =6+7 =13
 	
 	// skip past any whitespace to the next co-ordinate
-	i = FindNonWhitespace(pointStr, i);
+	i = FindNonWhitespace(pointStr, i); //! 从第13个开始，得到14
 	if (i >= len)
 		return false;
 	// extract the latitude
@@ -676,6 +677,7 @@ bool Qrap::ExtractLatLongFromPoint (const string& pointStr, double& latitude, do
 }
 
 //*************************************************************************
+//! 从字符中解出 经纬度
 bool Qrap::ExtractLatLongFromPoint (const string& pointStr, DegreeFormat outputFormat,
 		string& latitude, string& longitude)
 {
@@ -684,7 +686,7 @@ bool Qrap::ExtractLatLongFromPoint (const string& pointStr, DegreeFormat outputF
 	char *text = new char[33];
 	
 	// get the values
-	if (!ExtractLatLongFromPoint(pointStr, la, lo))
+	if (!ExtractLatLongFromPoint(pointStr, la, lo)) //POINT(45.2603 2.02811) //! 获得double
 	{
 		delete [] text;
 		return false;
@@ -701,7 +703,7 @@ bool Qrap::ExtractLatLongFromPoint (const string& pointStr, DegreeFormat outputF
 		return true;
 	}
 	
-	north = (la >= 0.0) ? true : false;
+	north = (la >= 0.0) ? true : false; //! 
 	east = (lo >= 0.0) ? true : false;
 	
 	la = fabs(la);
@@ -709,9 +711,9 @@ bool Qrap::ExtractLatLongFromPoint (const string& pointStr, DegreeFormat outputF
 	
 	switch (outputFormat)
 	{
-	case dfDegMinSec:
+	case dfDegMinSec: //!
 		// compute the latitude
-		deg = trunc(la);
+		deg = trunc(la); //整数部分
 		la -= deg;
 		min = trunc(la*60.0);
 		la -= min/60.0;

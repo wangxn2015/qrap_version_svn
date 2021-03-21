@@ -25,6 +25,7 @@
  ************************************************************************* */
 
 #include "cPlaceSite.h"
+#include <stdio.h>
 //***********************************************************
 cPlaceSite::cPlaceSite(): QDialog()
 {
@@ -37,14 +38,14 @@ cPlaceSite::cPlaceSite(QgisInterface * QgisInt, QWidget* parent,
 			Qt::WFlags fl): QDialog(parent, fl)
 {
 	int j=0;
-	setupUi(this);
+	setupUi(this); //! 见 ui_Site.h
 	this->setModal(true);
 	string table="site";
 	string field="status";
 	cDatabase::FieldUiType uiType;
 	StringIntArray vals;
 	StringIntArrayIterator iterator;
-	uiType = gDb.GetFieldUiType(table,field);
+	uiType = gDb.GetFieldUiType(table,field);	//获得字段类型 fixed
 	gDb.GetFieldUiParams(table,field,vals);
 
 	// Poulate the combobox with the default data
@@ -72,8 +73,8 @@ bool cPlaceSite::SetParameters(QString Lat,QString Lon,bool Edit,double scale)
 	DegreeFormat locationFormat;
 	string setting = gDb.GetSetting("location");
 			
-	if (setting=="DD:MM:SS")
-		locationFormat = dfDegMinSec;
+	if (setting=="DD:MM:SS") //! 返回
+		locationFormat = dfDegMinSec; //! 时分秒格式
 	else if (setting=="DD:MM.mm")
 		locationFormat = dfDegMin;
 	else 
@@ -84,7 +85,7 @@ bool cPlaceSite::SetParameters(QString Lat,QString Lon,bool Edit,double scale)
 	string Location = QString ("POINT(%1 %2)").arg(Lon).arg(Lat).toStdString();
 
 	cout  << Location << endl;
-	if (mEdit)
+	if (mEdit) //! false
 	{
 		btnPlaceSite->setText("Update");
 		setWindowTitle(QApplication::translate("Site", "Edit the Site", 0, QApplication::UnicodeUTF8));
@@ -116,17 +117,17 @@ bool cPlaceSite::SetParameters(QString Lat,QString Lon,bool Edit,double scale)
 			return false;
 		}
 	}	
-	else
+	else //! false
 	{
 		string La,Lo;
-		ExtractLatLongFromPoint(Location,locationFormat,La,Lo);
+		ExtractLatLongFromPoint(Location,locationFormat,La,Lo); //! 转化
 		txtLongitude->setText(Lo.c_str());
 		txtLatitude->setText(La.c_str());
 	}
 
 	if ((!mEdit)||(txtGroundHeight->text()=="0"))
 	{
-		int Height = GetGroundHeight(lat, lon);
+		int Height = GetGroundHeight(lat, lon); //! 从数据库获取高度
 		QString GroundHeight = QString("%1").arg(Height);
 		txtGroundHeight->setText(GroundHeight);			
 	}
@@ -218,15 +219,15 @@ void cPlaceSite::on_btnMove_clicked()
 }
 
 //***********************************************************
-void cPlaceSite::on_btnEditInstallation_clicked()
+void cPlaceSite::on_btnEditInstallation_clicked() //! 编辑安装basestation
 {
-	cout << "cPlaceSite::on_btnEditInstallation_clicked()   mId=" << mId<< endl; 
-	if (!mEdit)
+	cout << "cPlaceSite::on_btnEditInstallation_clicked()   mId=" << mId<< endl; //! 一个随机值
+	if (!mEdit) //! mEdit = false; enter
 		mId = InsertSite();
 	if (mId>-1)
 	{
 		cout << "cPlaceSite::on_btnEditInstallation_clicked() voor Main Window initialise" << endl;
-		gMainWindow = new MainWindow();
+		gMainWindow = new MainWindow(); //! 配置其它tech 等
 		cout << "cPlaceSite::on_btnEditInstallation_clicked() voor EditSite" << endl;
 		gMainWindow->rapTab->mSites->EditSite(mId);
 		cout << "cPlaceSite::on_btnEditInstallation_clicked() voor gMainWindow->show()" << endl;
@@ -242,14 +243,14 @@ int cPlaceSite::InsertSite()
 	DegreeFormat locationFormat;
 	string setting = gDb.GetSetting("location");
 	if (setting=="DD:MM:SS")
-		locationFormat = dfDegMinSec;
+		locationFormat = dfDegMinSec; //! 这里
 	else if (setting=="DD:MM.mm")
 		locationFormat = dfDegMin;
 	else if (setting=="DD.dddd")
 		locationFormat = dfDeg;
 	else	locationFormat = dfDeg;
 
-	if (txtSite->text() == "")
+	if (txtSite->text() == "") //! 没有输入site name
 	{
 		QMessageBox::information(this, "QRap", "Please enter a site name!");
 		cout << "Please enter a site name!" << endl;
@@ -295,12 +296,13 @@ int cPlaceSite::InsertSite()
 	printf("insert query [%s]\n",query.c_str());
 
 	delete [] temp;
-	if (!gDb.PerformRawSql(query))
+	if (!gDb.PerformRawSql(query)) //! 数据库中插入site
 	{
 		QMessageBox::information(this, "QRap", "Error inserting the site!");
 		cout << "Error inserting the site!: " << query<< endl;
 		return -1;
 	}
+	
 	return SiteId;
 }
 

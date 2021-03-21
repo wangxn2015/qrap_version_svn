@@ -150,7 +150,7 @@ void QRap::initGui()
   	cout << "Na DataBase Connect" << endl;
 
 //  	mQGisIface->addPluginToMenu( tr( "Q-Rap Database" ), mQActionPointer );
-
+	//! 关联鼠标事件
   	Mouse = new MouseEvents(mQGisIface->mapCanvas());
   	cout << "Na Mouse" << endl;
   	connect(Mouse, SIGNAL(RightPoint(QgsPoint&)), this, SLOT(ReceivedRightPoint(QgsPoint&)));
@@ -514,11 +514,11 @@ void QRap::ReceivedLeftPoint(QgsPoint &Point)
 			mQGisIface->mapCanvas()->setCursor(Qt::OpenHandCursor);
 			mQGisIface->mapCanvas()->refresh();
 		}
-		else if (mMouseType == PLACESITE)
+		else if (mMouseType == PLACESITE) //! 
 		{
 			cout << " placesite " << endl;
 			QMessageBox::information(mQGisIface->mainWindow(), "Q-Rap", "Wait: getting height data at point");
-			PlaceSiteDialog((Point.y()),(Point.x()),false);
+			PlaceSiteDialog((Point.y()),(Point.x()),false); //! 在函数中，打开对话窗口
 			if (mMouseType!=MOVESITE)
 			{
 				mMouseType = CLEAN;
@@ -629,16 +629,16 @@ void QRap::ReceivedLeftPoint(QgsPoint &Point)
 
 
 //*****************************************************************************************
-void QRap::PlaceSiteDialog(double lat, double lon,bool IsOld)
+void QRap::PlaceSiteDialog(double lat, double lon,bool IsOld) //! 纬度前，经度
 {
 	cout << " In QRap::PlaceSiteDialog" << endl;
 	QString Lat = QString("%1").arg(lat);
 	QString Lon = QString("%1").arg(lon);
-	mPlacedSite = new cPlaceSite(mQGisIface, mQGisIface->mainWindow(), QgisGui::ModalDialogFlags);
+	mPlacedSite = new cPlaceSite(mQGisIface, mQGisIface->mainWindow(), QgisGui::ModalDialogFlags);//! ui
 	connect(mPlacedSite, SIGNAL(MoveSiteClicked()),this,  SLOT(MoveSiteClicked()));
 
 	// place the site
-	if (mPlacedSite->SetParameters(Lat,Lon,IsOld,mQGisIface->mapCanvas()->scale()))
+	if (mPlacedSite->SetParameters(Lat,Lon,IsOld,mQGisIface->mapCanvas()->scale())) //! 显示选点处的参数
 	{
 		if (mPlacedSite->exec()==1)
 		{
@@ -688,13 +688,12 @@ void QRap::InitRubberBand(bool IsArea)
 	cout << "QRap::InitRubberBand(bool IsArea) " << endl;
 	mQGisIface->mapCanvas()->setMapTool(Mouse);
 	QGis::GeometryType bArea;
-	if (IsArea)
+	if (IsArea) //! true
 		bArea = QGis::Polygon;
 	else 	bArea = QGis::Line;
 
-	mPoints.clear();
-	mRubberBand = new 
-	QgsRubberBand(mQGisIface->mapCanvas(), bArea);
+	mPoints.clear(); //! 清理点
+	mRubberBand = new QgsRubberBand(mQGisIface->mapCanvas(), bArea);
 	connect(Mouse, SIGNAL(MouseMove(QgsPoint&)), this, SLOT(ReceiveMouseMove(QgsPoint&)));
   	mQGisIface->mapCanvas()->setCursor(Qt::CrossCursor);
   

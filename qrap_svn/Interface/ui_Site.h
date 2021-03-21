@@ -128,7 +128,7 @@ public:
 
         retranslateUi(Site);
 
-        QMetaObject::connectSlotsByName(Site);
+        QMetaObject::connectSlotsByName(Site); //!进行槽链接
     } // setupUi
 
     void retranslateUi(QDialog *Site)
