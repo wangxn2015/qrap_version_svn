@@ -45,10 +45,10 @@ cConfirmPrediction::cConfirmPrediction(QgisInterface * QgisInt,
 	this->setModal(true);
 	pushButtonPrint->setEnabled(false);
 	btnDone->setEnabled(false);
-	LoadDefaults();
+	LoadDefaults(); //显示界面初始值
 	mQGisIface = QgisInt;
-	mMapCanvas = mQGisIface->mapCanvas();
-	mMapRenderer = mMapCanvas->mapSettings();
+	mMapCanvas = mQGisIface->mapCanvas(); 		//!
+	mMapRenderer = mMapCanvas->mapSettings();	//!
 }
 
 /***********************************************************/
@@ -188,14 +188,14 @@ void cConfirmPrediction::LoadDefaults()
 	setting = gDb.GetSetting("DisplayUnits");
 	if(setting!="")
 		displayUnitsCombo->setCurrentIndex(displayUnitsCombo->findText(QString::fromStdString(setting),Qt::MatchCaseSensitive));
-	else
+	else //! dBm
 		displayUnitsCombo->setCurrentIndex(displayUnitsCombo->findText("dBm",Qt::MatchCaseSensitive));
 
-	setting = gDb.GetSetting("RqSN");
+	setting = gDb.GetSetting("RqSN"); //! required signal to noise ratio
 	if(setting!="")
 		RqSNSpinBox->setValue(atof(setting.c_str()));
 	else
-		RqSNSpinBox->setValue(8.00);
+		RqSNSpinBox->setValue(8.00); //! default 8
 	
 	setting = gDb.GetSetting("FadeMargin");
 	if(setting!="")
@@ -203,7 +203,7 @@ void cConfirmPrediction::LoadDefaults()
 	else
 		fadeMarginSpin->setValue(3.00);
 	
-	setting = gDb.GetSetting("RxMin");
+	setting = gDb.GetSetting("RxMin"); //! minimum required received signal -- default -110
 	if(setting!="")
 		rxMinSpinBox->setValue(atof(setting.c_str()));
 	else
@@ -213,9 +213,9 @@ void cConfirmPrediction::LoadDefaults()
 	if(setting!="")
 		rqCociSpinBox->setValue(atof(setting.c_str()));
 	else
-		rqCociSpinBox->setValue(9.00);
+		rqCociSpinBox->setValue(9.00); //! required carrier to co-channel interference ratio
 	
-	setting = gDb.GetSetting("RqCiad");
+	setting = gDb.GetSetting("RqCiad"); //! required carrier to adjacent channel interference ratio
 	if(setting!="")
 		rqCiadSpinBox->setValue(atof(setting.c_str()));
 	else
@@ -233,23 +233,23 @@ void cConfirmPrediction::LoadDefaults()
 	else
 		minAngleResSpinBox->setValue(1.00);
 	
-	setting = gDb.GetSetting("RqEbNo");
+	setting = gDb.GetSetting("RqEbNo"); //! required energy per bit to noise ratio. default 8
 	if(setting!="")
 		rqEbNoSpinBox->setValue(atof(setting.c_str()));
 	else
 		rqEbNoSpinBox->setValue(8.00);
 	
-	setting = gDb.GetSetting("kFactorServer");
+	setting = gDb.GetSetting("kFactorServer"); //! to servers
 	if(setting!="")
 		kFactorServerSpinBox->setValue(atof(setting.c_str()));
 	else
 		kFactorServerSpinBox->setValue(1.00);
 	
-	setting = gDb.GetSetting("kFactorInt");
+	setting = gDb.GetSetting("kFactorInt"); //! to interferers
 	if(setting!="")
 		kFactorIntSpinBox->setValue(atof(setting.c_str()));
 	else
-		kFactorIntSpinBox->setValue(2.5);
+		kFactorIntSpinBox->setValue(2.5); //! 后续会根据数据库配置改
 	
 	setting = gDb.GetSetting("UseClutter");
 	if(setting=="true")
@@ -259,7 +259,7 @@ void cConfirmPrediction::LoadDefaults()
 	
 	setting = gDb.GetSetting("BTLDir");
 	if(setting!="")
-		mBTLDir = (QString::fromStdString(setting));
+		mBTLDir = (QString::fromStdString(setting)); //! Qstring
 	else
 		mBTLDir = "Data/BTL/";
 	
@@ -273,7 +273,7 @@ void cConfirmPrediction::LoadDefaults()
 	if(setting!="")
 		plotResolutionSpinBox->setValue(atof(setting.c_str()));
 	else
-		plotResolutionSpinBox->setValue(20.00);
+		plotResolutionSpinBox->setValue(20.00); //! 
 	
 	setting = gDb.GetSetting("DownLink");
 	if(setting=="true")
@@ -281,7 +281,7 @@ void cConfirmPrediction::LoadDefaults()
 	else
 		upLinkRadio->setChecked(true);
 		
-	string query = "SELECT id,name FROM mobile";
+	string query = "SELECT id,name FROM mobile"; //! 数据库中的接收机 技术
 	pqxx::result Mobiles;
 	if (!gDb.PerformRawSql(query))
 	{
@@ -497,6 +497,7 @@ void cConfirmPrediction::SetOwnColours()
 }
 
 /***********************************************************/
+//! 覆盖预测
 void cConfirmPrediction::on_btnDo_clicked()
 {
 	rxMinSpinBox->setEnabled(false);
@@ -527,25 +528,25 @@ void cConfirmPrediction::on_btnDo_clicked()
 	radioArea->setEnabled(false);
 	radioRadius->setEnabled(false);
 
-	mRadInst.clear();
-	mRanges.clear();
+	mRadInst.clear(); 	//!	QList<unsigned> mRadInst; 存储基站的id
+	mRanges.clear(); 	//!	QList<double> mRanges;
 	double North,West,South,East;
-	NorthWestCorner.SetGeoType(DEG);
-	SouthEastCorner.SetGeoType(DEG);
+	NorthWestCorner.SetGeoType(DEG);	//! 西北角 //setPoints时获得值
+	SouthEastCorner.SetGeoType(DEG);	//! 东南角
 	NorthWestCorner.Get(North,West);
 	SouthEastCorner.Get(South,East);
 	cout << "North: " << North << "	South: " << South << "	East: " << East << "	West: " << West << endl;
-	if (plotTypeCombo->currentIndex()!=11)
+	if (plotTypeCombo->currentIndex()!=11) //! 0---Coverage
 	{
-		for (int i = 0; i < tableWidget->rowCount();i++)
+		for (int i = 0; i < tableWidget->rowCount();i++)//! 几个站
 		{
 			void *Wid = tableWidget->cellWidget(i,0);
 			QCheckBox *get =(QCheckBox*) Wid;
-			if (get->isChecked())
+			if (get->isChecked()) //! 是否选中该站
 			{
 				bool ok;
-				double Rad =tableWidget->item(i,2)->text().toDouble(&ok);
-				mRadInst.push_back((unsigned)tableWidget->item(i,4)->text().toDouble());
+				double Rad =tableWidget->item(i,2)->text().toDouble(&ok);//! 半径 e.g. 120
+				mRadInst.push_back((unsigned)tableWidget->item(i,4)->text().toDouble()); //! radio installation id
 				if ((plotResolutionSpinBox->value()/1000 <=Rad) && ok)
 				{
 					mRanges.push_back(tableWidget->item(i,2)->text().toDouble());
@@ -581,13 +582,13 @@ void cConfirmPrediction::on_btnDo_clicked()
 						Lon = atof((PointString.substr(6,spacePos).c_str())); 
 						Lat = atof((PointString.substr(spacePos,PointString.length()-1)).c_str());
 						cGeoP Temp;
-						Temp.Set(Lat,Lon,DEG);
+						Temp.Set(Lat,Lon,DEG);// ! 基站位置
 						North = max(North,Lat);
 						South = min(South,Lat);
 						East = max(East,Lon);
 						West = min(West,Lon);
 						cGeoP NewPoint;
-						NewPoint.FromHere(Temp,Radius,0);
+						NewPoint.FromHere(Temp,Radius,0); //! 半径单位为m, 第三个参数为0
 						Temp.Display();
 						NewPoint.Display();
 					
@@ -601,7 +602,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 						East = max(East,Lon);
 						West = min(West,Lon);
 						//Check East
-						NewPoint.FromHere(Temp,Radius,90);
+						NewPoint.FromHere(Temp,Radius,90); //! 半径单位为m, 第三个参数为90
 						NewPoint.Get(Lat,Lon);
 						North = max(North,Lat);
 						South = min(South,Lat);
@@ -610,7 +611,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 						cout << "Dist: " << Temp.Distance(NewPoint) << endl;
 						cout << "East: " << East << "	Lon: " << Lon << endl;
 						//Check South
-						NewPoint.FromHere(Temp,Radius,180);
+						NewPoint.FromHere(Temp,Radius,180); //! 半径单位为m, 第三个参数为180
 						NewPoint.Get(Lat,Lon);
 						North = max(North,Lat);
 						South = min(South,Lat);
@@ -619,7 +620,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 						cout << "Dist: " << Temp.Distance(NewPoint) << endl;
 						cout << "South: " << South << "	Lat: " << Lat<< endl;
 						//Check West
-						NewPoint.FromHere(Temp,Radius,270);
+						NewPoint.FromHere(Temp,Radius,270); //! 半径单位为m, 第三个参数为270
 						NewPoint.Get(Lat,Lon);
 						North = max(North,Lat);
 						South = min(South,Lat);
@@ -648,7 +649,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 
 	switch (plotTypeCombo->currentIndex())
 	{
-		case 0:		mPlotType = Cov;		break;
+		case 0:		mPlotType = Cov;		break;//! 0
 		case 1:		mPlotType = PrimServer;		break;
 		case 2:		mPlotType = SecondServer;	break;
 		case 3:		mPlotType = NumServers;		break;
@@ -670,7 +671,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 	{
 		case 0:		DisplayUnits = dB;		break;
 		case 1:		DisplayUnits = dBW;		break;
-		case 2:		DisplayUnits = dBm;		break;
+		case 2:		DisplayUnits = dBm;		break; //! 2
 		case 3:		DisplayUnits = dBuV;		break;
 		case 4:		DisplayUnits = dBuVm;		break;
 		case 5:		DisplayUnits = dBWm2Hz;		break;
@@ -706,7 +707,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 	{
 		cout << "HERE WE ARE SELECTING THE RESOLUTION:"<<endl;
 		//Why?
-		DEMsourceList = (int)atof(DEMset[0]["id"].c_str());
+		DEMsourceList = (int)atof(DEMset[0]["id"].c_str()); //! e.g. 为1
 		cout << "Source List: " << DEMsourceList <<endl;
 		string QueryResult=DEMset[0]["orderarray"].c_str();
 		int NumBytes = QueryResult.length();
@@ -798,23 +799,23 @@ void cConfirmPrediction::on_btnDo_clicked()
 	cout << "cConfirmPrediction::on_btnDo_clicked(). Mobile key: ";
 	QString Mob = mobileCombo->currentText();
 	Mob=Mob.mid(0,Mob.indexOf(":"));
-	MobileInstallationKey=(unsigned int)Mob.toDouble();
+	MobileInstallationKey=(unsigned int)Mob.toDouble();//! 接收机对应key
 	cout << MobileInstallationKey << endl;
 	
-	NumberOfFixedInstallations=mRadInst.size();
+	NumberOfFixedInstallations=mRadInst.size();//! 基站数量
 	FixedInstallationKeys = new unsigned[NumberOfFixedInstallations];
 	CoverangeRanges= new double[NumberOfFixedInstallations]; // In Kilometer
 	
 	for (int i = 0; i < NumberOfFixedInstallations;i++)
 	{
-		FixedInstallationKeys[i] = mRadInst[i];
-		CoverangeRanges[i] = mRanges[i];
+		FixedInstallationKeys[i] = mRadInst[i]; //! 基站id
+		CoverangeRanges[i] = mRanges[i]; //! 基站范围
 	}
 	DirectoryToStoreResult = outputDirectoryEdit->text().latin1();
 	OutputFileForResult = outputFileNameEdit->text().latin1();
 	
 	bool FileWritten=false;
-	cPlotTask Prediction;
+	cPlotTask Prediction; //! 计算在这里
 	Prediction.SetPlotTask(	mPlotType, DisplayUnits, DownLink,
 				RequiredSignalToNoise, RequiredMinimumReceiverLevel,
 				FadeMargin, RequiredCoChannelCarrierToInterference,
@@ -826,7 +827,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 				NumberOfFixedInstallations, FixedInstallationKeys,
 				CoverangeRanges, // In Kilometer
 				DirectoryToStoreResult, OutputFileForResult);
-	if (mPlotType == DEM)
+	if (mPlotType == DEM) //! no here
 	{	
 		cout << "Entering DEM in cConfirmPrediction::on_btnDo_clicked()" << endl;
 		cRaster Output;
@@ -855,11 +856,11 @@ void cConfirmPrediction::on_btnDo_clicked()
 		delete_Float2DArray(Data);
 		cout << "Deleted DEM Output Array in cConfirmPrediction::on_btnDo_clicked()" << endl;
 	}//end if DEM
-	else if ((mPlotType==Cov)||(mPlotType==PrimServer)||(mPlotType==SecondServer)
+	else if ((mPlotType==Cov)||(mPlotType==PrimServer)||(mPlotType==SecondServer) //! enter here as Cov
  				||(mPlotType==NumServers)||(mPlotType==SN)
 				||(TrafficDist==mPlotType)||(CellCentroid==mPlotType))
  	{
-		Prediction.CombineCov();
+		Prediction.CombineCov(); //! 重要函数
 		if (CellCentroid==mPlotType)
 		{
 			Prediction.CellCentriods();
@@ -869,15 +870,15 @@ void cConfirmPrediction::on_btnDo_clicked()
 			Prediction.DetermineTrafficDist(true); // only do packet data
 //			Prediction.DetermineTrafficDist(false);
 		}
-		FileWritten = Prediction.WriteOutput(DEG);
+		FileWritten = Prediction.WriteOutput(DEG); //! 看这里 输出
  	}
- 	else
+ 	else //! 不看
  	{
 		Prediction.InterferencePlot();
 		FileWritten = Prediction.WriteOutput(DEG);
  	}
  	
- 	if (!FileWritten)
+ 	if (!FileWritten) //! 输出错误提示
  	{
  		string err = "Could not write the output. ";
  		err+= "Do you have write permission to the directory: '";
@@ -918,7 +919,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 	QString File = DirectoryToStoreResult.c_str();
 	File +="/"; //\TODO: Windows....
 	File+=OutputFileForResult.c_str();
-	QgsRasterLayer *mRasterLayerO = mQGisIface->addRasterLayer(File);
+	QgsRasterLayer *mRasterLayerO = mQGisIface->addRasterLayer(File); //!把栅格文件加入到qgis图层显示中
 	QgsRasterTransparency *Deurskynend= new QgsRasterTransparency();
 	QgsRasterTransparency::TransparentSingleValuePixel myTransparentPixel; // setting null value transparancy
 	QList<QgsRasterTransparency::TransparentSingleValuePixel> myTransparentSingleValuePixelList;// setting null value transparancy
@@ -926,6 +927,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 	myTransparentPixel.min = -10000;// setting null value transparancy
 	myTransparentPixel.max = -9998;// setting null value transparancy
 	myTransparentSingleValuePixelList.append(myTransparentPixel);// setting null value transparancy
+	//
 	Deurskynend->setTransparentSingleValuePixelList( myTransparentSingleValuePixelList );
 
   	QgsRasterShader* rasterShader = new QgsRasterShader();
@@ -948,7 +950,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 		{
 			gDb.GetLastResult(res);
 			int r,g,b,a;	
-			if (getFromDB)
+			if (getFromDB) //!true
 			{
 				if (res.size() == 0) // If no colours has been set up
 				{

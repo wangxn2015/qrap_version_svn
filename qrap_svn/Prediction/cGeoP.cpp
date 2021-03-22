@@ -357,7 +357,7 @@ bool cGeoP::SetGeoType(GeoType type, int central)
 //************************************************************************
 void cGeoP::Display()
 {
-	if (mType==DEG)
+	if (mType==DEG) //! enter
 	{
 		cout << mLat;
 		if (mLat<0.0) cout << " S, ";
@@ -576,14 +576,14 @@ void cGeoP::FromHere(cGeoP here, double distance, double direction)
 			mLat = here.mLat + s*cosAlpha1;
 			mLon = here.mLon + s*sinAlpha1;
 		}
-		else if (mType==WGS84GC)
+		else if (mType==WGS84GC) //! WGS84高斯变化
 		{
 			mCentMer = here.mCentMer;
 			mSouth = here.mSouth;
 			mLat = here.mLat + s*cosAlpha1;
 			mLon = here.mLon - s*sinAlpha1;			
 		}
-		else // hence DEG
+		else //! hence DEG
 		{
 			double tanU1 = (1.0-f) * tan(here.mLat*rd);
 			double cosU1 = 1.0 / sqrt((1.0 + tanU1*tanU1));

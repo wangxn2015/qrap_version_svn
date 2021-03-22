@@ -118,8 +118,8 @@ private:
 	short int DEMsourceList;
 	short int ClutterSourceList;
 	bool UseClutterDataInPathLossCalculations;
-	cGeoP NorthWestCorner;
-	cGeoP SouthEastCorner;
+	cGeoP NorthWestCorner; //!
+	cGeoP SouthEastCorner; //!
 	double PlotResolution;
 	double MinimumAngularResolution;
 	unsigned MobileInstallationKey;

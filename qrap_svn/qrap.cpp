@@ -430,7 +430,7 @@ void QRap::ReceivedRightPoint(QgsPoint &Point)
 	cout << " in QRap::ReceivedRIGHTPoint(QgsPoint &Point) " << endl;
 	if (mMouseType != CLEAN)
 	{
-		if (mMouseType == PLACESITE)
+		if (mMouseType == PLACESITE) //! 放置基站
 		{
 			mMouseType = CLEAN;
 			mQGisIface->mapCanvas()->setCursor(Qt::OpenHandCursor);
@@ -450,12 +450,12 @@ void QRap::ReceivedRightPoint(QgsPoint &Point)
 			DesRubberBand();
 			mQGisIface->mapCanvas()->setCursor(Qt::OpenHandCursor);
 		}
-		if (mMouseType == AREA)
+		if (mMouseType == AREA) //! 预测处理
 		{
 			mPoints.append(Point);
 			mRubberBand->addPoint(Point);
 			DesRubberBand();
-			PerformPrediction();
+			PerformPrediction(); //!
 			mQGisIface->mapCanvas()->setCursor(Qt::OpenHandCursor);
 			mMouseType = CLEAN;
 		}
@@ -552,7 +552,7 @@ void QRap::ReceivedLeftPoint(QgsPoint &Point)
 			mRubberBand->addPoint(Point);
 			mMouseType = LINK2;
 		}
-		if (mMouseType == AREA)
+		if (mMouseType == AREA) //! 选取预测区域
 		{
 			cout << " Area " << endl;
 			mPoints.append(Point);
@@ -693,7 +693,7 @@ void QRap::InitRubberBand(bool IsArea)
 	else 	bArea = QGis::Line;
 
 	mPoints.clear(); //! 清理点
-	mRubberBand = new QgsRubberBand(mQGisIface->mapCanvas(), bArea);
+	mRubberBand = new QgsRubberBand(mQGisIface->mapCanvas(), bArea);	//! 创建对象时，带入bArea为Polygon
 	connect(Mouse, SIGNAL(MouseMove(QgsPoint&)), this, SLOT(ReceiveMouseMove(QgsPoint&)));
   	mQGisIface->mapCanvas()->setCursor(Qt::CrossCursor);
   
@@ -710,7 +710,7 @@ void QRap::DesRubberBand()
 	mMouseType = CLEAN;
 	disconnect(Mouse, SIGNAL(MouseMove(QgsPoint&)), this, SLOT(ReceiveMouseMove(QgsPoint&)));
 	delete mRubberBand;
-	mQGisIface->mapCanvas()->setCursor(Qt::ArrowCursor);
+	mQGisIface->mapCanvas()->setCursor(Qt::ArrowCursor);//! 更改鼠标类型
 }
 
 //***************************************************************
@@ -744,9 +744,9 @@ bool QRap::PerformPrediction()
 {
 	cConfirmPrediction *ConfirmPrediction = 
 			new cConfirmPrediction(mQGisIface, mQGisIface->mainWindow(), QgisGui::ModalDialogFlags);
-	if (ConfirmPrediction->SetPoints(mPoints))
+	if (ConfirmPrediction->SetPoints(mPoints)) //!把选取范围的点传递给 预测对象
 	{
-		if (ConfirmPrediction->exec()==1)
+		if (ConfirmPrediction->exec()==1) //! 执行显示
 		{
 			mQGisIface->mapCanvas()->refresh();
 		}//if accepted
