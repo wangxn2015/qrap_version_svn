@@ -112,7 +112,7 @@ int cCoveragePredict::SetCommunicationLink(	int		SiteID,
 
 	eAnt Which;
 
-	if (DownLink) Which = Tx;
+	if (DownLink) Which = Tx;//!
 	else Which = Rx;
 	mFixedAntenna.SetUseAntANN(mUseAntANN);
 	if (mUseAntANN)

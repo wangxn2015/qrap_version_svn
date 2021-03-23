@@ -1229,10 +1229,12 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 	double FrontEdge,DoneEdge,dummy,N,W,gLat,gLon;
 	Marker.SetGeoType(DEG);
 	mNorthWest.SetGeoType(DEG);
-	mNorthWest.Get(gLat,gLon);
+	mNorthWest.Get(gLat,gLon); //! 西北位置的经纬度
 	mNorthWest.Get(N,W);
 	
-	if (mCols<mRows) // vertical
+	cout<<"mActiveRasters.size(): "<<mActiveRasters.size()<<endl;
+
+	if (mCols<mRows) //! vertical
 	{	
 		for (i=0; i<mActiveRasters.size(); i++)
 		{
@@ -1381,7 +1383,7 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 					DTM = new_Float2DArray(tempNumAngles,tempNumDist);
 					Float2DArray Clutter;
 					cout << "NA: " << tempNumAngles << "	ND: " << tempNumDist << endl; 
-					if (mUseClutter)
+					if (mUseClutter) //! skip
 						Clutter = new_Float2DArray(tempNumAngles,tempNumDist);
 					mDEM.GetForCoverage(false, mFixedInsts[i].sSitePos, 
 									mFixedInsts[i].sRange, tempPlotRes, tempAngRes,
@@ -1393,7 +1395,7 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 						cout << endl;
 					}
 */	
-					if (mUseClutter)
+					if (mUseClutter)//! skip
 					{
 						mClutter.GetForCoverage(true, mFixedInsts[i].sSitePos, 
 										mFixedInsts[i].sRange, tempPlotRes, tempAngRes,
@@ -1534,7 +1536,7 @@ int cPlotTask::OrderAllPred()
 	double dummy;
 	bool swap;
 	tFixed temp;
-	cCoveragePredict Prediction;
+	cCoveragePredict Prediction;//!
 	
 	int FixedAntPatternKey, MobileAntPatternKey = mMobile.sPatternKey;
 	double FixedAzimuth, FixedMechTilt;
@@ -1596,8 +1598,8 @@ int cPlotTask::OrderAllPred()
 	if (mCols<=mRows) //! vertical
 		for (i=0; i<mFixedInsts.size(); i++)
 		{
-			Edge.FromHere(mFixedInsts[i].sSitePos,mFixedInsts[i].sRange,0);
-			Edge.Get(mFixedInsts[i].sFEdge, dummy);
+			Edge.FromHere(mFixedInsts[i].sSitePos,mFixedInsts[i].sRange,0); //! 0 表示正北方向？
+			Edge.Get(mFixedInsts[i].sFEdge, dummy); //! 此时获取纬度相关
 			Edge.FromHere(mFixedInsts[i].sSitePos,mFixedInsts[i].sRange,180);
 			Edge.Get(mFixedInsts[i].sBEdge, dummy);
 		}
@@ -1610,7 +1612,7 @@ int cPlotTask::OrderAllPred()
 			Edge.Get(dummy,mFixedInsts[i].sBEdge);
 		}
 		
-	// sort 
+	// sort //! 排序
 	for (i=0; i<mFixedInsts.size(); i++)
 	{
 		for (j=i; j<mFixedInsts.size(); j++)
