@@ -815,7 +815,12 @@ void cConfirmPrediction::on_btnDo_clicked()
 	OutputFileForResult = outputFileNameEdit->text().latin1();
 	
 	bool FileWritten=false;
-	cPlotTask Prediction; //! 计算在这里
+	cPlotTask Prediction; //! 计算在这里 //! 重要函数，待分析
+
+	//----------------------------
+
+	//-----------------------------
+
 	Prediction.SetPlotTask(	mPlotType, DisplayUnits, DownLink,
 				RequiredSignalToNoise, RequiredMinimumReceiverLevel,
 				FadeMargin, RequiredCoChannelCarrierToInterference,
@@ -827,7 +832,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 				NumberOfFixedInstallations, FixedInstallationKeys,
 				CoverangeRanges, // In Kilometer
 				DirectoryToStoreResult, OutputFileForResult);
-	if (mPlotType == DEM) //! no here
+	if (mPlotType == DEM) //! skip here
 	{	
 		cout << "Entering DEM in cConfirmPrediction::on_btnDo_clicked()" << endl;
 		cRaster Output;
@@ -860,7 +865,7 @@ void cConfirmPrediction::on_btnDo_clicked()
  				||(mPlotType==NumServers)||(mPlotType==SN)
 				||(TrafficDist==mPlotType)||(CellCentroid==mPlotType))
  	{
-		Prediction.CombineCov(); //! 重要函数
+		Prediction.CombineCov(); //! 重要函数，待分析
 		if (CellCentroid==mPlotType)
 		{
 			Prediction.CellCentriods();
@@ -919,16 +924,17 @@ void cConfirmPrediction::on_btnDo_clicked()
 	QString File = DirectoryToStoreResult.c_str();
 	File +="/"; //\TODO: Windows....
 	File+=OutputFileForResult.c_str();
-	QgsRasterLayer *mRasterLayerO = mQGisIface->addRasterLayer(File); //!把栅格文件加入到qgis图层显示中
+	QgsRasterLayer *mRasterLayerO = mQGisIface->addRasterLayer(File); //!把栅格文件加入到qgis图层显示中。 栅格图层
 	QgsRasterTransparency *Deurskynend= new QgsRasterTransparency();
+
 	QgsRasterTransparency::TransparentSingleValuePixel myTransparentPixel; // setting null value transparancy
 	QList<QgsRasterTransparency::TransparentSingleValuePixel> myTransparentSingleValuePixelList;// setting null value transparancy
 	myTransparentPixel.percentTransparent = 100.00;// setting null value transparancy
 	myTransparentPixel.min = -10000;// setting null value transparancy
 	myTransparentPixel.max = -9998;// setting null value transparancy
-	myTransparentSingleValuePixelList.append(myTransparentPixel);// setting null value transparancy
+	myTransparentSingleValuePixelList.append(myTransparentPixel);// setting null value transparancy //! 加入到pixel list
 	//
-	Deurskynend->setTransparentSingleValuePixelList( myTransparentSingleValuePixelList );
+	Deurskynend->setTransparentSingleValuePixelList( myTransparentSingleValuePixelList );//! 用pixel list 设置 deurskynend
 
   	QgsRasterShader* rasterShader = new QgsRasterShader();
   	QgsColorRampShader* colorRampShader = new QgsColorRampShader();
@@ -938,17 +944,17 @@ void cConfirmPrediction::on_btnDo_clicked()
       		//iterate through mColormapTreeWidget and set colormap info of layer
 		pqxx::result res;
       		string query = "SELECT * FROM colourmanagement WHERE plottype ='";
-		query +=Plot;
+		query +=Plot; //! 如 “Coverage”
 		query +="';";
 		cout <<query << endl;
-		if (!gDb.PerformRawSql(query))
+		if (!gDb.PerformRawSql(query)) //! 颜色管理
 		{
 			cout <<"Error selecting colours" << endl;
 			SetOwnColours();
 		}
 		else
 		{
-			gDb.GetLastResult(res);
+			gDb.GetLastResult(res); //! 查询结果
 			int r,g,b,a;	
 			if (getFromDB) //!true
 			{
@@ -976,7 +982,7 @@ void cConfirmPrediction::on_btnDo_clicked()
       					}//end for
 				}
  			}//getFromDB
- 			else
+ 			else //! skip here
  			{ // this clause takes care of primary/secondary servers
  				int j = 0;
 		 		srand(NumberOfFixedInstallations);
@@ -988,8 +994,8 @@ void cConfirmPrediction::on_btnDo_clicked()
 		      			myNewColorRampItem.value = FixedInstallationKeys[i];
 		      			if (j < res.size())
 		      			{
-//			      			if (j == res.size())
-// 		    				j = 0;	
+			      			//if (j == res.size())
+ 		    				//j = 0;	
    		   				r = (int)atof(res[j]["r"].c_str());
    		   				g = (int)atof(res[j]["g"].c_str());
    		   				b = (int)atof(res[j]["b"].c_str());

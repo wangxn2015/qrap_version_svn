@@ -233,7 +233,7 @@ enum ePlotType
 			unsigned		mCols;		///< Number of colunms of the plot
 			unsigned		mInstCounter; 	///< Used to display progres of big calculations ... 'installation M of N'
 			vPred 			mActiveRasters;	///< Rasters containing individual plots (in rectangular coordinates) ... normally the signal strenth in dBm
-			double			mCurrentEdge;	///< indicate how the plot progress through the area sourthern (or eastern) edge of the area already calculated  
+			double			mCurrentEdge;	////!< indicate how the plot progress through the area sourthern (or eastern) edge of the area already calculated  
 			double			mMaxPathLoss;	///< Maximum pathloss that needs to be considers 
 			double			mMaxRange;	///< Maximum range that will be considered
 			string			mDir;		///< Directory of the output file

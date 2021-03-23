@@ -59,7 +59,7 @@ cPlotTask::cPlotTask()
 	mMobile.sMobileHeight = 1;
 	mPlot = new_Float2DArray(2,2);
 	mSupportPlot = new_Float2DArray(2,2);
-	mDir = "/home/maggie/Data/qrap/Predictions/";
+	mDir = "/home/justin/Data/qrap/Predictions/";
 	mOutputFile = "Output";	
 }
 
@@ -184,18 +184,18 @@ bool cPlotTask::SetPlotTask(	ePlotType PlotType,
 	mCols = (unsigned)((E-W)/(mEWres));
 	delete_Float2DArray(mPlot);
 	delete_Float2DArray(mSupportPlot);
-	mPlot = new_Float2DArray(mRows,mCols);
-	mSupportPlot = new_Float2DArray(mRows,mCols);
+	mPlot = new_Float2DArray(mRows,mCols); //!
+	mSupportPlot = new_Float2DArray(mRows,mCols); //!
 	cGeoP MidNorth(N,(W+E)/2, DEG);
 	cGeoP Mid((N+S)/2,(E+W)/2,DEG);
 	mCentMer = Mid.DefaultCentMer(WGS84GC);
 //	mNorthWest.FromHere(MidNorth,mCols/2.0*mPlotResolution,270.0);
 	double dummy;
 	if (mCols<mRows)
-		mNorthWest.Get(mCurrentEdge, dummy);
+		mNorthWest.Get(mCurrentEdge, dummy); //!西北 get(纬度，经度)
 	else 
 		mNorthWest.Get(dummy, mCurrentEdge);
-	bool FoundRasterSet = mDEM.SetRasterFileRules(mDEMsource);
+	bool FoundRasterSet = mDEM.SetRasterFileRules(mDEMsource); //! DEM file id
 	if (!FoundRasterSet)
 	{
 		string err = "Trouble getting DEM list. Using default";
@@ -237,7 +237,7 @@ bool cPlotTask::SetPlotTask(	ePlotType PlotType,
 			switch (mPlotType)
 			{
 				case DEM:		temp = "DEM"; 		break;
-				case Cov:		temp = "Coverage"; 	break;
+				case Cov:		temp = "Coverage"; 	break; //!
 				case PrimServer:	temp = "PrimServer"; 	break;
 				case SecondServer:	temp = "SecondServer"; 	break;
 				case NumServers:	temp = "NumServers"; 	break;
@@ -290,7 +290,7 @@ bool cPlotTask::SetPlotTask(	ePlotType PlotType,
 		}
 	}
 	
-	bool ReturnValue = GetDBinfo();
+	bool ReturnValue = GetDBinfo(); //! 获取计算所需信息 重要
 	return ReturnValue;
 }// end cPlotTask::SetPlotTask
 
