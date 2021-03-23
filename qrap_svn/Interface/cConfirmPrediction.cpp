@@ -759,7 +759,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 	}
 	
 	pqxx::result Clutter;
-	if (useClutterCheckBox->isChecked())
+	if (useClutterCheckBox->isChecked()) //! skip
 	{
 		query = "SELECT id from filesetsused WHERE type = 'Clutter'";
 		if (!gDb.PerformRawSql(query))
@@ -815,11 +815,9 @@ void cConfirmPrediction::on_btnDo_clicked()
 	OutputFileForResult = outputFileNameEdit->text().latin1();
 	
 	bool FileWritten=false;
-	cPlotTask Prediction; //! 计算在这里 //! 重要函数，待分析
+	cPlotTask Prediction; //! ! 重要函数
 
 	//----------------------------
-
-	//-----------------------------
 
 	Prediction.SetPlotTask(	mPlotType, DisplayUnits, DownLink,
 				RequiredSignalToNoise, RequiredMinimumReceiverLevel,
@@ -865,7 +863,7 @@ void cConfirmPrediction::on_btnDo_clicked()
  				||(mPlotType==NumServers)||(mPlotType==SN)
 				||(TrafficDist==mPlotType)||(CellCentroid==mPlotType))
  	{
-		Prediction.CombineCov(); //! 重要函数，待分析
+		Prediction.CombineCov(); //! 重要函数 
 		if (CellCentroid==mPlotType)
 		{
 			Prediction.CellCentriods();

@@ -180,8 +180,8 @@ bool cPlotTask::SetPlotTask(	ePlotType PlotType,
 //	mCols = (int)ceil(WE/mPlotResolution);
 	mNSres = mPlotResolution*cDegResT;
 	mEWres = mPlotResolution*cDegResT;
-	mRows = (unsigned)((N-S)/(mNSres));
-	mCols = (unsigned)((E-W)/(mEWres));
+	mRows = (unsigned)((N-S)/(mNSres)); //! 行： 纬度差/纬度分辨率 ----关联栅格
+	mCols = (unsigned)((E-W)/(mEWres)); //! 列
 	delete_Float2DArray(mPlot);
 	delete_Float2DArray(mSupportPlot);
 	mPlot = new_Float2DArray(mRows,mCols); //!
@@ -201,7 +201,7 @@ bool cPlotTask::SetPlotTask(	ePlotType PlotType,
 		string err = "Trouble getting DEM list. Using default";
 		QRAP_WARN(err.c_str());
 	}
-	if (mUseClutter)
+	if (mUseClutter) //! skip
 	{
 		FoundRasterSet = mClutter.SetRasterFileRules(mClutterSource);
 		mUseClutter = (FoundRasterSet)&&(UseClutterDataInPathLossCalculations);
@@ -211,7 +211,7 @@ bool cPlotTask::SetPlotTask(	ePlotType PlotType,
 			QRAP_WARN(err.c_str());
 		}
 	}
-	if (mUseClutter)
+	if (mUseClutter)	//! skip
 		mClutterClassGroup = mClutter.GetClutterClassGroup();
 	mUseClutter = (mUseClutter) && (mClutterClassGroup>0);
 	
@@ -698,11 +698,11 @@ bool cPlotTask::CombineCov()
 	Float2DArray Test2;
 	Float2DArray Inst;
 
-	if (mCols<mRows) 
+	if (mCols<mRows) //! 经度上的栅格数小于纬度上的栅格数
 		cout << "vertical" << endl;
 	else cout << "horisontal" << endl;
 	
-	if (mPlotType==SecondServer)
+	if (mPlotType==SecondServer) //! skip
 	{
 		Inst = new_Float2DArray(mRows,mCols);
 		Test2 = new_Float2DArray(mRows,mCols);
@@ -716,23 +716,23 @@ bool cPlotTask::CombineCov()
 	
 	for (i=0;i<mRows;i++)
 		for (j=0;j<mCols;j++)
-			mSupportPlot[i][j]=-9999;
+			mSupportPlot[i][j]=-9999; //!初始值
 	
-	if ((mPlotType==NumServers)||(mPlotType==NumInt))
+	if ((mPlotType==NumServers)||(mPlotType==NumInt)) //! skip
 	{
 		for (i=0;i<mRows;i++)
 			for (j=0;j<mCols;j++)
 				mPlot[i][j]=0;
 	}
-	else
+	else //! Cov, enter
 	{
 		for (i=0;i<mRows;i++)
 			for (j=0;j<mCols;j++)
-				mPlot[i][j]=-9999;
+				mPlot[i][j]=-9999; //! 初始值
 	}	
 
 	cout << "cPlotTask::CombineCov():  Before Order array;" << endl;
-	if (OrderAllPred()==0)
+	if (OrderAllPred()==0) //! 处理 重点1
 		return false;
 	
 	cout << "cPlotTask::CombineCov():  First UpdateActiveRasters;" << endl;
@@ -741,7 +741,7 @@ bool cPlotTask::CombineCov()
 		RangeSum += mFixedInsts[k].sRange;
 	Advance = RangeSum/mFixedInsts.size(); 
 	
-	UpdateActiveRasters(0,Advance+2);
+	UpdateActiveRasters(0,Advance+2); //! 重点2
 /*	for (k=0;k<mActiveRasters.size();k++)
 	{
 		cout << "	Top: " << mActiveRasters[k].sTop;
@@ -750,7 +750,7 @@ bool cPlotTask::CombineCov()
 	}
 */	
 	cout << "cPlotTask::CombineCov():  Before main loop;" << endl;	
-	if(mCols<mRows)  //vertical
+	if(mCols<mRows)  //! if vertical. 纬度栅格更多，行数多 //重点3
 	{
 		for(i=0; i<mRows; i++)
 		{
@@ -767,7 +767,7 @@ bool cPlotTask::CombineCov()
 					{
 						switch (mPlotType)
 						{
-							case Cov:
+							case Cov: //!
 								if (mActiveRasters[k].sRaster[ki][kj]>mRxMin)
 									mPlot[i][j]= max(mPlot[i][j],mActiveRasters[k].sRaster[ki][kj]);
 								break;
@@ -823,7 +823,7 @@ bool cPlotTask::CombineCov()
 				UpdateActiveRasters(i,Advance+2);
 		}//end for i
 	} // end if vertical
-	else //horisontal
+	else //!horisontal
 	{
 		for(j=0; j<mCols; j++)
 		{
@@ -898,7 +898,7 @@ bool cPlotTask::CombineCov()
 				cout << "  " << mPlot[i][j];
 			cout << endl;
 */		}//end for j
-	}// end horisontal
+	}//! end horisontal
 	
 	cout << " Almost end of cPlotTask::CombineCov()" << endl;
 	if (mPlotType!=Cov)
@@ -1546,9 +1546,9 @@ int cPlotTask::OrderAllPred()
 	cout << "In cPlotTask::OrderAllPred(). " << endl;
 
 	// Where prediction does exist update with the values from the prediction
-	for (i=0 ; i<mFixedInsts.size() ; i++)
+	for (i=0 ; i<mFixedInsts.size() ; i++) //! 区域内的基站数
 	{
-		if (mDownlink)
+		if (mDownlink) //! here 基于下行，配置参数
 		{
 			EIRP = mFixedInsts[i].sEIRP;
 			TxPower = mFixedInsts[i].sTxPower;
@@ -1593,7 +1593,7 @@ int cPlotTask::OrderAllPred()
 	// swapping of DEM, BTL and Ant rasters
 		
 	//Get Northern or Western most point of requested prediction
-	if (mCols<=mRows)
+	if (mCols<=mRows) //! vertical
 		for (i=0; i<mFixedInsts.size(); i++)
 		{
 			Edge.FromHere(mFixedInsts[i].sSitePos,mFixedInsts[i].sRange,0);
@@ -2746,7 +2746,7 @@ bool cPlotTask::GetDBinfo()
 					}
 				}
 			}
-			else
+			else	//! if size==0 
 			{
 				mFixedInsts.erase(mFixedInsts.begin()+i);
 				string err = "Warning, radio installation ";
