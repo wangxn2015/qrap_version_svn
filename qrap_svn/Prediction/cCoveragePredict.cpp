@@ -44,7 +44,7 @@ cCoveragePredict::cCoveragePredict()
 	mBTLloaded = false;
 	mAngleRes = 1; 	// in degees
 	mNumAngles = 360;
-	mNumRadialPoints = 2;
+	mNumRadialPoints = 2; //! 初始值为2
 	mDistRes=30;
 	mRadius=mNumRadialPoints*mDistRes;
 	mkFactor=1.33;
@@ -162,17 +162,17 @@ bool cCoveragePredict::CalculateRadialCoverage(bool AfterReceiver)
 	double Radius;
 	
 	mBTLloaded = mBTLPredict.GetBTL(mNumAngles, mNumRadialPoints, 
-									Radius, mDistRes);
+									Radius, mDistRes); // 360, 2, 120000, 90米
 	
-	mAngleRes = 360.0/mNumAngles;
+	mAngleRes = 360.0/mNumAngles; //分辨率 360/360
 	if (!mBTLloaded)
 		return false;
 	delete_Float2DArray(mRxLev);
-	mRxLev = new_Float2DArray(mNumAngles,mNumRadialPoints);
+	mRxLev = new_Float2DArray(mNumAngles,mNumRadialPoints); //! row 旋转数, col 
 
-	if (AfterReceiver)
+	if (AfterReceiver) //! true
 	{
-		if (mDownLink)
+		if (mDownLink) //true
 			LinkOtherGain = mEIRP + mMobileAntenna.mGain - mRxSysLoss;
 		else
 			LinkOtherGain = mEIRP + mFixedAntenna.mGain - mRxSysLoss;

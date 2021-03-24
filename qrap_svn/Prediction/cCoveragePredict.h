@@ -125,7 +125,7 @@ namespace Qrap
 										Float2DArray &Result, 
 										double res, int &rowa, int &cols); 
 			
-			cBTLPredict mBTLPredict;	///< Description
+			cBTLPredict mBTLPredict;	//!/< Description
 			
 		private:
 			// Note that the receive (Rx) and transmit (Tx) refer here to the T

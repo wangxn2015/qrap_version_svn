@@ -575,7 +575,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 					}
 					pqxx::result SiteLoc;
 					gDb.GetLastResult(SiteLoc);
-					if (SiteLoc.size() >0)
+					if (SiteLoc.size() >0) //! 选出四个方向的最大范围,放在两个西北、东南角对象中
 					{	
 						PointString = SiteLoc[0]["location"].c_str();
 						spacePos = PointString.find_first_of(' ');
@@ -864,18 +864,18 @@ void cConfirmPrediction::on_btnDo_clicked()
 				||(TrafficDist==mPlotType)||(CellCentroid==mPlotType))
  	{
 		Prediction.CombineCov(); //! 重要函数 
-		if (CellCentroid==mPlotType)
+		if (CellCentroid==mPlotType) //! skip
 		{
 			Prediction.CellCentriods();
 		}
-		else if (TrafficDist==mPlotType)
+		else if (TrafficDist==mPlotType)//! skip
 		{
 			Prediction.DetermineTrafficDist(true); // only do packet data
 //			Prediction.DetermineTrafficDist(false);
 		}
 		FileWritten = Prediction.WriteOutput(DEG); //! 看这里 输出
  	}
- 	else //! 不看
+ 	else //! skip
  	{
 		Prediction.InterferencePlot();
 		FileWritten = Prediction.WriteOutput(DEG);
@@ -901,7 +901,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 	bool getFromDB;
 	switch(mPlotType) // set up of the prediction's colour type
 	{
-		case Cov:		Plot = "Coverage";			getFromDB = true;	discrete = false;	break;
+		case Cov:		Plot = "Coverage";			getFromDB = true;	discrete = false;	break; //!
 		case PrimServer:	Plot = "Primary Server";		getFromDB = false;	discrete = false;	break;
 		case CellCentroid:	Plot = "Primary Server";		getFromDB = false;	discrete = false;	break;
 		case TrafficDist:	Plot = "Primary Server";		getFromDB = false;	discrete = false;	break;

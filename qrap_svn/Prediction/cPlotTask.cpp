@@ -129,7 +129,7 @@ bool cPlotTask::SetPlotTask(	ePlotType PlotType,
 	mNorthWest.Get(N,W);
 	mSouthEast.Get(S,E);
 	mSouthWest.Set(S,W);
-	mNorthEast.Set(N,E);
+	mNorthEast.Set(N,E); //! 4个角
 	mPlotResolution=PlotResolution;					
 	mMinAngleRes=MinimumAngularResolution;			
 	mNumAngles = (unsigned)(360.0/mMinAngleRes);
@@ -178,13 +178,13 @@ bool cPlotTask::SetPlotTask(	ePlotType PlotType,
 //					mSouthWest.Distance(mSouthEast));
 //	mRows = (int)ceil(mNorthWest.Distance(mSouthWest)/mPlotResolution);
 //	mCols = (int)ceil(WE/mPlotResolution);
-	mNSres = mPlotResolution*cDegResT;
+	mNSres = mPlotResolution*cDegResT; //! cDegResT=0.000833/90.0; 90米代表的经纬度
 	mEWres = mPlotResolution*cDegResT;
 	mRows = (unsigned)((N-S)/(mNSres)); //! 行： 纬度差/纬度分辨率 ----关联栅格
 	mCols = (unsigned)((E-W)/(mEWres)); //! 列
 	delete_Float2DArray(mPlot);
 	delete_Float2DArray(mSupportPlot);
-	mPlot = new_Float2DArray(mRows,mCols); //!
+	mPlot = new_Float2DArray(mRows,mCols); //! 按经纬度分辨率产生的矩阵
 	mSupportPlot = new_Float2DArray(mRows,mCols); //!
 	cGeoP MidNorth(N,(W+E)/2, DEG);
 	cGeoP Mid((N+S)/2,(E+W)/2,DEG);
@@ -698,7 +698,7 @@ bool cPlotTask::CombineCov()
 	Float2DArray Test2;
 	Float2DArray Inst;
 
-	if (mCols<mRows) //! 经度上的栅格数小于纬度上的栅格数
+	if (mCols<mRows) //! 经度上的栅格数小于纬度上的栅格数，呈高大于宽的数组
 		cout << "vertical" << endl;
 	else cout << "horisontal" << endl;
 	
@@ -739,7 +739,7 @@ bool cPlotTask::CombineCov()
 	double RangeSum=0;
 	for (k=0; k<mFixedInsts.size(); k++)
 		RangeSum += mFixedInsts[k].sRange;
-	Advance = RangeSum/mFixedInsts.size(); 
+	Advance = RangeSum/mFixedInsts.size(); //! 范围均值 单位为米
 	
 	UpdateActiveRasters(0,Advance+2); //! 重点2
 /*	for (k=0;k<mActiveRasters.size();k++)
@@ -1229,14 +1229,14 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 	double FrontEdge,DoneEdge,dummy,N,W,gLat,gLon;
 	Marker.SetGeoType(DEG);
 	mNorthWest.SetGeoType(DEG);
-	mNorthWest.Get(gLat,gLon); //! 西北位置的经纬度
+	mNorthWest.Get(gLat,gLon); //! 西北位置的经纬度 给了gLat，gLon 和 N，W
 	mNorthWest.Get(N,W);
 	
-	cout<<"mActiveRasters.size(): "<<mActiveRasters.size()<<endl;
+	cout<<"mActiveRasters.size(): "<<mActiveRasters.size()<<endl; //首次时为0
 
 	if (mCols<mRows) //! vertical
 	{	
-		for (i=0; i<mActiveRasters.size(); i++)
+		for (i=0; i<mActiveRasters.size(); i++) //首次时不进入该循环
 		{
 			if ((mActiveRasters[i].sTop+mActiveRasters[i].sNSsize)<(Here-2))
 			{
@@ -1251,8 +1251,8 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 //		Marker.Get(DoneEdge,dummy);
 //		Marker.FromHere(mNorthWest,(Here+Advance+1)*mPlotResolution,180);
 //		Marker.Get(FrontEdge,dummy);
-		DoneEdge = N - (Here)*mPlotResolution*0.00083333/90.0;
-		FrontEdge = N - (Here+Advance+1)*mPlotResolution*0.00083333/90.0;
+		DoneEdge = N - (Here)*mPlotResolution*0.00083333/90.0; //! here 为0 时， 此值为N
+		FrontEdge = N - (Here+Advance+1)*mPlotResolution*0.00083333/90.0; //! 向南一段距离，单位为纬度Degree
 	}
 	else //horisontal
 	{
@@ -1291,15 +1291,15 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 	string query, err;
 	char dummyS[33], numSiteStr[33];
 	int BTLkey;
-	bool AfterReceiver = (mUnits==dBW)||(mUnits==dBm)||(mUnits==dBuV);
+	bool AfterReceiver = (mUnits==dBW)||(mUnits==dBm)||(mUnits==dBuV); //! true
 	bool CovOrInt = ((mPlotType==Cov)||(mPlotType==PrimServer)||(mPlotType==CellCentroid)||
 			(mPlotType==TrafficDist)||(mPlotType==SecondServer)||(mPlotType==NumServers));
 	double kFactor = 1.33;
 	if (CovOrInt)
-		kFactor = mkFactorServ;
+		kFactor = mkFactorServ; //! 值被替换
 	else kFactor = mkFactorInt;
-	gcvt(mFixedInsts.size(),8,numSiteStr);
-	mNorthWest.Get(gLat,gLon);
+	gcvt(mFixedInsts.size(),8,numSiteStr); //! 转换为字符串
+	mNorthWest.Get(gLat,gLon); //! 西北角的经纬度
 
 	cout << "cPlotTask::UpdateActiveRasters. ";
 	cout << "FrontEdge = " << FrontEdge << "	DoneEdge = " <<  DoneEdge << endl;
@@ -1316,8 +1316,7 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 							<< "   BE: " <<  mFixedInsts[i].sBEdge << endl;
 			Loaded = false;
 			for (j=0;j<mActiveRasters.size();j++)
-				Loaded = Loaded || 
-					(mActiveRasters[j].sInstKey==mFixedInsts[i].sInstKey);
+				Loaded = Loaded || (mActiveRasters[j].sInstKey==mFixedInsts[i].sInstKey); //! 判断是否已经加载
 			if (!Loaded)
 			{
 				
@@ -1465,7 +1464,7 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 				err+= numSiteStr;
 //				QRAP_INFO(err.c_str());
 				cout << err << endl;
-				Prediction.CalculateRadialCoverage(AfterReceiver); 
+				Prediction.CalculateRadialCoverage(AfterReceiver);  //! 这里有计算 func(true)
 
 				Temp.FromHere(mFixedInsts[i].sSitePos,mFixedInsts[i].sRange,0.0);
 				Temp.SetGeoType(DEG);
@@ -1522,8 +1521,8 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 				}
 */				mActiveRasters.push_back(newRaster);
 			}
-		}
-	}
+		} //end of if
+	} //!各基站循环处理
 	cout << "#Rasters: " << mActiveRasters.size() << endl; 
 	return mActiveRasters.size();
 }
@@ -1598,7 +1597,7 @@ int cPlotTask::OrderAllPred()
 	if (mCols<=mRows) //! vertical
 		for (i=0; i<mFixedInsts.size(); i++)
 		{
-			Edge.FromHere(mFixedInsts[i].sSitePos,mFixedInsts[i].sRange,0); //! 0 表示正北方向？
+			Edge.FromHere(mFixedInsts[i].sSitePos,mFixedInsts[i].sRange,0); //! 0 表示正北方向？ distance in meter
 			Edge.Get(mFixedInsts[i].sFEdge, dummy); //! 此时获取纬度相关
 			Edge.FromHere(mFixedInsts[i].sSitePos,mFixedInsts[i].sRange,180);
 			Edge.Get(mFixedInsts[i].sBEdge, dummy);
