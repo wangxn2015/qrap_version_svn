@@ -54,7 +54,7 @@ cBTLPredict::cBTLPredict()
 	if(setting!="")
 		mBTLdir=setting;
 	else
-		mBTLdir="/home/maggie/Data/RasterData/BTL/";
+		mBTLdir="/home/justin/Data/RasterData/BTL/";
 	mBTLfile="Default.btl"; 
 }
 
@@ -105,14 +105,14 @@ int cBTLPredict::Check_and_SetBTL(	int SiteID,
 					(mDTMsource==DTMsource)&&
 					(mClutterSource==ClutterSource));
 	
-	if (!sameASthis)
+	if (!sameASthis) //! 不同 或不满足 则替换
 	{
 		mArraysPopulated = false;
 		mSiteID=SiteID;
 		mNumAngles = NumAngles;
 		mAngleRes=360.0/mNumAngles;
 		mDistanceRes=DistanceRes;	
-		mNumRadialPoints=(int)ceil(Radius/mDistanceRes);
+		mNumRadialPoints=(int)ceil(Radius/mDistanceRes); //! 半径 和距离分辨率
 		mRange=Radius;
 		mFrequency=Frequency;			
 		mkFactor=kFactor;			
@@ -121,7 +121,7 @@ int cBTLPredict::Check_and_SetBTL(	int SiteID,
 		mDTMsource= DTMsource;	
 		mClutterSource=ClutterSource;
 	}
-	else
+	else //!相同，则反向替换。 留意mArraysPopulated 和 mBTLid
 	{
 		Radius=mRange;
 		NumAngles = mNumAngles;
@@ -176,7 +176,7 @@ int cBTLPredict::Check_and_SetBTL(	int SiteID,
 		delete [] temp;
 		return -1;
 	} //if
-	else
+	else //! 
 	{
 		pqxx::result r;
 		
@@ -224,12 +224,12 @@ bool cBTLPredict::ReadBTL()
 	ifstream BTLbin, TLTbin;
 	delete_Float2DArray(mBTL);
 	delete_Float2DArray(mTilt);
-	mBTL = new_Float2DArray(mNumAngles,mNumRadialPoints);
+	mBTL = new_Float2DArray(mNumAngles,mNumRadialPoints); //! （角度数，距离数）
 	mTilt = new_Float2DArray(mNumAngles,mNumRadialPoints);
 	
 	int ll = mBTLfile.length();
 	unsigned i=ll-7;
-	mBTLfile[i]='B'; mBTLfile[i+1]='T'; mBTLfile[i+2]='L'; 
+	mBTLfile[i]='B'; mBTLfile[i+1]='T'; mBTLfile[i+2]='L'; //!BTL文件
 	cout << mBTLfile << endl;
 	BTLbin.open(mBTLfile.c_str(), ios::in | ios::binary);
 	if (!BTLbin)
@@ -240,14 +240,14 @@ bool cBTLPredict::ReadBTL()
 		QRAP_ERROR(err.c_str());
 		return false;
 	}
-	else
+	else //! 打开该文件
 	{
-		for (i=0; i<mNumAngles; i++)
+		for (i=0; i<mNumAngles; i++) //! 逐行读取到mBTL 矩阵
 			BTLbin.read((char *)mBTL[i],mNumRadialPoints*sizeof(float));
 		BTLbin.close();
 	}
 	i = ll-7;
-	mBTLfile[i]='T'; mBTLfile[i+1]='L'; mBTLfile[i+2]='T';
+	mBTLfile[i]='T'; mBTLfile[i+1]='L'; mBTLfile[i+2]='T'; //!TLT 文件
 	cout << mBTLfile << endl;
 	TLTbin.open(mBTLfile.c_str(), ios::in | ios::binary);
 	if (!TLTbin)
@@ -258,7 +258,7 @@ bool cBTLPredict::ReadBTL()
 		QRAP_ERROR(err.c_str());
 	    return false;
 	}
-	else
+	else //!打开 读取到 mTilt 矩阵中
 	{
 		for (i=0; i<mNumAngles; i++)
 			TLTbin.read((char *)mTilt[i],mNumRadialPoints*sizeof(float));
@@ -411,7 +411,7 @@ int cBTLPredict::PredictBTL(unsigned NumAngles, unsigned NumDistance,
 	unsigned i;
 	int j;
 	cPathLossPredictor PathLoss;
-	if ((UseClutter)&&(ClutterClassGroup>0))
+	if ((UseClutter)&&(ClutterClassGroup>0)) //!skip
 		PathLoss.mClutter.GetFromDatabase(ClutterClassGroup);
 	mNumAngles=NumAngles;
 	mAngleRes=360.0/(double)mNumAngles;

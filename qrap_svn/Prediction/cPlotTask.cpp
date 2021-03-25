@@ -756,7 +756,7 @@ bool cPlotTask::CombineCov()
 		{
 			for (j=0; j<mCols; j++)
 			{
-				for (k=0;k<mActiveRasters.size();k++)
+				for (k=0;k<mActiveRasters.size();k++) //!每个的覆盖图层
 				{
 					ki = i - mActiveRasters[k].sTop;
 					kj = j - mActiveRasters[k].sLeft;
@@ -1236,7 +1236,7 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 
 	if (mCols<mRows) //! vertical
 	{	
-		for (i=0; i<mActiveRasters.size(); i++) //首次时不进入该循环
+		for (i=0; i<mActiveRasters.size(); i++) //!首次时不进入该循环
 		{
 			if ((mActiveRasters[i].sTop+mActiveRasters[i].sNSsize)<(Here-2))
 			{
@@ -1278,8 +1278,8 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 	bool Loaded=false;
 	cGeoP Corner, Temp;
 	double pLat, pLon;
-	cCoveragePredict Prediction;
-	tSignalRaster newRaster;
+	cCoveragePredict Prediction; //! 此处又一个prediction
+	tSignalRaster newRaster; //! 栅格对象
 	int FixedAntPatternKey, MobileAntPatternKey;
 	double FixedAzimuth, FixedMechTilt;
 	double EIRP, TxPower, TxSysLoss, RxSysLoss, RxSens;
@@ -1346,6 +1346,7 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 					RxSens = mFixedInsts[i].sRxSens;
 				}
 				if (!CovOrInt) mFixedInsts[i].sRange=mMaxRange; 
+				//! 读取和设置一些值
 				BTLkey = Prediction.SetCommunicationLink(mFixedInsts[i].sSiteID,
 										mDownlink, EIRP, TxPower, TxSysLoss, 
 										RxSysLoss, RxSens,
@@ -1358,8 +1359,7 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 				cout << " In cPlotTask::UpdateActiveRasters. BTLkey = " << BTLkey << endl;
 
 				if (BTLkey==-1)
-				{
-	
+				{	
 //					err = "Loading DEM (and Clutter) Data for Site: ";
 					err = "Performing Basic Transmission Loss Calculations for Site: ";
 					gcvt(mFixedInsts[i].sSiteID,8,dummyS);
@@ -1379,11 +1379,12 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 					tempAngRes = 360.0/tempNumAngles;
 					tempNumDist = (int)(mFixedInsts[i].sRange/tempPlotRes);
 					Float2DArray DTM;
-					DTM = new_Float2DArray(tempNumAngles,tempNumDist);
+					DTM = new_Float2DArray(tempNumAngles,tempNumDist); //! 数组 （角度数，距离点数）
 					Float2DArray Clutter;
 					cout << "NA: " << tempNumAngles << "	ND: " << tempNumDist << endl; 
 					if (mUseClutter) //! skip
 						Clutter = new_Float2DArray(tempNumAngles,tempNumDist);
+					//!	DTM中包含了每个基站周边的高度
 					mDEM.GetForCoverage(false, mFixedInsts[i].sSitePos, 
 									mFixedInsts[i].sRange, tempPlotRes, tempAngRes,
 									tempNumAngles, tempNumDist, DTM);
@@ -1414,6 +1415,7 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 //					QRAP_INFO(err.c_str());
 					cout << err << endl;
 					Prediction.mBTLPredict.SetMaxPathLoss(mMaxPathLoss);
+					//! 返回storeBTL
 					BTLkey = Prediction.mBTLPredict.PredictBTL(tempNumAngles, tempNumDist, tempPlotRes, 
 										DTM, mUseClutter, mClutterClassGroup, Clutter);
 					mFixedInsts[i].sRange = Prediction.mBTLPredict.GetRange();
@@ -1464,6 +1466,7 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 				err+= numSiteStr;
 //				QRAP_INFO(err.c_str());
 				cout << err << endl;
+				//!  CalculateRadialCoverage
 				Prediction.CalculateRadialCoverage(AfterReceiver);  //! 这里有计算 func(true)
 
 				Temp.FromHere(mFixedInsts[i].sSitePos,mFixedInsts[i].sRange,0.0);
@@ -1502,7 +1505,7 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 //					Corner.FromHere(Temp,newRaster.sTop*mPlotResolution,180);
 //				else Corner.FromHere(Temp,-newRaster.sTop*mPlotResolution,0);
 //				newRaster.sSize = (int)ceil(2.0*mFixedInsts[i].sRange/mPlotResolution)+2;
-				
+				//!
 				newRaster.sInstKey = mFixedInsts[i].sInstKey;
 				newRaster.sFreqList.clear();
 				cout << "NumFreq:  " << mFixedInsts[i].sFreqList.size() << endl;
@@ -1511,6 +1514,7 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 					newRaster.sFreqList.push_back(mFixedInsts[i].sFreqList[ii]);
 				}
 				newRaster.sRaster = new_Float2DArray(newRaster.sNSsize,newRaster.sEWsize);
+				//!
 				Prediction.InterpolateToSquare(mFixedInsts[i].sSitePos, Corner, newRaster.sRaster, 
 							mPlotResolution, newRaster.sNSsize,newRaster.sEWsize);
 /*				for (unsigned ii = 0; ii< newRaster.sNSsize; ii++)

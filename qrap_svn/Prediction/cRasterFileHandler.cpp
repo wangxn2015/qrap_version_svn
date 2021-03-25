@@ -456,11 +456,11 @@ bool cRasterFileHandler::GetForCoverage(bool Fixed, cGeoP SitePos, double &Range
 	string LoadedRastersList="'";
 	
 	cout << "In cRasterFileHandler::GetForCoverage mType =     " << mType << endl;
-	if (!Fixed)
+	if (!Fixed)  //! fixed = false;
 	{
-		AngRes = (double)360.0/(double)NumAngles;
-		NumAngles = (int)floor(360.0/AngRes+0.5);
-		AngRes = (double)360.0/(double)NumAngles;
+		AngRes = (double)360.0/(double)NumAngles; //!分辨率
+		NumAngles = (int)floor(360.0/AngRes+0.5); //!角度数
+		AngRes = (double)360.0/(double)NumAngles; //!角度分辨率
 	}
 	else AngRes = 360.0/NumAngles;
 	
@@ -480,7 +480,7 @@ bool cRasterFileHandler::GetForCoverage(bool Fixed, cGeoP SitePos, double &Range
 
 	for (j=0; j<12; j++) //Check for preferred files for all the edges.
 	{
-		edge.FromHere(SitePos,Range,j*30);
+		edge.FromHere(SitePos,Range,j*30); //基站地址对应半径和旋转方向
 		IsInSet = false;
 		LoadedRastersList="'";
 		for (i=0; i<mCurrentRasters.size(); i++)
@@ -574,7 +574,7 @@ bool cRasterFileHandler::GetForCoverage(bool Fixed, cGeoP SitePos, double &Range
 	{
 		for(j=1; j<NumDistance; j++)
 		{
-			point.FromHere(SitePos,j*DistRes,i*AngRes);
+			point.FromHere(SitePos,j*DistRes,i*AngRes); //! 得到Point
 			if (!Preferred)
 			{
 				ToSwitch=point.Between(mPreferedSetNW,mPreferedSetSE);
@@ -585,7 +585,7 @@ bool cRasterFileHandler::GetForCoverage(bool Fixed, cGeoP SitePos, double &Range
 				ToSwitch=false;
 			}
 
-			Data[i][j] = mCurrentRasters[Current]->GetValue(point,mSampleMethod);
+			Data[i][j] = mCurrentRasters[Current]->GetValue(point,mSampleMethod); //! point处的值
 			if ((Data[i][j] <-440.0)||(Data[i][j] >8880)||(Data[i][j]==OUTOFRASTER))
 				Available=point.Between(mAvailableSetNW,mAvailableSetSE);
 
