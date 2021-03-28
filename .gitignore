@@ -1,6 +1,10 @@
 qrap_svn/.vscode
 desktop.ini
 build/
+qrap_svn/CMakeLists.txt.user
+qrap_svn/DataBase/*.o
+qrap_svn/DataBase/qrap.log
+qrap_svn/DataBase/qraputil
 
 
 

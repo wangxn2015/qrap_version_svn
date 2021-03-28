@@ -1,23 +1,24 @@
 #
 #	Note: 	All usernames are:postgres
-#		All passwords are:postqrap
+#		All passwords are:postqrap //change passwd to postgres
 #		To change the postgres password,edit the following in terminal:
 #			
 echo "changing passwd"
 psql -c "alter user postgres password 'postqrap'"
+
 
 # Getting rid of the old and creating the new
 echo "refreshing database"
 psql -c "DROP DATABASE qrap"
 psql -c "DROP ROLE engine"
 psql -c "CREATE DATABASE qrap"
-pause
+read -p 'press any key to continue' var
 # PostGIS stuff
 echo "activiting postgis"
 # find the following *.sql files on your machine and change PostGISDir accordingly.
 # Hint: Look under the "installed files" in Synaptic properties
 # for postgres-$.$-postgis to see where the files are stored
-PostGISDir=/usr/share/postgresql/10/contrib/postgis-2.4/
+PostGISDir=/usr/share/postgresql/9.5/contrib/postgis-2.2/
 createlang plpgsql -d qrap
 echo "running postgis.sql"
 psql qrap -f ${PostGISDir}postgis.sql
