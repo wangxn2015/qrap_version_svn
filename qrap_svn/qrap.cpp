@@ -142,7 +142,7 @@ void QRap::initGui()
   	mToolBarPointer->addAction(mQActionPointer);
 //  	mToolBarPointer->addAction(mImportExportAction);
 //  	mToolBarPointer->addAction(mHelpAction); 
-
+    cout<<"reduce icon"<<endl;
 	mLoaded = true; 
  
   	cout << "VOOR DataBase Connect" << endl;
