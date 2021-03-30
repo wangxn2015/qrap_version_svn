@@ -529,7 +529,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 	radioRadius->setEnabled(false);
 
 	mRadInst.clear(); 	//!	QList<unsigned> mRadInst; 存储基站的id
-	mRanges.clear(); 	//!	QList<double> mRanges;
+    mRanges.clear(); 	//!	QList<double> mRanges; unit is kilometer
 	double North,West,South,East;
 	NorthWestCorner.SetGeoType(DEG);	//! 西北角 //setPoints时获得值
 	SouthEastCorner.SetGeoType(DEG);	//! 东南角
@@ -542,14 +542,14 @@ void cConfirmPrediction::on_btnDo_clicked()
 		{
 			void *Wid = tableWidget->cellWidget(i,0);
 			QCheckBox *get =(QCheckBox*) Wid;
-			if (get->isChecked()) //! 是否选中该站
+            if (get->isChecked()) //! if选中该站
 			{
 				bool ok;
 				double Rad =tableWidget->item(i,2)->text().toDouble(&ok);//! 半径 e.g. 120
 				mRadInst.push_back((unsigned)tableWidget->item(i,4)->text().toDouble()); //! radio installation id
 				if ((plotResolutionSpinBox->value()/1000 <=Rad) && ok)
 				{
-					mRanges.push_back(tableWidget->item(i,2)->text().toDouble());
+                    mRanges.push_back(tableWidget->item(i,2)->text().toDouble()); //kilometer
 				}
 				else
 				{
@@ -588,7 +588,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 						East = max(East,Lon);
 						West = min(West,Lon);
 						cGeoP NewPoint;
-						NewPoint.FromHere(Temp,Radius,0); //! 半径单位为m, 第三个参数为0
+                        NewPoint.FromHere(Temp,Radius,0); //! 半径单位为m, 第三个参数为0, point to north or one specific direction
 						Temp.Display();
 						NewPoint.Display();
 					

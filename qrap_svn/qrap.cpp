@@ -453,8 +453,8 @@ void QRap::ReceivedRightPoint(QgsPoint &Point)
 		if (mMouseType == AREA) //! 预测处理
 		{
 			mPoints.append(Point);
-			mRubberBand->addPoint(Point);
-			DesRubberBand();
+            mRubberBand->addPoint(Point); // the polygon drawing by mouse
+            DesRubberBand(); // destroy the polygon area when choosing area since it's finished
 			PerformPrediction(); //!
 			mQGisIface->mapCanvas()->setCursor(Qt::OpenHandCursor);
 			mMouseType = CLEAN;
