@@ -81,7 +81,8 @@ void cLoadThread::Set(unsigned Source,
 		mFileType = FileType;
 		mCut = cut;
 		mInterpolate=interpolate;
-		mFileType=Rule;
+//		mFileType=Rule; commented by justin 2021.03.30
+        qDebug()<<"mFileType JT= "<<mFileType<<endl;
 	}
 	catch(const exception &e) 
 	{
@@ -106,14 +107,17 @@ void cLoadThread::run()
 	    		if (mFileType == "BIN" || mFileType == "BINFILE")
 	    		{
 	    			Type = BINFILE;
+                    cout<<"Bin Type JT= "<<Type<<endl;
 	    		}
 	    		else if (mFileType == "GDAL" || mFileType == "GDALFILE")
 	    		{
 	    			Type = GDALFILE;
+                    cout<<"GDAL Type JT= "<<Type<<endl;
 	    		}
 	    		else
 	    		{
 	    			Type == GDALFILE;
+                    cout<<"GDAL Type2 JT= "<<Type<<endl;
 	    		}
 	   	 	while( it != mFiles.end() ) 
 	    		{

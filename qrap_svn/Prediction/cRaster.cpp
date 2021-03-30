@@ -296,7 +296,7 @@ bool cRaster::ReadFile(string Directory,
 
 	if (filetype == BINFILE) // binary file
 	{
-//		cout << endl << "In bool cRaster::ReadFile(...) filetype == BINFILE. First Try" << endl;
+        cout << endl << "In bool cRaster::ReadFile(...) filetype == BINFILE. First Try" << endl;
 		cBIN MyRaster;
 		msgs = MyRaster.openFile(mRaster, Directory, FileName, mNW,mSE, 
 				mProjType, mProj4, mRows, mCols, mNSres, mEWres,mMin,mMax,mCentMer);
@@ -304,7 +304,7 @@ bool cRaster::ReadFile(string Directory,
 	}
 	else if (filetype == GDALFILE) // GDAL file 
 	{
-//		cout << endl << "In bool cRaster::ReadFile(...) filetype == GDALFILE . First try." << endl;
+        cout << endl << "In bool cRaster::ReadFile(...) filetype == GDALFILE . First try." << endl;
 		cGDAL MyRaster;
 		msgs = MyRaster.openFile(mRaster,Directory, FileName, mNW,mSE, 
 				mProjType,mProj4,mRows, mCols, mNSres, mEWres,mMin,mMax,mCentMer);

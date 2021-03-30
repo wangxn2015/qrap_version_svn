@@ -130,19 +130,19 @@ void QRap::initGui()
   	mToolBarPointer->addAction(mSiteAction);
   	mToolBarPointer->addAction(mSelectSiteAction);
   	mToolBarPointer->addAction(mDeleteSiteAction);
-  	mToolBarPointer->addAction(mLinkAction);
-  	mToolBarPointer->addAction(mSelectLinkAction);
-  	mToolBarPointer->addAction(mDeleteLinkAction);
+//  	mToolBarPointer->addAction(mLinkAction);
+//  	mToolBarPointer->addAction(mSelectLinkAction);
+//  	mToolBarPointer->addAction(mDeleteLinkAction);
   	mToolBarPointer->addAction(mRadioAction);
-	mToolBarPointer->addAction(mMultiLinkAction);
-	mToolBarPointer->addAction(mMeasAnalysisAction);
-  	mToolBarPointer->addAction(mSpectralAction);
-        mToolBarPointer->addAction(mOptimisationAction);
+//	mToolBarPointer->addAction(mMultiLinkAction);
+//	mToolBarPointer->addAction(mMeasAnalysisAction);
+//  	mToolBarPointer->addAction(mSpectralAction);
+//        mToolBarPointer->addAction(mOptimisationAction);
   	mToolBarPointer->addAction(mPreferencesAction);
   	mToolBarPointer->addAction(mQActionPointer);
 //  	mToolBarPointer->addAction(mImportExportAction);
 //  	mToolBarPointer->addAction(mHelpAction); 
-
+    cout<<"reduce icon by justin"<<endl;
 	mLoaded = true; 
  
   	cout << "VOOR DataBase Connect" << endl;
@@ -453,8 +453,8 @@ void QRap::ReceivedRightPoint(QgsPoint &Point)
 		if (mMouseType == AREA) //! 预测处理
 		{
 			mPoints.append(Point);
-			mRubberBand->addPoint(Point);
-			DesRubberBand();
+            mRubberBand->addPoint(Point); // the polygon drawing by mouse
+            DesRubberBand(); // destroy the polygon area when choosing area since it's finished
 			PerformPrediction(); //!
 			mQGisIface->mapCanvas()->setCursor(Qt::OpenHandCursor);
 			mMouseType = CLEAN;

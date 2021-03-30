@@ -29,6 +29,7 @@
 
 
 #include "cLoadFiles.h"
+#include <stdio.h>
 //***********************************************
 cLoadFiles::cLoadFiles():QWidget()
 {
@@ -173,6 +174,8 @@ void cLoadFiles::on_pushButtonImport_clicked()
 			{
 				mFileType = "GDALFILE";
 			}
+            qDebug()<<"mFileType= "<<mFileType<<endl;
+
 			if (Projection->text() == "DEG")
 			{
 				mType = DEG;
