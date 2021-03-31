@@ -50,7 +50,7 @@
 using namespace std;
 using namespace Qrap;
 
-MainWindow* Qrap::gMainWindow;
+MainWindow* Qrap::gMainWindow; //! attention here for error handling system
 
 //****************************************************************************
 MainWindow::MainWindow (QWidget* parent, Qt::WFlags fl)
@@ -58,7 +58,7 @@ MainWindow::MainWindow (QWidget* parent, Qt::WFlags fl)
 	
 	
 	// Setup the QRAP error handling system
-	QRAP_SET_ALERT_CALLBACK((AlertCallback)(Qrap::MainWindowAlert));
+    QRAP_SET_ALERT_CALLBACK((AlertCallback)(Qrap::MainWindowAlert));//! what's this?
 	
 	CreateActions();
 	CreateMenus();
@@ -74,15 +74,15 @@ MainWindow::MainWindow (QWidget* parent, Qt::WFlags fl)
 	setWindowIcon(QIcon(":images/logo_icon.png"));
 	
 	// Check if there are any system preferences
-	if(gDb.GetSetting("location")=="")
+    if(gDb.GetSetting("location")=="") //if there is no configration yet //wxn
 	{
 //		gDb.SetSetting("location","DD.dddd");
+        gDb.SetSetting("location","DD:MM:SS");
 		gDb.SetSetting("sensitivity","dBm");
 		gDb.SetSetting("power","dBm");
 		gDb.SetSetting("eirp","dBm");
 		gDb.SetSetting("impedence","50");
 		gDb.SetSetting("predictioneirp","explicit");
-		gDb.SetSetting("location","DD:MM:SS");
 		gDb.SetSetting("mode","normal");
 		gDb.SetSetting("DisplayUnits","dBm");
 		gDb.SetSetting("TechType","0:NULL");
@@ -243,43 +243,45 @@ void MainWindow::About ()
 // Create all the menu and toolbar actions
 void MainWindow::CreateActions ()
 {
-	connectAct = new QAction(QIcon(":/images/connect.png"), tr("&Synchronise"), this);
-	connectAct->setShortcut(tr("Ctrl+S"));
-	connectAct->setStatusTip(tr("Synchronise to the main QRAP database"));
-	connect(connectAct, SIGNAL(triggered()), this, SLOT(NewConnection()));
-	
+//    wxn
+//	connectAct = new QAction(QIcon(":/images/connect.png"), tr("&Synchronise"), this);
+//	connectAct->setShortcut(tr("Ctrl+S"));
+//	connectAct->setStatusTip(tr("Synchronise to the main QRAP database"));
+//    connect(connectAct, SIGNAL(triggered()), this, SLOT(NewConnection())); // NewConnection is empty for now
+
+    //exclude this wxn
 /*	loginAct = new QAction(tr("L&ogin"),this);
 	loginAct->setShortcut(tr("Ctrl+O"));
 	loginAct->setStatusTip(tr("Authenticate the Qrap user"));
 	connect(loginAct,SIGNAL(triggered()),this,SLOT(QrapDatabaseLogin()));*/
 
-	exitAct = new QAction(tr("E&xit"), this);
-	exitAct->setShortcut(tr("Ctrl+Q"));
-	exitAct->setStatusTip(tr("Exit the application"));
-	connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
+//	exitAct = new QAction(tr("E&xit"), this);
+//	exitAct->setShortcut(tr("Ctrl+Q"));
+//	exitAct->setStatusTip(tr("Exit the application"));
+//	connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
-	cutAct = new QAction(QIcon(":/images/cut.png"), tr("Cu&t"), this);
-	cutAct->setShortcut(tr("Ctrl+X"));
-	cutAct->setStatusTip(tr("Cut the current selection's contents to the "
-                            "clipboard"));
+//	cutAct = new QAction(QIcon(":/images/cut.png"), tr("Cu&t"), this);
+//	cutAct->setShortcut(tr("Ctrl+X"));
+//	cutAct->setStatusTip(tr("Cut the current selection's contents to the "
+//                            "clipboard"));
 
-	copyAct = new QAction(QIcon(":/images/copy.png"), tr("&Copy"), this);
-	copyAct->setShortcut(tr("Ctrl+C"));
-	copyAct->setStatusTip(tr("Copy the current selection's contents to the "
-                             "clipboard"));
+//	copyAct = new QAction(QIcon(":/images/copy.png"), tr("&Copy"), this);
+//	copyAct->setShortcut(tr("Ctrl+C"));
+//	copyAct->setStatusTip(tr("Copy the current selection's contents to the "
+//                             "clipboard"));
 
-	pasteAct = new QAction(QIcon(":/images/paste.png"), tr("&Paste"), this);
-	pasteAct->setShortcut(tr("Ctrl+V"));
-	pasteAct->setStatusTip(tr("Paste the clipboard's contents into the current "
-                              "selection"));
+//	pasteAct = new QAction(QIcon(":/images/paste.png"), tr("&Paste"), this);
+//	pasteAct->setShortcut(tr("Ctrl+V"));
+//	pasteAct->setStatusTip(tr("Paste the clipboard's contents into the current "
+//                              "selection"));
 
-	aboutAct = new QAction(tr("&About"), this);
-	aboutAct->setStatusTip(tr("Show the application's About box"));
-	connect(aboutAct, SIGNAL(triggered()), this, SLOT(About()));
+//	aboutAct = new QAction(tr("&About"), this);
+//	aboutAct->setStatusTip(tr("Show the application's About box"));
+//	connect(aboutAct, SIGNAL(triggered()), this, SLOT(About()));
 
-	aboutQtAct = new QAction(tr("About &Qt"), this);
-	aboutQtAct->setStatusTip(tr("Show the Qt library's About box"));
-	connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+//	aboutQtAct = new QAction(tr("About &Qt"), this);
+//	aboutQtAct->setStatusTip(tr("Show the Qt library's About box"));
+//	connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 	
 	insertRowAct = new QAction(QIcon(":images/add.png"),tr("&Insert"),this);
 	insertRowAct->setText("Insert");
@@ -312,22 +314,22 @@ void MainWindow::CreateActions ()
 	rasterImportAct = new QAction(tr("Raster Files"),this); //!
 	rasterImportAct->setStatusTip(tr("Import raster files."));
 	connect(rasterImportAct,SIGNAL(triggered()),this,SLOT(ImportRasters()));
-
-	measImportAct = new QAction(tr("Measurements"),this);
-	measImportAct->setStatusTip(tr("Import Measurements in various formats to the database"));
-	connect(measImportAct,SIGNAL(triggered()),this,SLOT(ImportMeasurements()));
+//wxn
+//	measImportAct = new QAction(tr("Measurements"),this);
+//	measImportAct->setStatusTip(tr("Import Measurements in various formats to the database"));
+//	connect(measImportAct,SIGNAL(triggered()),this,SLOT(ImportMeasurements()));
 	
-	searchAct = new QAction(QIcon(":images/find.png"),tr("Search"),this);
-	searchAct->setStatusTip(tr("Search for values in the current table"));
-	searchAct->setShortcut(tr("Ctrl+F"));
+//	searchAct = new QAction(QIcon(":images/find.png"),tr("Search"),this);
+//	searchAct->setStatusTip(tr("Search for values in the current table"));
+//	searchAct->setShortcut(tr("Ctrl+F"));
 	
-	csvExportAct = new QAction(tr("Export to &CSV"), this);
-	csvExportAct->setStatusTip(tr("Export the current table, multiple tables or an SQL command's results to a CSV file."));
-	connect(csvExportAct, SIGNAL(triggered()), this, SLOT(ExportCsv()));
+//	csvExportAct = new QAction(tr("Export to &CSV"), this);
+//	csvExportAct->setStatusTip(tr("Export the current table, multiple tables or an SQL command's results to a CSV file."));
+//	connect(csvExportAct, SIGNAL(triggered()), this, SLOT(ExportCsv()));
 	
-	csvImportAct = new QAction(tr("Import from &CSV"), this);
-	csvImportAct->setStatusTip(tr("Import from data from CSV files into the database."));
-	connect(csvImportAct, SIGNAL(triggered()), this, SLOT(ImportCsv()));
+//	csvImportAct = new QAction(tr("Import from &CSV"), this);
+//	csvImportAct->setStatusTip(tr("Import from data from CSV files into the database."));
+//	connect(csvImportAct, SIGNAL(triggered()), this, SLOT(ImportCsv()));
 
 #ifdef QRAP_SERVER_EDITION
 	adminAct = new QAction(tr("A&dmin"),this);
@@ -341,20 +343,28 @@ void MainWindow::CreateActions ()
 // Creates the menus for the Qrap system
 void MainWindow::CreateMenus ()
 {
-	fileMenu = menuBar()->addMenu(tr("&File"));
+    //file
+    //  --Import
+    //edit
+    //  --reloadTableAct;showAllAct;insertRowAct;deleteRowAct;preferencesAct
+
+    fileMenu = menuBar()->addMenu(tr("&File")); //wxn
 // 	fileMenu->addAction(loginAct);
-	fileMenu->addAction(connectAct);
+//	fileMenu->addAction(connectAct);    //wxn
+//    fileMenu->addSeparator();     //wxn
+//	fileMenu->addAction(exitAct);    //wxn
+
+    //-------------------------
 	importMenu = fileMenu->addMenu(tr("&Import"));
 	importMenu->addAction(antennaImportAct);
 	importMenu->addAction(rasterImportAct); //!
-	importMenu->addAction(csvImportAct);
-	importMenu->addAction(measImportAct);
+//	importMenu->addAction(csvImportAct);
+//	importMenu->addAction(measImportAct);
 	
-	exportMenu = fileMenu->addMenu(tr("&Export"));
-	exportMenu->addAction(csvExportAct);
+    //wxn
+//	exportMenu = fileMenu->addMenu(tr("&Export"));
+//	exportMenu->addAction(csvExportAct);
 	
-	fileMenu->addSeparator();
-	fileMenu->addAction(exitAct);
 
 	editMenu = menuBar()->addMenu(tr("&Edit"));
 	editMenu->addAction(reloadTableAct);
@@ -362,11 +372,11 @@ void MainWindow::CreateMenus ()
 	editMenu->addAction(insertRowAct);
 	editMenu->addAction(deleteRowAct);
 	editMenu->addSeparator();
-	
-	editMenu->addAction(cutAct);
-	editMenu->addAction(copyAct);
-	editMenu->addAction(pasteAct);
-	editMenu->addSeparator();
+//wxn
+//	editMenu->addAction(cutAct);
+//	editMenu->addAction(copyAct);
+//	editMenu->addAction(pasteAct);
+//	editMenu->addSeparator();
 	editMenu->addAction(preferencesAct);
 	
 #ifdef QRAP_SERVER_EDITION
@@ -375,25 +385,26 @@ void MainWindow::CreateMenus ()
 
 	menuBar()->addSeparator();
 
-	helpMenu = menuBar()->addMenu(tr("&Help"));
-	helpMenu->addAction(aboutAct);
-	helpMenu->addAction(aboutQtAct);
+//	helpMenu = menuBar()->addMenu(tr("&Help"));
+//	helpMenu->addAction(aboutAct);
+//	helpMenu->addAction(aboutQtAct);
 }
 
 //************************************************************
 // Creates the toolbar for the Qrap program
 void MainWindow::CreateToolBars ()
 {
-	fileToolBar = addToolBar(tr("File"));
-	fileToolBar->addAction(connectAct);
+//wxn
+//	fileToolBar = addToolBar(tr("File"));
+//	fileToolBar->addAction(connectAct);
 
-	editToolBar = addToolBar(tr("Edit"));
-	editToolBar->addAction(cutAct);
-	editToolBar->addAction(copyAct);
-	editToolBar->addAction(pasteAct);
+//	editToolBar = addToolBar(tr("Edit"));
+//	editToolBar->addAction(cutAct);
+//	editToolBar->addAction(copyAct);
+//	editToolBar->addAction(pasteAct);
 	
 	dbToolBar = addToolBar(tr("Database"));
-	dbToolBar->addAction(searchAct);
+//	dbToolBar->addAction(searchAct);
 	dbToolBar->addAction(reloadTableAct);
 	dbToolBar->addAction(showAllAct);
 	dbToolBar->addAction(insertRowAct);
@@ -411,8 +422,8 @@ void MainWindow::CreateStatusBar ()
 // Reads the previous windows size settings from a file
 void MainWindow::ReadSettings ()
 {
-	QSettings settings("Qrap", "Qrap Database Interface");
-	QPoint pos = settings.value("pos", QPoint(100,100)).toPoint();
+    QSettings settings("Qrap", "Qrap Database Interface"); //organization, app
+    QPoint pos = settings.value("pos", QPoint(100,100)).toPoint();
 	QSize size = settings.value("size", QSize(950, 1900)).toSize();
 	resize(size);
 	move(pos);

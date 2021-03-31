@@ -88,7 +88,7 @@ public:
     {
         if (ConfirmPrediction->objectName().isEmpty())
             ConfirmPrediction->setObjectName(QString::fromUtf8("ConfirmPrediction"));
-        ConfirmPrediction->resize(1011, 607);
+        ConfirmPrediction->resize(1038, 607);
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
