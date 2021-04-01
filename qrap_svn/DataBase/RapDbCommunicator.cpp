@@ -204,17 +204,17 @@ void RapDbCommunicator::UpdateDatabase(QTableWidget* table,
 
 //************************************************************************
 // Load the table headers
-void RapDbCommunicator::LoadTableHeaders(QTableWidget* table,
-					 QString tableName,
-				         QString keyField,
+void RapDbCommunicator::LoadTableHeaders(QTableWidget* table,   //it.val ()  corresponding tableWidget
+                     QString tableName,     //it.key() will return 'site','sitedescription' etc.
+                         QString keyField, //site id
 					 bool view)
 {	
-	int size = dbs[tableName.toStdString()].mFields.size();
+    int size = dbs[tableName.toStdString()].mFields.size(); //number of fields for a table
 	int j = 0;
-	DbFieldMap::const_iterator it;
+    DbFieldMap::const_iterator it;  //! typedef std::map<std::string, DbField>    DbFieldMap;
 	
 	// Load the table headers
-	for( int i=0 ; i<size ; i++)
+    for( int i=0 ; i<size ; i++)    //! typedef std::map<std::string, DbField>    DbFieldMap;
 	{
 		it = gDb.GetFieldWithOrder(tableName.toStdString(),i);
 		
@@ -398,17 +398,15 @@ void RapDbCommunicator::GetCellDataType(std::string tableName,
 
 //*************************************************************************
 // Populate the selected table
-//赋值的参数为(mCurrentTable->GetTable(),"antennadevice","",-1,false)
-void RapDbCommunicator::PopulateTable (QTableWidget* table,
-				       const QString& tableName,
-				       const QString& keyField,	//""
-				       int currentId,			//-1
-				       bool site,				//false
-				       bool view,
-				       string search)
-					  	// bool site = false,
-					    // bool view = false,
-					    // std::string search = ""
+//赋值的参数为(mCurrentTable->GetTable(),"antennadevice","",-1,false) or (mCurrentTable->GetTable(),"site","id",-1,true,true)
+void RapDbCommunicator::PopulateTable (QTableWidget* table,          //     |   mCurrentTable->GetTable()
+                       const QString& tableName,//"antennadevice"           |   "site"
+                       const QString& keyField,	//""                        |   "id"
+                       int currentId,			//-1                        |   -1
+                       bool site,				// bool site = false,       |   true
+                       bool view,               // bool view = false,       |   true
+                       string search)           // std::string search = ""  |
+
 {
 	cout << "Entering RapDbCommunicator::PopulateTable tableName = " << tableName.toStdString().c_str() << endl;
 	if(table!=NULL)
@@ -430,7 +428,7 @@ void RapDbCommunicator::PopulateTable (QTableWidget* table,
  		cout << "RapDbCommunicator::PopulateTable size = " << size << endl;
 		for( int i=0; i<size; i++)
 		{
-			it = gDb.GetFieldWithOrder(tableName.toStdString(),i);
+            it = gDb.GetFieldWithOrder(tableName.toStdString(),i); //! typedef std::map<std::string, DbField>    DbFieldMap;
 			
 			if(it->second.mVisible)
 			{
@@ -470,7 +468,7 @@ void RapDbCommunicator::PopulateTable (QTableWidget* table,
 		bool hasWriteAccess = true;
 		bool success;
 		
-		// Check if a where clause  is needed
+        // Check if a where clause is needed
 		if(currentId!=-1)
 		{
 			whereClause = keyField.toStdString() + " = " + QString::number(currentId).toStdString();

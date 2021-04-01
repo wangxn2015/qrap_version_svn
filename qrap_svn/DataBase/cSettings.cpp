@@ -120,7 +120,7 @@ bool cSettings::LoadFromFile (const string& fileName)
 		}
 		#endif
 		
-		// check the structure element
+        //! check the structure element
 		el = mSettingsRoot->getChildElement("structure");
 		if ((!el) || (!el->hasAttribute("location")))
 		{
@@ -128,7 +128,7 @@ bool cSettings::LoadFromFile (const string& fileName)
 			return false;
 		}
 		
-		// open up the structure file
+        //! open up the structure file
 		string   structFileName = el->getAttribute("location");
 		ifstream structFile(structFileName.c_str());
 

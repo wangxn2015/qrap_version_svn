@@ -1572,7 +1572,7 @@ bool cDatabase::SetSetting (const string& name, const string& value)
 		return false;
 	}
 	
-	// if the entry should be inserted
+    //! if the entry should be inserted
 	if (mLastResult.size() == 0)
 	{
 		if (!PerformRawSql("insert into qrap_config (lastmodified,type,username,name,value) values (now(),'local','"+
@@ -1582,7 +1582,7 @@ bool cDatabase::SetSetting (const string& name, const string& value)
 			return false;
 		}
 	} else
-	// if the entry should be updated
+    //! if the entry should be updated
 	{
 		if (!PerformRawSql("update qrap_config set lastmodified=now(),value="+StrQuote(value)+
 			" where type='local' and username='"+mUsername+"' and name='"+name+"';"))

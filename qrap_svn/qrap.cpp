@@ -51,7 +51,7 @@
 static const QString sPluginIcon = ":/qrap/Coverage.png";
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 static const QString sCategory = QObject::tr( "Database" );
-static const QString sName = QObject::tr("Q-Rap");
+static const QString sName = QObject::tr("Wireless");
 static const QString sDescription = QObject::tr("Radio Systems Planning Tool");
 static const QString sPluginVersion = QObject::tr("Version 0.1");
 
@@ -394,8 +394,8 @@ bool QRap::openDatabaseConnection()
 //* This actually calls the database interface
 void QRap::run()
 {
-    gMainWindow = new MainWindow(qgisMainWindow); // param is 0
-    connect(gMainWindow, SIGNAL(SelectArea()),this,  SLOT(SelectArea()));//! not sure what's the use of this line
+    gMainWindow = new MainWindow(qgisMainWindow); // param 'qgisMainWindow' is 0
+    connect(gMainWindow, SIGNAL(SelectArea()),this,  SLOT(SelectArea()));//! not sure what's the use of this line. wxn
 	gMainWindow->show();
 	mQGisIface->mapCanvas()->refresh();
 }

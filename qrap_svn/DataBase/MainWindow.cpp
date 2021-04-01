@@ -118,12 +118,12 @@ MainWindow::MainWindow (QWidget* parent, Qt::WFlags fl)
     	QSplitter*  splitter;
 	splitter = new QSplitter(this);
     	splitter->setObjectName(QString::fromUtf8("splitter"));
-    	splitter->setOrientation(Qt::Horizontal);
+        splitter->setOrientation(Qt::Horizontal);// horizontal
 	splitter->setOpaqueResize(true);
 	splitter->setSizePolicy(sizePolicy);
     	sizePolicy.setHeightForWidth(splitter->sizePolicy().hasHeightForWidth());
 	setCentralWidget(splitter);
-
+/* //wxn
 	rapTab = new RapTab(splitter);
 	rapTab->setGeometry(QRect(10,10,1550,450));
 	rapTab->setMinimumSize(QSize(100, 100));
@@ -135,6 +135,13 @@ MainWindow::MainWindow (QWidget* parent, Qt::WFlags fl)
 	Filter->setMinimumSize(QSize(100, 100));
 	Filter->setSizePolicy(sizePolicy);
 	splitter->addWidget(Filter);
+*/
+
+    rapTab = new RapTab(splitter);
+    rapTab->setGeometry(QRect(10,10,1900,450));
+    rapTab->setMinimumSize(QSize(100, 100));
+    rapTab->setSizePolicy(sizePolicy);
+    splitter->addWidget(rapTab);
 
 	setMaximumHeight(700);
 	showMaximized ();

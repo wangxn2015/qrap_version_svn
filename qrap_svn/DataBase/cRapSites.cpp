@@ -66,17 +66,20 @@ cRapSites::cRapSites (QWidget* parent) : QWidget(parent)
 	cout << " before RapDbCommunicator constructor" << endl;
 	mDbCommunicator = new RapDbCommunicator(this,mProgress);
 	
-	// Populate the table list
+
+    // Populate the table list--------------------------------------------------------
 	cout << " before PopulateTableList" << endl;
-	PopulateTableList();
-	
+    PopulateTableList();//! detail
+    //---------------------------------------------------------------------------------
+
 	mTableViewSelected = true;
 	
 	mInsertingRow = false;
 		
 	// Setup all the signals and slots
 	connect(mTables["site"]->GetTable(),SIGNAL(itemSelectionChanged()),this,SLOT(SiteSelectionChanged()));
-	connect(mTableList,SIGNAL(itemSelectionChanged()),this,SLOT(TableSelectionChanged()));
+    connect(mTableList,SIGNAL(itemSelectionChanged()),this,SLOT(TableSelectionChanged())); //!
+
 	// Set the default table selection to be the first row
 	if(mCurrentTable->GetTable()->rowCount()>0)
 	{
@@ -265,9 +268,9 @@ void cRapSites::TableSelectionChanged ()
 	mCurrentTable->setVisible(false);
 	mMainLayout->removeWidget(mCurrentTable);
 	
-	mCurrentTable = mTables[selectedItem->data(Qt::UserRole).toString()];
+    mCurrentTable = mTables[selectedItem->data(Qt::UserRole).toString()]; //! QMap<QString,cRapTableTab*>	mTables;
 	mSiteTable = mTables["site"];
-	mCurrentTable->mTableViewSelected=&mTableViewSelected;
+    mCurrentTable->mTableViewSelected=&mTableViewSelected; //bool
 	mMainLayout->addWidget(mCurrentTable,0,1);
 	mDbCommunicator->PopulateTable(mSiteTable->GetTable(),selectedItem->data(Qt::UserRole).toString(),"id",mCurrentSiteId,false,true);
 	// populate the current table
@@ -379,10 +382,13 @@ void cRapSites::PopulateTableList ()
 	// Setup the items
 	siteItem->setData(Qt::UserRole,QVariant("site"));
 	siteItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
+
 	siteDescriptionItem->setData(Qt::UserRole,QVariant("sitedescription"));
 	siteDescriptionItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
+
 	siteContactsItem->setData(Qt::UserRole,QVariant("sitecontacts"));
 	siteContactsItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
+
 	radioInstallationItem->setData(Qt::UserRole,QVariant("radioinstallation"));
 	radioInstallationItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
 	
@@ -412,10 +418,10 @@ void cRapSites::PopulateTableList ()
 		it.value()->GetTable()->verticalHeader()->setVisible(false);
 		//it.value()->GetTable()->setMinimumSize(600,400);
 		it.value()->setVisible(false);
-		it.value()->mTableViewSelected = &mTableViewSelected;
+        it.value()->mTableViewSelected = &mTableViewSelected; //A boolean that checks if the table view of any form is selected
 		
 		// Load the headers for each table
-		mDbCommunicator->LoadTableHeaders(it.value()->GetTable(),it.key(),"siteid");
+        mDbCommunicator->LoadTableHeaders(it.value()->GetTable(),it.key(),"siteid"); //it.key() will return 'site','sitedescription' etc.
 	} // while
 	
 	// Make sure that the site table is visible
