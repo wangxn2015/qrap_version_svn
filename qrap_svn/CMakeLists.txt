@@ -741,7 +741,8 @@ QT4_WRAP_CPP (qrap_MOC_SRCS  ${qrap_MOC_HDRS})
  
 QT4_ADD_RESOURCES(qrap_RCC_SRCS ${qrap_RCCS})
 
-ADD_LIBRARY (qrapplugin MODULE ${qrap_SRCS}  ${qrap_MOC_SRCS}  ${qrap_RCC_SRCS} ${qrap_UIS_H})
+#ADD_LIBRARY (qrapplugin MODULE ${qrap_SRCS}  ${qrap_MOC_SRCS}  ${qrap_RCC_SRCS} ${qrap_UIS_H})
+ADD_LIBRARY (wirelessplugin MODULE ${qrap_SRCS}  ${qrap_MOC_SRCS}  ${qrap_RCC_SRCS} ${qrap_UIS_H})
 
 INCLUDE_DIRECTORIES(
       	${CMAKE_CURRENT_BINARY_DIR}
@@ -768,7 +769,8 @@ INCLUDE_DIRECTORIES(
 	../libcmaes
 )
 
-TARGET_LINK_LIBRARIES(qrapplugin
+#TARGET_LINK_LIBRARIES(qrapplugin
+TARGET_LINK_LIBRARIES(wirelessplugin
 	${QGIS_CORE_LIBRARY}
 	${QGIS_GUI_LIBRARY}
 	${GRASS_LIBRARIES}
@@ -807,7 +809,9 @@ TARGET_LINK_LIBRARIES(qrapplugin
 ########################################################
 # Install
 INSTALL(CODE "MESSAGE(\"Installing core...\")")
-INSTALL(TARGETS qrapplugin
+
+#INSTALL(TARGETS qrapplugin
+INSTALL(TARGETS wirelessplugin
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 

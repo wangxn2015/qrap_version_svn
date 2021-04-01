@@ -33,6 +33,7 @@
 #include <QAction>
 #include <QToolBar>
 #include <QMessageBox>
+#include <stdio.h>
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -50,7 +51,7 @@
 static const QString sPluginIcon = ":/qrap/Coverage.png";
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 static const QString sCategory = QObject::tr( "Database" );
-static const QString sName = QObject::tr("Q-Rap");
+static const QString sName = QObject::tr("Wireless");
 static const QString sDescription = QObject::tr("Radio Systems Planning Tool");
 static const QString sPluginVersion = QObject::tr("Version 0.1");
 
@@ -86,42 +87,49 @@ void QRap::initGui()
 	cout << "Voor new Actions" << endl;
 	mQActionPointer = new QAction(QIcon(":/qrap/Data.png"),tr("Q-Rap Database Interface"), this);
 	mSiteAction = new QAction(QIcon(":/qrap/Site.png"),tr("Q-Rap: Place a Site"), this);
-    	mSelectSiteAction = new QAction(QIcon(":/qrap/SiteSelect.png"),tr("Q-Rap: Select a Site"), this);
-    	mDeleteSiteAction = new QAction(QIcon(":/qrap/SiteDelete.png"),tr("Q-Rap: Delete a Site"), this);
-	mLinkAction = new QAction(QIcon(":/qrap/Link.png"),tr("Q-Rap: Link Analysis"), this);
-	mSelectLinkAction = new QAction(QIcon(":/qrap/LinkSelect.png"),tr("Q-Rap: Select a Link"), this);
-	mDeleteLinkAction = new QAction(QIcon(":/qrap/LinkDelete.png"),tr("Q-Rap: Delete a Link"), this);
-	mMultiLinkAction = new QAction(QIcon(":/qrap/MultiLink.png"),tr("Q-Rap: Establish all Links possible in set of Sites"), this);
-	mRadioAction = new QAction(QIcon(":/qrap/Coverage.png"),tr("Q-Rap: Perform a Prediction"), this);
-	mMeasAnalysisAction = new QAction(QIcon(":/qrap/Measurements.png"),tr("Q-Rap: Compare measurements with predictions"), this);
-    	mSpectralAction = new QAction(QIcon(":/qrap/Spectral.png"),tr("Q-Rap: Perform Spectral Interference Analysis"), this);
-    	mPreferencesAction = new QAction(QIcon(":/qrap/Preferences.png"),tr("Q-Rap Preferences"), this);
-	mOptimisationAction = new QAction(QIcon(":/qrap/Optimisation.png"),tr("Q-Rap: Optimise link structure in selected area"), this);
+    mSelectSiteAction = new QAction(QIcon(":/qrap/SiteSelect.png"),tr("Q-Rap: Select a Site"), this);
+    mDeleteSiteAction = new QAction(QIcon(":/qrap/SiteDelete.png"),tr("Q-Rap: Delete a Site"), this);
+    mRadioAction = new QAction(QIcon(":/qrap/Coverage.png"),tr("Q-Rap: Perform a Prediction"), this);
+    mPreferencesAction = new QAction(QIcon(":/qrap/Preferences.png"),tr("Q-Rap Preferences"), this);
+    //wangxiaonan
+//	mLinkAction = new QAction(QIcon(":/qrap/Link.png"),tr("Q-Rap: Link Analysis"), this);
+//	mSelectLinkAction = new QAction(QIcon(":/qrap/LinkSelect.png"),tr("Q-Rap: Select a Link"), this);
+//	mDeleteLinkAction = new QAction(QIcon(":/qrap/LinkDelete.png"),tr("Q-Rap: Delete a Link"), this);
+//	mMultiLinkAction = new QAction(QIcon(":/qrap/MultiLink.png"),tr("Q-Rap: Establish all Links possible in set of Sites"), this);
+//	mMeasAnalysisAction = new QAction(QIcon(":/qrap/Measurements.png"),tr("Q-Rap: Compare measurements with predictions"), this);
+//  mSpectralAction = new QAction(QIcon(":/qrap/Spectral.png"),tr("Q-Rap: Perform Spectral Interference Analysis"), this);
+//	mOptimisationAction = new QAction(QIcon(":/qrap/Optimisation.png"),tr("Q-Rap: Optimise link structure in selected area"), this);
+//--------------------------
+
 //    	mImportExportAction = new QAction(QIcon(":/qrap/ImportExport.png"),tr("Import Export"),this);
 //    	mHelpAction = new QAction(QIcon(":/qrap/Help.png"),tr("Q-Rap Help"), this);
 
-     	cout << "Na new Actions" << endl;
+    cout << "Na new Actions" << endl;
   
 	// Connect the action to the run
   	connect(mQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   	connect(mSiteAction, SIGNAL(activated()), this, SLOT(PlaceSite()));
   	connect(mSelectSiteAction, SIGNAL(activated()), this, SLOT(SelectSite()));
   	connect(mDeleteSiteAction, SIGNAL(activated()), this, SLOT(DeleteSite()));
-  	connect(mLinkAction, SIGNAL(activated()), this, SLOT(CreateLinkAnalysis()));
-  	connect(mDeleteLinkAction, SIGNAL(activated()), this, SLOT(DeleteLink()));
-	connect(mMultiLinkAction, SIGNAL(activated()), this, SLOT(MultiLink()));
-  	connect(mSelectLinkAction, SIGNAL(activated()), this, SLOT(SelectLink()));
-  	connect(mRadioAction, SIGNAL(activated()), this, SLOT(Prediction()));
-	connect(mMeasAnalysisAction, SIGNAL(activated()), this, SLOT(Measurements()));
-  	connect(mSpectralAction, SIGNAL(activated()), this, SLOT(SpectralAnalysis()));
-  	connect(mPreferencesAction, SIGNAL(activated()), this, SLOT(Preferences()));
-	connect(mOptimisationAction, SIGNAL(activated()), this, SLOT(Optimise()));
-//  	connect(mImportExportAction,SIGNAL(activated()), this, SLOT(ImportExport()));
-//  	connect(mHelpAction,SIGNAL(activated()), this, SLOT(Help()));
+    connect(mPreferencesAction, SIGNAL(activated()), this, SLOT(Preferences()));
+    connect(mRadioAction, SIGNAL(activated()), this, SLOT(Prediction()));
+
+//  connect(mLinkAction, SIGNAL(activated()), this, SLOT(CreateLinkAnalysis()));
+//  connect(mDeleteLinkAction, SIGNAL(activated()), this, SLOT(DeleteLink()));
+//	connect(mMultiLinkAction, SIGNAL(activated()), this, SLOT(MultiLink()));
+//  connect(mSelectLinkAction, SIGNAL(activated()), this, SLOT(SelectLink()));
+//	connect(mMeasAnalysisAction, SIGNAL(activated()), this, SLOT(Measurements()));
+//  connect(mSpectralAction, SIGNAL(activated()), this, SLOT(SpectralAnalysis()));
+//	connect(mOptimisationAction, SIGNAL(activated()), this, SLOT(Optimise()));
+
+
+//  connect(mImportExportAction,SIGNAL(activated()), this, SLOT(ImportExport()));
+//  connect(mHelpAction,SIGNAL(activated()), this, SLOT(Help()));
   	cout << "Na Connect" << endl;
 
   	// Add the toolbar to the main window
   	mToolBarPointer = mQGisIface->addToolBar(tr("Q-Rap")); 
+
 	mQGisIface->addToolBar(mToolBarPointer);
   	mToolBarPointer->setIconSize(QSize(24,24));
   	mToolBarPointer->setObjectName("Q-Rap");
@@ -302,10 +310,17 @@ bool QRap::openDatabaseConnection()
 	LoginDialog* loginDialog;
 	
 	loginDialog = new LoginDialog(0);
+
+    cout<<"qgisMainWindow:"<<(void*)qgisMainWindow<<endl;
+
 	
 	//********************************* Checking the default settings**/
-	if (loginDialog->exec()==0)
-	{
+    /*---------
+    if (loginDialog->exec()==0)
+
+    {
+
+
 		// get the values from the login dialog
 //		dbusername = loginDialog->getUserName();
 //		dbpassword = loginDialog->getPassword();
@@ -313,34 +328,34 @@ bool QRap::openDatabaseConnection()
 		//Why was this happening twice ...   ??????
 		
 		//***********************************************************************************	
-		/*cout << "Voor new IdResolve in QRap::openDatabaseConnection() " << endl;
-		// resolve the host id using id resolve
-		IdResolve idr;
-		int ret,id;
-		cout << "Voor connectDB " << endl;
-		// connect to the local database
-		ret = idr.connectDB("localhost","Q-Rap", dbusername.c_str(),dbpassword.c_str());
-		if (!ret) {
-			QMessageBox::information(NULL,"Q-Rap","Failed to connect to the local database");
-		}
+//		cout << "Voor new IdResolve in QRap::openDatabaseConnection() " << endl;
+//		// resolve the host id using id resolve
+//		IdResolve idr;
+//		int ret,id;
+//		cout << "Voor connectDB " << endl;
+//		// connect to the local database
+//		ret = idr.connectDB("localhost","Q-Rap", dbusername.c_str(),dbpassword.c_str());
+//		if (!ret) {
+//			QMessageBox::information(NULL,"Q-Rap","Failed to connect to the local database");
+//		}
 
-		// retrieve the hostname
-		cout << "Voor getHostId " << endl;
-		id = idr.getHostId();
-		if (id<0) {
-			QMessageBox::information(NULL,"APP","No Machine Id registered with server. Register a machine id before inserting sites");
-		}
+//		// retrieve the hostname
+//		cout << "Voor getHostId " << endl;
+//		id = idr.getHostId();
+//		if (id<0) {
+//			QMessageBox::information(NULL,"APP","No Machine Id registered with server. Register a machine id before inserting sites");
+//		}
 		
-		// set the machine id
-		gDb.globalMachineID = id;
+//		// set the machine id
+//		gDb.globalMachineID = id;
 
-		// set the machine name (a string version of the same ID)
-		char buf[1024];
-		sprintf(buf,"%d",id);
-		machinename = string(buf);
+//		// set the machine name (a string version of the same ID)
+//		char buf[1024];
+//		sprintf(buf,"%d",id);
+//		machinename = string(buf);
 
-		printf("machinename: [%s]\n",machinename.c_str());
-		*/
+//		printf("machinename: [%s]\n",machinename.c_str());
+
 
 		if (gDb.Connected())
 		{
@@ -370,7 +385,8 @@ bool QRap::openDatabaseConnection()
 			unload();
 		}
 
-	}
+    }
+*/
 	cout << "Verlaat openDatabaseConnection " << endl;
 } 
 
@@ -378,8 +394,8 @@ bool QRap::openDatabaseConnection()
 //* This actually calls the database interface
 void QRap::run()
 {
- 	gMainWindow = new MainWindow(qgisMainWindow);
-	connect(gMainWindow, SIGNAL(SelectArea()),this,  SLOT(SelectArea()));
+    gMainWindow = new MainWindow(qgisMainWindow); // param 'qgisMainWindow' is 0
+    connect(gMainWindow, SIGNAL(SelectArea()),this,  SLOT(SelectArea()));//! not sure what's the use of this line. wxn
 	gMainWindow->show();
 	mQGisIface->mapCanvas()->refresh();
 }

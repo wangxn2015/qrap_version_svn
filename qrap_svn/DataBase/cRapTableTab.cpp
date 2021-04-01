@@ -51,8 +51,8 @@ cRapTableTab::cRapTableTab (QWidget* parent, QString table) : QTabWidget(parent)
 	
 	//Customize the tab widget
 	setTabShape(QTabWidget::Triangular);
-	setTabPosition(QTabWidget::West);
-	
+//	setTabPosition(QTabWidget::West);
+    setTabPosition(QTabWidget::South);
 	//! This signal is emitted whenever the current page index changes
 	connect(this,SIGNAL(currentChanged(int)),this,SLOT(TabIndexChanged(int)));
 

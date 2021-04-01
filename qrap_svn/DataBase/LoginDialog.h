@@ -75,6 +75,9 @@ namespace Qrap
 		string getDB();
 		string getHost();
 		int getPort();
+
+    Q_SIGNALS:
+        void autoEnter();
 		
 	private slots:
 		/**

@@ -26,6 +26,7 @@
 
 #include "LoginDialog.h"
 #include "MainWindow.h"
+//#include <QDebug>
 
 using namespace std;
 using namespace Qrap;
@@ -40,10 +41,14 @@ LoginDialog::LoginDialog (QWidget *parent) : QDialog(parent)
 	mUsernameEdit = new QLineEdit(this);
 	mUsernameEdit->insert("postgres");
 	mPasswordEdit = new QLineEdit(this);
+//    mPasswordEdit->insert("postqrap");
+    //Setup the password line edit
+    mPasswordEdit->setEchoMode(QLineEdit::Password);
+
 	mDbLabel = new QLabel(tr("Database:"),this);
 	mHostLabel = new QLabel(tr("Host:"),this);
 	mPortLabel = new QLabel(tr("port:"),this);
-	mDbEdit = new QLineEdit(this);
+    mDbEdit = new QLineEdit(this); // the name of the database "qrap"
 	mDbEdit->insert("qrap");
 	mHostEdit = new QLineEdit(this);
 	mHostEdit->insert("localhost");
@@ -59,15 +64,19 @@ LoginDialog::LoginDialog (QWidget *parent) : QDialog(parent)
 	
 	// Setup the main grid layout and button layout
 	mainLayout->addWidget(mUsernameLabel,0,0,1,1,Qt::AlignLeft);
+    mainLayout->addWidget(mUsernameEdit,0,1,1,1,Qt::AlignLeft);
+
 	mainLayout->addWidget(mPasswordLabel,1,0,1,1,Qt::AlignLeft);
+    mainLayout->addWidget(mPasswordEdit,1,1,1,1,Qt::AlignLeft);
+
 	mainLayout->addWidget(mDbLabel,2,0,1,1,Qt::AlignLeft);
-	mainLayout->addWidget(mHostLabel,4,0,1,1,Qt::AlignLeft);
-	mainLayout->addWidget(mPortLabel,3,0,1,1,Qt::AlignLeft);
-	mainLayout->addWidget(mUsernameEdit,0,1,1,1,Qt::AlignLeft);
-	mainLayout->addWidget(mPasswordEdit,1,1,1,1,Qt::AlignLeft);
-	mainLayout->addWidget(mDbEdit,2,1,1,1,Qt::AlignLeft);
+    mainLayout->addWidget(mDbEdit,2,1,1,1,Qt::AlignLeft);
+
+    mainLayout->addWidget(mPortLabel,3,0,1,1,Qt::AlignLeft);
+    mainLayout->addWidget(mPortEdit,3,1,1,1,Qt::AlignLeft);
+
+    mainLayout->addWidget(mHostLabel,4,0,1,1,Qt::AlignLeft);
 	mainLayout->addWidget(mHostEdit,4,1,1,1,Qt::AlignLeft);
-	mainLayout->addWidget(mPortEdit,3,1,1,1,Qt::AlignLeft);
 	
 	buttonLayout->addWidget(loginButton,Qt::AlignLeft);
 	//buttonLayout->addWidget(syncButton,Qt::AlignLeft);
@@ -75,14 +84,13 @@ LoginDialog::LoginDialog (QWidget *parent) : QDialog(parent)
 	
 	mainLayout->addLayout(buttonLayout,5,1,1,1,Qt::AlignLeft);
 	
-	//Setup the password line edit
-	mPasswordEdit->setEchoMode(QLineEdit::Password);
+
 	
 	// Setup the dialog window
 	setLayout(mainLayout);
 	setWindowTitle(tr("Q-Rap Login"));
-	setModal(true);
-	
+//	setModal(true);
+    setModal(false);//
 	//Move this dialog to the center of the screen
 	move(400,300);
 	setWindowIcon(QIcon(":images/logo_icon.png"));
@@ -90,6 +98,9 @@ LoginDialog::LoginDialog (QWidget *parent) : QDialog(parent)
 	// Setup the SIGNAL SLOT connections
 	connect(loginButton,SIGNAL(released()),this,SLOT(AuthenticateUser()));
 	connect(cancelButton,SIGNAL(released()),this,SLOT(Close()));
+
+    connect(this,SIGNAL(autoEnter()),this,SLOT(AuthenticateUser()));
+    emit(autoEnter());
 }
 
 //************************************************************************************
@@ -97,7 +108,9 @@ LoginDialog::LoginDialog (QWidget *parent) : QDialog(parent)
 void LoginDialog::AuthenticateUser ()
 {
 	mUser = mUsernameEdit->text().toStdString();
+    mPasswordEdit->insert("postqrap");
 	mPass = mPasswordEdit->text().toStdString();
+    cout <<"JT password:"<<mPass;
 	mHost = mHostEdit->text().toStdString();
 	mDb = mDbEdit->text().toStdString();
 	mPort = atoi(mPortEdit->text().toStdString().c_str());
