@@ -207,25 +207,25 @@ void RapDbCommunicator::UpdateDatabase(QTableWidget* table,
 void RapDbCommunicator::LoadTableHeaders(QTableWidget* table,   //it.val ()  corresponding tableWidget
                      QString tableName,     //it.key() will return 'site','sitedescription' etc.
                          QString keyField, //site id
-					 bool view)
+					 bool view)				//view=false
 {	
     int size = dbs[tableName.toStdString()].mFields.size(); //number of fields for a table
 	int j = 0;
     DbFieldMap::const_iterator it;  //! typedef std::map<std::string, DbField>    DbFieldMap;
 	
 	// Load the table headers
-    for( int i=0 ; i<size ; i++)    //! typedef std::map<std::string, DbField>    DbFieldMap;
+    for( int i=0 ; i<size ; i++)    //! typedef std::map<std::string, DbField>    DbFieldMap; //for each field of the table
 	{
 		it = gDb.GetFieldWithOrder(tableName.toStdString(),i);
 		
-		if(it->second.mVisible)
+		if(it->second.mVisible) //!default is true except specified. wxn 
 		{
 			
 			// Store the descriptive name and the database table name in the table header
 			QTableWidgetItem* headerItem = new QTableWidgetItem(QString::fromStdString(it->second.mLabel));
 			headerItem->setData(Qt::UserRole,QVariant(QString::fromStdString(it->first)));
 			
-			table->setColumnCount(j+1);
+			table->setColumnCount(j+1); 
 			
 			// Setup the column width
 			if(10*headerItem->data(Qt::DisplayRole).toString().length() > 70)
@@ -233,7 +233,7 @@ void RapDbCommunicator::LoadTableHeaders(QTableWidget* table,   //it.val ()  cor
 			else
 				table->setColumnWidth(j,70);
 			
-			table->setHorizontalHeaderItem(j,headerItem);
+			table->setHorizontalHeaderItem(j,headerItem); //! show here
 			
 			// Check the user interface data type and if it is a dropdown box then create a combo delegate
 			cDatabase::FieldUiType uiType = gDb.GetFieldUiType(tableName.toStdString(),it->first);
@@ -402,10 +402,10 @@ void RapDbCommunicator::GetCellDataType(std::string tableName,
 void RapDbCommunicator::PopulateTable (QTableWidget* table,          //     |   mCurrentTable->GetTable()
                        const QString& tableName,//"antennadevice"           |   "site"
                        const QString& keyField,	//""                        |   "id"
-                       int currentId,			//-1                        |   -1
-                       bool site,				// bool site = false,       |   true
+                       int currentId,			//-1                        |   -1 		* @param currentId An integer containing the currently selected site's id, if this parameter is -1 then all the sites will be selected.
+                       bool site,				// bool site = false,       |   true 	* @param site A boolean that determines whether the access to a row is dependant on the status of the relevant site.
                        bool view,               // bool view = false,       |   true
-                       string search)           // std::string search = ""  |
+                       string search)           // std::string search = ""  |	std::string search = "" 
 
 {
 	cout << "Entering RapDbCommunicator::PopulateTable tableName = " << tableName.toStdString().c_str() << endl;

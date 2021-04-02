@@ -425,7 +425,7 @@ void cRapSites::PopulateTableList ()
 	} // while
 	
 	// Make sure that the site table is visible
-	mMainLayout->addWidget(mTables["site"],0,1);
+	mMainLayout->addWidget(mTables["site"],0,1); // 
 	mTables["site"]->show();
 	mCurrentTable = mTables["site"];
 		
