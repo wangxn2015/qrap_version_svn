@@ -43,7 +43,7 @@ cPlaceSite::cPlaceSite(QgisInterface * QgisInt, QWidget* parent,
 	string table="site";
 	string field="status";
 	cDatabase::FieldUiType uiType;
-	StringIntArray vals;
+    StringIntArray vals; //<longint, string>
 	StringIntArrayIterator iterator;
 	uiType = gDb.GetFieldUiType(table,field);	//获得字段类型 fixed
 	gDb.GetFieldUiParams(table,field,vals);
@@ -56,6 +56,8 @@ cPlaceSite::cPlaceSite(QgisInterface * QgisInt, QWidget* parent,
 		j++;
 	} // for
 	if (j==0) comboBoxStatus->insertItem(0,"0:NULL");
+    btnPlaceSite->hide();
+    btnMove->hide();
 }
   
 //***********************************************************
@@ -85,7 +87,7 @@ bool cPlaceSite::SetParameters(QString Lat,QString Lon,bool Edit,double scale)
 	string Location = QString ("POINT(%1 %2)").arg(Lon).arg(Lat).toStdString();
 
 	cout  << Location << endl;
-	if (mEdit) //! false
+    if (mEdit) //! skip
 	{
 		btnPlaceSite->setText("Update");
 		setWindowTitle(QApplication::translate("Site", "Edit the Site", 0, QApplication::UnicodeUTF8));
@@ -117,7 +119,7 @@ bool cPlaceSite::SetParameters(QString Lat,QString Lon,bool Edit,double scale)
 			return false;
 		}
 	}	
-	else //! false
+    else //! false enter here
 	{
 		string La,Lo;
 		ExtractLatLongFromPoint(Location,locationFormat,La,Lo); //! 转化

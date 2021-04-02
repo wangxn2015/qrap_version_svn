@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>319</width>
-    <height>241</height>
+    <height>273</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -95,7 +95,7 @@
   <widget class="QPushButton" name="btnDefaultInst">
    <property name="geometry">
     <rect>
-     <x>145</x>
+     <x>140</x>
      <y>210</y>
      <width>172</width>
      <height>28</height>
@@ -109,7 +109,7 @@
    <property name="geometry">
     <rect>
      <x>230</x>
-     <y>175</y>
+     <y>240</y>
      <width>85</width>
      <height>28</height>
     </rect>
@@ -148,9 +148,6 @@
    </property>
   </widget>
  </widget>
- <resources>
-  <include location="../qrap.qrc"/>
-  <include location="../qrap.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

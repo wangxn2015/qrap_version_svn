@@ -191,7 +191,7 @@ int Qrap::GetGroundHeight(double lat, double lon)
 //		QMessageBox::information(this, "QRap", "Error finding the DEM order array!");
 		QRAP_WARN( "Error finding the DEM order array!");
 	}
-	gDb.GetLastResult(r);
+    gDb.GetLastResult(r); //! e.g. return : {1}
 	if (r.size() < 1)
 	{
 //		QMessageBox::information(this, "QRap", "There are no DEM filesets declared!");
@@ -201,7 +201,7 @@ int Qrap::GetGroundHeight(double lat, double lon)
 	else
 	{
 		Result = QString ("%1").arg(r[0]["orderarray"].c_str());
-		Result = Result.mid(1,Result.length()-2);
+        Result = Result.mid(1,Result.length()-2); //starting position, length
 		Filesets=Result.split(",");
 	}
 	QStringListIterator i(Filesets);
@@ -219,6 +219,17 @@ int Qrap::GetGroundHeight(double lat, double lon)
 		gcvt(lon,10,text);
 		query += text;
 		query +=") <@ areasquare";
+
+//        cout<<"query:"<<query<<endl;
+//        cout<<"hit enter"<<endl;
+//        getchar();
+/*
+ *  one example
+lat: 2.06161   lon: 45.3515
+POINT(45.3515 2.06161)
+query:SELECT filename, location,centmer,filetype,projection,fileformat,proj4string  FROM sourcefiles cross join filesets WHERE filesets.id = 1 AND filesets.id = sourcefiles.filesetkey AND POINT(2.06161, 45.3515) <@ areasquare
+*/
+
 		if (!gDb.PerformRawSql(query))
 		{
 //			QMessageBox::information(this, "QRap", "Error finding the height of the site");

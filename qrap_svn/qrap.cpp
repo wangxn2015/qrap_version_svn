@@ -653,7 +653,7 @@ void QRap::PlaceSiteDialog(double lat, double lon,bool IsOld) //! 纬度前，�
 	mPlacedSite = new cPlaceSite(mQGisIface, mQGisIface->mainWindow(), QgisGui::ModalDialogFlags);//! ui
 	connect(mPlacedSite, SIGNAL(MoveSiteClicked()),this,  SLOT(MoveSiteClicked()));
 
-	// place the site
+    // place the site // IsOld = false
 	if (mPlacedSite->SetParameters(Lat,Lon,IsOld,mQGisIface->mapCanvas()->scale())) //! 显示选点处的参数
 	{
 		if (mPlacedSite->exec()==1)

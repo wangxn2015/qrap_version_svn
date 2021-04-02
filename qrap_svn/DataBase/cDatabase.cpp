@@ -1665,7 +1665,7 @@ bool cDatabase::GetFieldUiParams (const string& tableName, const string& fieldNa
 		endPos = ui.rfind(')');
 		
 		// extract the parameters for the dropdown() function
-		paramStr = ui.substr(startPos+1, endPos-startPos-1);
+        paramStr = ui.substr(startPos+1, endPos-startPos-1);//!(start position, length)
 		// extract the first parameter from the string to check what type of combo it is
 		ddType = ExtractKeyword(paramStr, 0);
 		// is this a fixed drop-down combo?
@@ -1696,9 +1696,9 @@ bool cDatabase::GetFieldUiParams (const string& tableName, const string& fieldNa
 			int         id;
 			
 			// skip past the comma and any whitespace
-			i = FindNonWhitespace(paramStr, ddType.length()+1);
+            i = FindNonWhitespace(paramStr, ddType.length()+1); //! find the starting position
 			// extract the table's name
-			table = ExtractKeyword(paramStr, i);
+            table = ExtractKeyword(paramStr, i); //(obj,start)    site_view_list,sitename---->get 'site_view_list'
 			// skip past the comma again and any whitespace
 			i = FindNonWhitespace(paramStr, i+table.length()+1);
 			// extract the field's name to use
