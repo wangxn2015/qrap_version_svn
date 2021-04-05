@@ -1,8 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'Site.ui'
 **
-** Created: Wed May 9 18:28:43 2012
-**      by: Qt User Interface Compiler version 4.8.1
+** Created by: Qt User Interface Compiler version 4.8.7
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -50,7 +49,7 @@ public:
     {
         if (Site->objectName().isEmpty())
             Site->setObjectName(QString::fromUtf8("Site"));
-        Site->resize(319, 241);
+        Site->resize(319, 273);
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/QRap/DataBase/images/logo_icon.png"), QSize(), QIcon::Normal, QIcon::Off);
         Site->setWindowIcon(icon);
@@ -115,10 +114,10 @@ public:
         btnPlaceSite->setGeometry(QRect(5, 175, 85, 28));
         btnDefaultInst = new QPushButton(Site);
         btnDefaultInst->setObjectName(QString::fromUtf8("btnDefaultInst"));
-        btnDefaultInst->setGeometry(QRect(145, 210, 172, 28));
+        btnDefaultInst->setGeometry(QRect(140, 210, 172, 28));
         btnCancel = new QPushButton(Site);
         btnCancel->setObjectName(QString::fromUtf8("btnCancel"));
-        btnCancel->setGeometry(QRect(230, 175, 85, 28));
+        btnCancel->setGeometry(QRect(230, 240, 85, 28));
         btnEditInstallation = new QPushButton(Site);
         btnEditInstallation->setObjectName(QString::fromUtf8("btnEditInstallation"));
         btnEditInstallation->setGeometry(QRect(5, 210, 137, 28));
@@ -128,7 +127,7 @@ public:
 
         retranslateUi(Site);
 
-        QMetaObject::connectSlotsByName(Site); //!进行槽链接
+        QMetaObject::connectSlotsByName(Site);
     } // setupUi
 
     void retranslateUi(QDialog *Site)

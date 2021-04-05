@@ -66,7 +66,7 @@ cPlaceSite::~cPlaceSite()
 }
 
 //***********************************************************
-bool cPlaceSite::SetParameters(QString Lat,QString Lon,bool Edit,double scale)
+bool cPlaceSite::SetParameters(QString Lat,QString Lon,bool Edit,double scale) //Edit = false
 {
 	mScale = scale;
 	string query;
@@ -196,7 +196,7 @@ void cPlaceSite::on_btnPlaceSite_clicked()
 //***********************************************************
 void cPlaceSite::on_btnDefaultInst_clicked()
 {
-	if (!mEdit)
+    if (!mEdit) //enter here
 		mId = InsertSite();
 	if (mId>-1)
 	{
@@ -224,7 +224,7 @@ void cPlaceSite::on_btnMove_clicked()
 void cPlaceSite::on_btnEditInstallation_clicked() //! 编辑安装basestation
 {
 	cout << "cPlaceSite::on_btnEditInstallation_clicked()   mId=" << mId<< endl; //! 一个随机值
-	if (!mEdit) //! mEdit = false; enter
+    if (!mEdit) //! mEdit = false; //enter
 		mId = InsertSite();
 	if (mId>-1)
 	{
@@ -269,7 +269,7 @@ int cPlaceSite::InsertSite()
 	if (MaxId.toDouble() > 0)
 	{
 		MaxId = r[0]["id"].c_str();		
-		int SiteId = atoi(r[0]["id"].c_str());
+        int SiteId = atoi(r[0]["id"].c_str()); // ascii to integer
 		cout << "HERE*********MAX ID!!!!: " << MaxId.toStdString()<< endl;
 	}
 	else

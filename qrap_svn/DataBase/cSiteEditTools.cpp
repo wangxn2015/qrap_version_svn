@@ -227,7 +227,8 @@ int Qrap::GetGroundHeight(double lat, double lon)
  *  one example
 lat: 2.06161   lon: 45.3515
 POINT(45.3515 2.06161)
-query:SELECT filename, location,centmer,filetype,projection,fileformat,proj4string  FROM sourcefiles cross join filesets WHERE filesets.id = 1 AND filesets.id = sourcefiles.filesetkey AND POINT(2.06161, 45.3515) <@ areasquare
+query:
+SELECT filename, location,centmer,filetype,projection,fileformat,proj4string  FROM sourcefiles cross join filesets WHERE filesets.id = 1 AND filesets.id = sourcefiles.filesetkey AND POINT(2.06161, 45.3515) <@ areasquare
 */
 
 		if (!gDb.PerformRawSql(query))
