@@ -300,8 +300,8 @@ bool Qrap::InsertDefaultRadioInsts(int SiteId)
 	siteID = new char[33];
 	char * machineID;
 	machineID = new char[33];
-	QString Tech = QString("%1").arg(gDb.GetSetting("TechType").c_str());
-	Tech = Tech.mid(0,Tech.indexOf(":",1));
+    QString Tech = QString("%1").arg(gDb.GetSetting("TechType").c_str()); //! e.g. "1:4G_LTE_TEST"
+    Tech = Tech.mid(0,Tech.indexOf(":",1)); //1
 	string Teg = Tech.toStdString();
 	if (Tech.toDouble()==0)
 	{
@@ -317,7 +317,7 @@ bool Qrap::InsertDefaultRadioInsts(int SiteId)
 	query += "CROSS JOIN site ";
 	query += "WHERE technology.defaultsite = site.id ";
 	query += "AND radioinstallation.siteid = site.id ";
-	query += "AND radioinstallation.id<>0 ";
+    query += "AND radioinstallation.id<>0 "; //!=0
 	query += "AND technology.id = ";
 	query += Teg.c_str();
 	//query +=" AND site.status='Default'";

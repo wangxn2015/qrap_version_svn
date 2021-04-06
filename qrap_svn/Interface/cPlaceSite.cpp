@@ -198,11 +198,11 @@ void cPlaceSite::on_btnDefaultInst_clicked()
 {
     if (!mEdit) //enter here
 		mId = InsertSite();
-	if (mId>-1)
+    if (mId>-1) // insert site success
 	{
 		cout << "In insert default installation" << endl;
 		if (InsertDefaultRadioInsts(mId))		
-			accept();
+            accept(); //! Hides the modal dialog and sets the result code to Accepted.
 		close();
 	}
 }
