@@ -271,7 +271,7 @@ void cRapSites::TableSelectionChanged ()
     mCurrentTable = mTables[selectedItem->data(Qt::UserRole).toString()]; //! QMap<QString,cRapTableTab*>	mTables;
 	mSiteTable = mTables["site"];
     mCurrentTable->mTableViewSelected=&mTableViewSelected; //bool
-	mMainLayout->addWidget(mCurrentTable,0,1);
+    mMainLayout->addWidget(mCurrentTable,0,1); //! add the corresponding cRapTableTab
 	mDbCommunicator->PopulateTable(mSiteTable->GetTable(),selectedItem->data(Qt::UserRole).toString(),"id",mCurrentSiteId,false,true);
 	// populate the current table
 	if(mCurrentTable->GetTable()->rowCount()==0)

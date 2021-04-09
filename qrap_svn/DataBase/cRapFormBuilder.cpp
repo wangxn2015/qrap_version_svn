@@ -192,10 +192,11 @@ cRapFormBuilder::cRapFormBuilder (QWidget* parent, QString tableName, QTableWidg
 }
 
 //**********************************************************************
+
 //! e.g (mRef,this,mTableName,mTableView,mInserting)		mFormWidgets 每次tab在表和scroll之间切换时会生成新的cRapFormBuilder对象
 cRapFormBuilder::cRapFormBuilder (StringMap ref, QWidget* parent,
 				QString tableName,
-				QTableWidget* tableWidget,
+                QTableWidget* tableWidget,      //the tab in "tab and scroll"
 			        bool insert)
 {
 	mReferences = ref;
@@ -270,7 +271,7 @@ cRapFormBuilder::cRapFormBuilder (StringMap ref, QWidget* parent,
 	mDefaultRadiosButton->setEnabled(false);
 	mUpdate=false;
 	mFormLayout->addWidget(mDefaultRadiosButton,10,1,1,1,Qt::AlignLeft);
-	connect(mDefaultRadiosButton,SIGNAL(clicked()),this,SLOT(InsertDefaultRadios()));
+    connect(mDefaultRadiosButton,SIGNAL(clicked()),this,SLOT(InsertDefaultRadios())); //!
 
         mCalculateRxLossesButton = new QPushButton("Calculate &Rx Losses",this);
 	mCalculateRxLossesButton->setToolTip("Calculate the rx losses.");
@@ -316,14 +317,14 @@ cRapFormBuilder::cRapFormBuilder (StringMap ref, QWidget* parent,
 	// Get the database structure
 	gDb.GetDbStructure(mDbs); //! mDbs 获取了数据库结构
 	
-//	cout << "cRapFormBuilder::cRapFormBuilder Voor rowCount:"<< mTableView->rowCount() << endl;
+    cout << "cRapFormBuilder::cRapFormBuilder Voor rowCount:"<< mTableView->rowCount() << endl;
 	if(mTableView->rowCount()<=0)
 		insert=true;
 	mLayoutRow++;	
 	if(insert)
 	{
 
-//		cout << "cRapFormBuilder::cRapFormBuilder overloaded insert is TRUE" << endl;	
+        cout << "cRapFormBuilder::cRapFormBuilder overloaded insert is TRUE" << endl;
 		// Get the default values for the mTable
 		if(!gDb.GetDefaults(mTable.toStdString(),mDefaults)) //! 进行了数据库搜索, 把某表中的参数名和值 都放在了mDefaults中
 		{
@@ -338,7 +339,7 @@ cRapFormBuilder::cRapFormBuilder (StringMap ref, QWidget* parent,
 	} // if insert
 	else
 	{
-//		cout << "cRapFormBuilder::cRapFormBuilder overloaded insert is FALSE" << endl;
+        cout << "cRapFormBuilder::cRapFormBuilder overloaded insert is FALSE" << endl;
 		CreateGenericUpdateForm();
 	} // else insert
 }
@@ -1162,11 +1163,11 @@ void cRapFormBuilder::PopulateForm ()
 //***********************************************************************
 void cRapFormBuilder::Insert ()
 {
-	int TempID = InsertData(mTable, mFormWidgets); //! QMap<QString,QWidget*>	mFormWidgets;
+    int TempID = InsertData(mTable, mFormWidgets); //! QMap<QString,QWidget*>	mFormWidgets; mTable is the name such as "site"
 	if (TempID>-1) //!提交成功
 	{
 		mCurrentRecordID = TempID;
-//		cout << "In cRapFormBuilder::Insert ()  mCurrentRecordID = " << mCurrentRecordID << endl;
+        cout << "In cRapFormBuilder::Insert ()  mCurrentRecordID = " << mCurrentRecordID << endl;
 		mCommitButton->setVisible(false);
 		mCommitButton->setEnabled(false);
 		mCommitAddNextButton->setVisible(false);

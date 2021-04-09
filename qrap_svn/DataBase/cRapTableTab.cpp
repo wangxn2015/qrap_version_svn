@@ -52,8 +52,8 @@ cRapTableTab::cRapTableTab (QWidget* parent, QString table) : QTabWidget(parent)
 	//Customize the tab widget
 	setTabShape(QTabWidget::Triangular);
 //	setTabPosition(QTabWidget::West);
-    setTabPosition(QTabWidget::South);
-	//! This signal is emitted whenever the current page index changes
+    setTabPosition(QTabWidget::North);
+    //! This signal is emitted whenever the current page index changes --- switching between table view and Scroller
 	connect(this,SIGNAL(currentChanged(int)),this,SLOT(TabIndexChanged(int)));
 
 }
@@ -99,7 +99,7 @@ void cRapTableTab::TabIndexChanged (int index)
 	cout << "cRapTableTab::TabIndexChanged mTableView->rowCount()=" << mTableView->rowCount() << endl;	
 	switch (index)
 	{
-		case 0:
+        case 0: //! using the table instead of form
 			// Destroy the formWidget
 			formWidget = mScroller->takeWidget(); //!Removes the scroll area's widget, and passes ownership of the widget to the caller.
 			//formWidget->close();
