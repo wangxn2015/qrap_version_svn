@@ -224,7 +224,7 @@ void cPlaceSite::on_btnMove_clicked()
 void cPlaceSite::on_btnEditInstallation_clicked() //! 编辑安装basestation
 {
 	cout << "cPlaceSite::on_btnEditInstallation_clicked()   mId=" << mId<< endl; //! 一个随机值
-    if (!mEdit) //! mEdit = false; //enter
+    if (!mEdit) //!         mEdit = false; //enter
 		mId = InsertSite();
 	if (mId>-1)
 	{
@@ -235,7 +235,7 @@ void cPlaceSite::on_btnEditInstallation_clicked() //! 编辑安装basestation
 		cout << "cPlaceSite::on_btnEditInstallation_clicked() voor gMainWindow->show()" << endl;
 		gMainWindow->show();
 		accept();
-		close();
+        close(); // close placeSie ui
 	}
 }
 
@@ -259,12 +259,12 @@ int cPlaceSite::InsertSite()
 		return false;
 	}
 	
-	string q = "SELECT (MAX(id)+1) AS id FROM site";
+    string q = "SELECT (MAX(id)+1) AS id FROM site"; //returned value is under the property field of "id"
 	gDb.PerformRawSql(q);
 	pqxx::result r;
 	gDb.GetLastResult(r);
 	QString MaxId = r[0]["id"].c_str();
-	int SiteId = atoi(r[0]["id"].c_str());
+    int SiteId = atoi(r[0]["id"].c_str()); //ascii to int
 	//cout << "*********Size: " << MaxId.toDouble()<< endl;
 	if (MaxId.toDouble() > 0)
 	{
@@ -289,7 +289,7 @@ int cPlaceSite::InsertSite()
 	query += ", ";
 	char *temp;
 	temp = new char[10];
-	gcvt(gDb.globalMachineID,8,temp);
+    gcvt(gDb.globalMachineID,8,temp); //transfer a float number to string
 	query+= temp; 
 	query+= ", "; 
 	query+= FindLatLon(txtLatitude->text(),txtLongitude->text()).toStdString();

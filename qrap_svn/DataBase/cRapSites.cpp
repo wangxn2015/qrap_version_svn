@@ -256,7 +256,8 @@ void cRapSites::ExecuteSearch (string search)
 
 
 //*********************************************************************************
-// Make sure that the correct table is made visible
+// Make sure that the correct table is made visible when changing different items in table list
+// connect(mTableList,SIGNAL(itemSelectionChanged()),this,SLOT(TableSelectionChanged())); //!
 void cRapSites::TableSelectionChanged ()
 {
 	// Make sure that no update signals are triggered
@@ -269,10 +270,10 @@ void cRapSites::TableSelectionChanged ()
 	mMainLayout->removeWidget(mCurrentTable);
 	
     mCurrentTable = mTables[selectedItem->data(Qt::UserRole).toString()]; //! QMap<QString,cRapTableTab*>	mTables;
-	mSiteTable = mTables["site"];
+    mSiteTable = mTables["site"]; //!
     mCurrentTable->mTableViewSelected=&mTableViewSelected; //bool
     mMainLayout->addWidget(mCurrentTable,0,1); //! add the corresponding cRapTableTab
-	mDbCommunicator->PopulateTable(mSiteTable->GetTable(),selectedItem->data(Qt::UserRole).toString(),"id",mCurrentSiteId,false,true);
+    mDbCommunicator->PopulateTable(mSiteTable->GetTable(),selectedItem->data(Qt::UserRole).toString(),"id",mCurrentSiteId,false,true);
 	// populate the current table
 	if(mCurrentTable->GetTable()->rowCount()==0)
 	{
@@ -311,7 +312,7 @@ void cRapSites::TableSelectionChanged ()
 		mCurrentTable->setCurrentIndex(1);
 	
 	// Make sure that the MainWindow object knows what the current table is
-	static_cast<MainWindow*>(window())->currentTable = getCurrentTableName();
+    static_cast<MainWindow*>(window())->currentTable = getCurrentTableName();   //return mTables.key(mCurrentTable);
 
 	mCurrentTable->setVisible(true);
 }
@@ -447,12 +448,12 @@ void cRapSites::EditSite (int Id)
 	StringMap ref;
 	QString Site = QString("%1").arg(mCurrentSiteId);
 	ref["siteid"] = Site.toStdString();
-	mCurrentTable->SetReferences(ref);
+    mCurrentTable->SetReferences(ref);  //cRapTableTab*	mCurrentTable; //
 	mTableViewSelected=false;
 	cout << "cRapSites::EditSite voor setCurrentRow(3)" << endl;
-	mTableList->setCurrentRow(3);
+    mTableList->setCurrentRow(3); //radio installation //connect(mTableList,SIGNAL(itemSelectionChanged()),this,SLOT(TableSelectionChanged()))
 	mCurrentTable->SetReferences(ref);
 	cout << "cRapSites::EditSite voor setCurrentIndex(1)" << endl;
-	mCurrentTable->setCurrentIndex(1);
+    mCurrentTable->setCurrentIndex(1); // form view---1.  table view---0
 }
 

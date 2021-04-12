@@ -49,7 +49,7 @@ public:
     {
         if (Site->objectName().isEmpty())
             Site->setObjectName(QString::fromUtf8("Site"));
-        Site->resize(319, 273);
+        Site->resize(319, 248);
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/QRap/DataBase/images/logo_icon.png"), QSize(), QIcon::Normal, QIcon::Off);
         Site->setWindowIcon(icon);
@@ -111,19 +111,19 @@ public:
 
         btnPlaceSite = new QPushButton(Site);
         btnPlaceSite->setObjectName(QString::fromUtf8("btnPlaceSite"));
-        btnPlaceSite->setGeometry(QRect(5, 175, 85, 28));
+        btnPlaceSite->setGeometry(QRect(0, 210, 85, 28));
         btnDefaultInst = new QPushButton(Site);
         btnDefaultInst->setObjectName(QString::fromUtf8("btnDefaultInst"));
-        btnDefaultInst->setGeometry(QRect(140, 210, 172, 28));
+        btnDefaultInst->setGeometry(QRect(140, 180, 172, 28));
         btnCancel = new QPushButton(Site);
         btnCancel->setObjectName(QString::fromUtf8("btnCancel"));
-        btnCancel->setGeometry(QRect(230, 240, 85, 28));
+        btnCancel->setGeometry(QRect(220, 210, 85, 28));
         btnEditInstallation = new QPushButton(Site);
         btnEditInstallation->setObjectName(QString::fromUtf8("btnEditInstallation"));
-        btnEditInstallation->setGeometry(QRect(5, 210, 137, 28));
+        btnEditInstallation->setGeometry(QRect(0, 180, 137, 28));
         btnMove = new QPushButton(Site);
         btnMove->setObjectName(QString::fromUtf8("btnMove"));
-        btnMove->setGeometry(QRect(95, 175, 111, 28));
+        btnMove->setGeometry(QRect(90, 210, 111, 28));
 
         retranslateUi(Site);
 

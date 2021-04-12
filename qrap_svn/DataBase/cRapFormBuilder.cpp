@@ -273,14 +273,14 @@ cRapFormBuilder::cRapFormBuilder (StringMap ref, QWidget* parent,
 	mFormLayout->addWidget(mDefaultRadiosButton,10,1,1,1,Qt::AlignLeft);
     connect(mDefaultRadiosButton,SIGNAL(clicked()),this,SLOT(InsertDefaultRadios())); //!
 
-        mCalculateRxLossesButton = new QPushButton("Calculate &Rx Losses",this);
+    mCalculateRxLossesButton = new QPushButton("Calculate &Rx Losses",this);
 	mCalculateRxLossesButton->setToolTip("Calculate the rx losses.");
 	mCalculateRxLossesButton->setVisible(false);
 	mCalculateRxLossesButton->setEnabled(false);
 	mFormLayout->addWidget(mCalculateRxLossesButton,15,3,1,1,Qt::AlignRight);
 	connect(mCalculateRxLossesButton,SIGNAL(clicked()),this,SLOT(CalculateRXLosses()));
         
-        mCalculateTxLossesButton = new QPushButton("Calculate &Tx Losses",this);
+    mCalculateTxLossesButton = new QPushButton("Calculate &Tx Losses",this);
 	mCalculateTxLossesButton->setToolTip("Calculate the tx losses.");
 	mCalculateTxLossesButton->setVisible(false);
 	mCalculateTxLossesButton->setEnabled(false);
