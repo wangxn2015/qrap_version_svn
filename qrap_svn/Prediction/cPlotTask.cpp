@@ -23,6 +23,7 @@
  ************************************************************************* */
 
 #include "cPlotTask.h"
+#include <stdio.h>
 
 using namespace Qrap;
 using namespace std;
@@ -2717,7 +2718,7 @@ bool cPlotTask::GetDBinfo()
 				mFixedInsts[i].sTxSysLoss = atof(r[0]["txlosses"].c_str());
 				mFixedInsts[i].sRxSysLoss = atof(r[0]["rxlosses"].c_str());
 				mFixedInsts[i].sRxSens = atof(r[0]["rxsensitivity"].c_str());
-				mFixedInsts[i].sTxPatternKey = atoi(r[0]["txantpatternkey"].c_str());
+                mFixedInsts[i].sTxPatternKey = atoi(r[0]["txantpatternkey"].c_str()); //! key 4
 				mFixedInsts[i].sTxAzimuth = atof(r[0]["txbearing"].c_str());
 				mFixedInsts[i].sTxMechTilt = atof(r[0]["txmechtilt"].c_str());
 				mFixedInsts[i].sRxPatternKey = atoi(r[0]["rxantpatternkey"].c_str());
@@ -2730,9 +2731,9 @@ bool cPlotTask::GetDBinfo()
 				mFixedInsts[i].sCStraffic = atof(r[0]["cstraffic"].c_str());
 				mFixedInsts[i].sPStraffic = atof(r[0]["pstraffic"].c_str());
 				mFixedInsts[i].sTechKey = atof(r[0]["techkey"].c_str());
-				dloffset = atof(r[0]["downlink"].c_str());
-				upoffset = atof(r[0]["uplink"].c_str());
-				chansep = atof(r[0]["spacing"].c_str());
+                dloffset = atof(r[0]["downlink"].c_str()); //! 1890
+                upoffset = atof(r[0]["uplink"].c_str());    //! 1880
+                chansep = atof(r[0]["spacing"].c_str());    //! 100
 				
 				query = "SELECT channel ";
 				query += "FROM cell CROSS JOIN frequencyallocationlist ";
@@ -2750,7 +2751,7 @@ bool cPlotTask::GetDBinfo()
 				} // if
 				else
 				{
-					gDb.GetLastResult(r);
+                    gDb.GetLastResult(r); //! size = 0, thus not entering the following if size>0
 					unsigned size = r.size();
 					if (size>0)
 					{
@@ -2778,6 +2779,8 @@ bool cPlotTask::GetDBinfo()
 		} // else
 	} // for
 	if (n>0) mMobile.sFrequency = aveUpFreq/n;
+    cout<<"perform sql for mMobile,  n: "<<n<<endl;
+//    getchar();
 	delete [] temp;
 	return true;
 }
