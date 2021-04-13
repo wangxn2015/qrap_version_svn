@@ -540,14 +540,14 @@ void cConfirmPrediction::on_btnDo_clicked()
 	{
 		for (int i = 0; i < tableWidget->rowCount();i++)//! 几个站
 		{
-			void *Wid = tableWidget->cellWidget(i,0);
+            void *Wid = tableWidget->cellWidget(i,0); //void* pointer
 			QCheckBox *get =(QCheckBox*) Wid;
             if (get->isChecked()) //! if选中该站
 			{
 				bool ok;
-				double Rad =tableWidget->item(i,2)->text().toDouble(&ok);//! 半径 e.g. 120
-				mRadInst.push_back((unsigned)tableWidget->item(i,4)->text().toDouble()); //! radio installation id
-				if ((plotResolutionSpinBox->value()/1000 <=Rad) && ok)
+                double Rad =tableWidget->item(i,2)->text().toDouble(&ok);//! 半径 e.g. 3
+                mRadInst.push_back((unsigned)tableWidget->item(i,4)->text().toDouble()); //! radio installation id, more like sector
+                if ((plotResolutionSpinBox->value()/1000 <=Rad) && ok) //! reslolution unit is meter  <= site radius
 				{
                     mRanges.push_back(tableWidget->item(i,2)->text().toDouble()); //kilometer
 				}
@@ -555,7 +555,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 				{
 					mRanges.push_back(plotResolutionSpinBox->value()/1000);
 				}
-				if (radioRadius->isChecked())
+                if (radioRadius->isChecked()) //according to radius
 				{
 					double Lat,Lon;
 					string PointString;
@@ -574,7 +574,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 						cout << err << endl;
 					}
 					pqxx::result SiteLoc;
-					gDb.GetLastResult(SiteLoc);
+                    gDb.GetLastResult(SiteLoc); //e.g. "POINT(-0.000278 -0.000278)" --- long,lat
 					if (SiteLoc.size() >0) //! 选出四个方向的最大范围,放在两个西北、东南角对象中
 					{	
 						PointString = SiteLoc[0]["location"].c_str();
@@ -602,7 +602,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 						East = max(East,Lon);
 						West = min(West,Lon);
 						//Check East
-						NewPoint.FromHere(Temp,Radius,90); //! 半径单位为m, 第三个参数为90
+                        NewPoint.FromHere(Temp,Radius,90); //! 半径单位为m, 第三个参数为90, point to East
 						NewPoint.Get(Lat,Lon);
 						North = max(North,Lat);
 						South = min(South,Lat);
@@ -682,6 +682,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 		DownLink = true;
 	else
 		DownLink = false;
+
 	RequiredSignalToNoise = RqSNSpinBox->value();
 	RequiredMinimumReceiverLevel= rxMinSpinBox->value();
 	FadeMargin = fadeMarginSpin->value();
@@ -689,12 +690,13 @@ void cConfirmPrediction::on_btnDo_clicked()
 	RequiredAdjacentCarrierToInterference=rqCiadSpinBox->value();
 	RequiredEnergyPerBitToNoiseRatio=rqEbNoSpinBox->value();
 	NoiseLevel=noiseLevelSpinBox->value();
-	kFactorForServers=kFactorServerSpinBox->value();
+
+    kFactorForServers=kFactorServerSpinBox->value(); //K factor
 	kFactorForInterferers=kFactorIntSpinBox->value();
 	
 	string query = "SELECT id,orderarray from filesetsused WHERE type = 'DEM'";
 	pqxx::result DEMset,Resolution;
-	if (!gDb.PerformRawSql(query))
+    if (!gDb.PerformRawSql(query)) //!e.g id=1, orderarray={1}
 	{
 		string err = "Database select on FileSetsUsed for DEM failed";
 		QMessageBox::information(this, "QRap", "Database select on FileSetsUsed for DEM failed");
@@ -709,7 +711,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 		//Why?
 		DEMsourceList = (int)atof(DEMset[0]["id"].c_str()); //! e.g. 为1
 		cout << "Source List: " << DEMsourceList <<endl;
-		string QueryResult=DEMset[0]["orderarray"].c_str();
+        string QueryResult=DEMset[0]["orderarray"].c_str(); //!{1}
 		int NumBytes = QueryResult.length();
 		int i=0;
 		IntArray FileSetOrder;
@@ -727,7 +729,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 			    	if (QueryResult[i]!='}') 
 					i++;
 				cout << temp << endl;
-			    	FileSetOrder.push_back(temp);
+                    FileSetOrder.push_back(temp); // put 1 into array
 			}// end while i<NumBytes
 			DEMFileKey = QString("%1").arg(FileSetOrder[0]);
 			cout << DEMFileKey.toStdString() << endl;
@@ -757,7 +759,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 //		QRAP_WARN(err.c_str());
 		cout << err << endl;	
 	}
-	
+    //----------------------------------------------------------
 	pqxx::result Clutter;
 	if (useClutterCheckBox->isChecked()) //! skip
 	{
@@ -786,7 +788,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 		ClutterSourceList = 1;
 		UseClutterDataInPathLossCalculations = false;
 	}
-	
+    //---------------------------------
 	PlotResolution=plotResolutionSpinBox->value();
 	if (PlotResolution <= DEMRes.toDouble())
 	{

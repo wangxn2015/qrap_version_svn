@@ -75,6 +75,20 @@ cPlotTask::~cPlotTask()
 }
 
 //**************************************************************************
+//  how to use
+//Prediction.SetPlotTask(	mPlotType, DisplayUnits, DownLink,
+//            RequiredSignalToNoise, RequiredMinimumReceiverLevel,
+//            FadeMargin, RequiredCoChannelCarrierToInterference,
+//            RequiredAdjacentCarrierToInterference, RequiredEnergyPerBitToNoiseRatio,
+//            NoiseLevel, kFactorForServers, kFactorForInterferers,
+//            DEMsourceList, ClutterSourceList, UseClutterDataInPathLossCalculations,
+//            NorthWestCorner, SouthEastCorner, PlotResolution,
+//            MinimumAngularResolution, MobileInstallationKey,
+//            NumberOfFixedInstallations, FixedInstallationKeys,
+//            CoverangeRanges, // In Kilometer
+//            DirectoryToStoreResult,
+//            OutputFileForResult);
+
 bool cPlotTask::SetPlotTask(	ePlotType PlotType,
 				eOutputUnits DisplayUnits,
 				bool Downlink,
@@ -130,7 +144,7 @@ bool cPlotTask::SetPlotTask(	ePlotType PlotType,
 	mSouthEast.Get(S,E);
 	mSouthWest.Set(S,W);
 	mNorthEast.Set(N,E); //! 4个角
-	mPlotResolution=PlotResolution;					
+    mPlotResolution=PlotResolution;	//! DEM mapfile resolution using now from US is 90m
 	mMinAngleRes=MinimumAngularResolution;			
 	mNumAngles = (unsigned)(360.0/mMinAngleRes);
 	mMobile.sInstKey=MobileInstallationKey;				
@@ -143,19 +157,19 @@ bool cPlotTask::SetPlotTask(	ePlotType PlotType,
 		tFixed tempInst;
 		tempInst.sInstKey = FixedInstallationKeys[i];
 		tempInst.sRange = CoverangeRanges[i];
-		tempInst.sRange *= 1000;
+        tempInst.sRange *= 1000; //! transform to meter
 		tempInst.sCentroidX = 0;
 		tempInst.sCentroidY = 0;
 		tempInst.sPixelCount = 0;
 		if (tempInst.sRange>mMaxRange) 
 			mMaxRange = tempInst.sRange;
-		mFixedInsts.push_back(tempInst);
+        mFixedInsts.push_back(tempInst); //! push in to all sector installtions
 	}
 	if (mMaxRange>0)
 	{
 		if (mMinAngleRes<(270*mPlotResolution/mMaxRange/PI))
 		{
-			if (mPlotResolution<0.5) mPlotResolution=20; 
+            if (mPlotResolution<0.5) mPlotResolution=20;  //! unit is meter
 			int mNumAngles = (int)ceil(1.5*PI*mMaxRange/mPlotResolution);
 			mMinAngleRes=360.0/(double)mNumAngles;
 		}
@@ -184,7 +198,7 @@ bool cPlotTask::SetPlotTask(	ePlotType PlotType,
 	mCols = (unsigned)((E-W)/(mEWres)); //! 列
 	delete_Float2DArray(mPlot);
 	delete_Float2DArray(mSupportPlot);
-	mPlot = new_Float2DArray(mRows,mCols); //! 按经纬度分辨率产生的矩阵
+    mPlot = new_Float2DArray(mRows,mCols); //! 按经纬度分辨率regenerate的矩阵
 	mSupportPlot = new_Float2DArray(mRows,mCols); //!
 	cGeoP MidNorth(N,(W+E)/2, DEG);
 	cGeoP Mid((N+S)/2,(E+W)/2,DEG);
