@@ -121,7 +121,7 @@ int cBTLPredict::Check_and_SetBTL(	int SiteID,
 		mDTMsource= DTMsource;	
 		mClutterSource=ClutterSource;
 	}
-	else //!相同，则反向替换。 留意mArraysPopulated 和 mBTLid
+    else //!相同，则反向替换(pass value to )。 留意mArraysPopulated 和 mBTLid
 	{
 		Radius=mRange;
 		NumAngles = mNumAngles;
@@ -135,7 +135,7 @@ int cBTLPredict::Check_and_SetBTL(	int SiteID,
 		cout << "	k: " << mkFactor;
 		cout << "	F_height: " << mFixedHeight;
 		cout << "	M_height: " << mMobileHeight << endl;
-		if (mArraysPopulated)
+        if (mArraysPopulated) //initial value is false
 			return mBTLid;
 	}
 	
@@ -435,16 +435,20 @@ int cBTLPredict::PredictBTL(unsigned NumAngles, unsigned NumDistance,
 	cout << "	M_height: " << mMobileHeight << endl;
 	PathLoss.setParameters(mkFactor,mFrequency,mFixedHeight,mMobileHeight,UseClutter,ClutterClassGroup);
 //	cout << "cBTLPredict::PredictBTL; Done setting PathLoss parameters";
+
+
+    //------------------------------------------------------
+
 	for (i=0; i<NumAngles; i++)
 	{	
 //		cout << "cBTLPredict::PredictBTL, setting DEM";
-		DTMProfile.SetProfile(mNumRadialPoints, DTM[i]);
+        DTMProfile.SetProfile(mNumRadialPoints, DTM[i]); //! put vals in DTM[i] to DTMprofile
 		if (UseClutter)
 			ClutterProfile.SetProfile(mNumRadialPoints, Clutter[i]);
 //		else cout << "cBTLPredict::PredictBTL, NOT setting clutter";
 		for (j=(NumDistance-1); j>0 ; j--)
 		{
-			mBTL[i][j] = PathLoss.TotPathLoss(DTMProfile, mTilt[i][j], ClutterProfile, DiffLoss, ClutterDepth);
+            mBTL[i][j] = PathLoss.TotPathLoss(DTMProfile, mTilt[i][j], ClutterProfile, DiffLoss, ClutterDepth); //! store value in mBTL
 			if ((mBTL[i][j]<-mMaxPathLoss)&&(j>MaxRadialP))
 			{
 				MaxRadialP = j;
@@ -456,6 +460,7 @@ int cBTLPredict::PredictBTL(unsigned NumAngles, unsigned NumDistance,
 		if (((double)i/20.0)==(i/20))
 			cout << "cBTLPredict::PredictBTL. Prediction progress: " << 100.0*i/NumAngles << endl;
 	}
+
 	for (i=0;i<mNumAngles;i++)
 	{
 		mBTL[i][0] = mBTL[i][1];

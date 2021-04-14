@@ -193,7 +193,7 @@ bool cPlotTask::SetPlotTask(	ePlotType PlotType,
 //					mSouthWest.Distance(mSouthEast));
 //	mRows = (int)ceil(mNorthWest.Distance(mSouthWest)/mPlotResolution);
 //	mCols = (int)ceil(WE/mPlotResolution);
-	mNSres = mPlotResolution*cDegResT; //! cDegResT=0.000833/90.0; 90米代表的经纬度
+    mNSres = mPlotResolution*cDegResT; //! cDegResT=0.000833/90.0; 90米代表的经纬度 // derive resolution in lat or long
 	mEWres = mPlotResolution*cDegResT;
 	mRows = (unsigned)((N-S)/(mNSres)); //! 行： 纬度差/纬度分辨率 ----关联栅格
 	mCols = (unsigned)((E-W)/(mEWres)); //! 列
@@ -713,7 +713,7 @@ bool cPlotTask::CombineCov()
 	Float2DArray Test2;
 	Float2DArray Inst;
 
-	if (mCols<mRows) //! 经度上的栅格数小于纬度上的栅格数，呈高大于宽的数组
+    if (mCols<mRows) //! 经度上的栅格数小于纬度上的栅格数，呈'高大于宽'的数组
 		cout << "vertical" << endl;
 	else cout << "horisontal" << endl;
 	
@@ -1313,7 +1313,7 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 	if (CovOrInt)
 		kFactor = mkFactorServ; //! 值被替换
 	else kFactor = mkFactorInt;
-	gcvt(mFixedInsts.size(),8,numSiteStr); //! 转换为字符串
+    gcvt(mFixedInsts.size(),8,numSiteStr); //! float转换为字符串
 	mNorthWest.Get(gLat,gLon); //! 西北角的经纬度
 
 	cout << "cPlotTask::UpdateActiveRasters. ";
@@ -1336,7 +1336,7 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 			{
 				
 				mInstCounter++;
-				if (mDownlink)
+                if (mDownlink) //here
 				{
 					EIRP = mFixedInsts[i].sEIRP;
 					TxPower = mFixedInsts[i].sTxPower;
@@ -1389,6 +1389,7 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 					err+= numSiteStr;
 					cout << err << endl;
 //					QRAP_INFO(err.c_str());
+
 					tempPlotRes = mPlotResolution;
 					tempNumAngles = mNumAngles;
 					tempAngRes = 360.0/tempNumAngles;
@@ -1397,9 +1398,11 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 					DTM = new_Float2DArray(tempNumAngles,tempNumDist); //! 数组 （角度数，距离点数）
 					Float2DArray Clutter;
 					cout << "NA: " << tempNumAngles << "	ND: " << tempNumDist << endl; 
+
 					if (mUseClutter) //! skip
 						Clutter = new_Float2DArray(tempNumAngles,tempNumDist);
-					//!	DTM中包含了每个基站周边的高度
+
+                    //!	vaiable DTM 中each value包含了每个基站周边的高度
 					mDEM.GetForCoverage(false, mFixedInsts[i].sSitePos, 
 									mFixedInsts[i].sRange, tempPlotRes, tempAngRes,
 									tempNumAngles, tempNumDist, DTM);
@@ -1429,6 +1432,10 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 					err+= numSiteStr;
 //					QRAP_INFO(err.c_str());
 					cout << err << endl;
+
+                    //----------------------------------
+                    //
+                    //----------------------------------
 					Prediction.mBTLPredict.SetMaxPathLoss(mMaxPathLoss);
 					//! 返回storeBTL
 					BTLkey = Prediction.mBTLPredict.PredictBTL(tempNumAngles, tempNumDist, tempPlotRes, 
@@ -1481,6 +1488,10 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 				err+= numSiteStr;
 //				QRAP_INFO(err.c_str());
 				cout << err << endl;
+
+
+                //--------------------------------------
+                //--------------------------------------------
 				//!  CalculateRadialCoverage
 				Prediction.CalculateRadialCoverage(AfterReceiver);  //! 这里有计算 func(true)
 
@@ -1492,13 +1503,14 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 				Temp.Get(dummy,pLon);
 				mFixedInsts[i].sSitePos.SetGeoType(DEG);
 				mFixedInsts[i].sSitePos.Get(pLat,pLon);
-				newRaster.sNSsize = 2*(int)ceil((gLat-pLat)/(mPlotResolution*cDegResT))+1;
-				newRaster.sEWsize = 2*(int)ceil((pLon-gLon)/(mPlotResolution*cDegResT))+1;
+                newRaster.sNSsize = 2*(int)ceil((gLat-pLat)/(mPlotResolution*cDegResT))+1; //!compare with northwest point of the chosen area
+                newRaster.sEWsize = 2*(int)ceil((pLon-gLon)/(mPlotResolution*cDegResT))+1;
 				pLat += ((double)newRaster.sNSsize * mPlotResolution * cDegResT)/2.0;
 				pLon -= ((double)newRaster.sEWsize * mPlotResolution * cDegResT)/2.0;
 				newRaster.sTop = (int)((gLat-pLat)/(mPlotResolution*cDegResT));
 				newRaster.sLeft = (int)((pLon-gLon)/(mPlotResolution*cDegResT));
 				Corner.Set(pLat,pLon,DEG);
+
 //				Temp.FromHere(mFixedInsts[i].sSitePos,mFixedInsts[i].sRange,0);
 //				Corner.FromHere(Temp,mFixedInsts[i].sRange,270);
 //				Corner.SetGeoType(DEG);
@@ -1566,7 +1578,7 @@ int cPlotTask::OrderAllPred()
 	cout << "In cPlotTask::OrderAllPred(). " << endl;
 
 	// Where prediction does exist update with the values from the prediction
-	for (i=0 ; i<mFixedInsts.size() ; i++) //! 区域内的基站数
+    for (i=0 ; i<mFixedInsts.size() ; i++) //! 区域内的基站sector数
 	{
 		if (mDownlink) //! here 基于下行，配置参数
 		{
@@ -1599,7 +1611,7 @@ int cPlotTask::OrderAllPred()
 								mFixedInsts[i].sInstKey,	FixedAzimuth, 
 								FixedMechTilt,	mMobile.sInstKey,
 								FixedHeight, MobileHeight, 
-								mFixedInsts[i].sFrequency, mkFactorServ,
+                                mFixedInsts[i].sFrequency, mkFactorServ, // 1880
 								mFixedInsts[i].sRange, 
 								mPlotResolution, mNumAngles, 
 								mDEMsource, mUseClutter, mClutterSource);
@@ -1613,6 +1625,9 @@ int cPlotTask::OrderAllPred()
 	// swapping of DEM, BTL and Ant rasters
 		
 	//Get Northern or Western most point of requested prediction
+
+//    double	mFixedInsts[i].sFEdge;		///< The "front-edge" of the forseen coverage plot in degrees North (or West)
+//    double	mFixedInsts[i].sBEdge; 	///< The "back-edge" of the forseen coverage plot in degrees North (or West)
 	if (mCols<=mRows) //! vertical
 		for (i=0; i<mFixedInsts.size(); i++)
 		{
@@ -2714,7 +2729,7 @@ bool cPlotTask::GetDBinfo()
 				latitude = atof((PointString.substr(spacePos,PointString.length()-1)).c_str());
 				mFixedInsts[i].sSitePos.Set(latitude,longitude,DEG);
 				mFixedInsts[i].sEIRP = atof(r[0]["eirp"].c_str());
-				mFixedInsts[i].sTxPower = atof(r[0]["txpower"].c_str());
+                mFixedInsts[i].sTxPower = atof(r[0]["txpower"].c_str()); //! 0?
 				mFixedInsts[i].sTxSysLoss = atof(r[0]["txlosses"].c_str());
 				mFixedInsts[i].sRxSysLoss = atof(r[0]["rxlosses"].c_str());
 				mFixedInsts[i].sRxSens = atof(r[0]["rxsensitivity"].c_str());

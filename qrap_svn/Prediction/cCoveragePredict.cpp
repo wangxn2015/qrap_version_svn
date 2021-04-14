@@ -101,11 +101,11 @@ int cCoveragePredict::SetCommunicationLink(	int		SiteID,
 	mTxSysLoss = TxSysLoss;		// in dB
 	mRxSysLoss = RxSysLoss;		// in dB
 	mRxSens = RxSens;		// in dBm
-	mFixedAzimuth = FixedAzimuth;	// in degrees 0 North, positive clockwise
-	mFixedMechTilt = FixedMechTilt;	// in degrees with 0 on horizon and positive down
+    mFixedAzimuth = FixedAzimuth;	//! in degrees 0 North, positive clockwise
+    mFixedMechTilt = FixedMechTilt;	//! in degrees with 0 on horizon and positive down
 	mNumAngles = NumAngles;
 	mAngleRes = 360.0/(double)mNumAngles;
-	mDistRes = DistanceRes;
+    mDistRes = DistanceRes; //e.g . 90m
 	
 	mFixedInst = FixedInst;
 	mMobileInst = MobileInst;
