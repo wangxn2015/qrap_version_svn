@@ -24,6 +24,7 @@
 
 #include "cPlotTask.h"
 #include <stdio.h>
+//#include <algorithm>
 
 using namespace Qrap;
 using namespace std;
@@ -712,6 +713,8 @@ bool cPlotTask::CombineCov()
 	
 	Float2DArray Test2;
 	Float2DArray Inst;
+    Float2DArray mPlot2;
+    mPlot2 = new_Float2DArray(mRows,mCols);
 
     if (mCols<mRows) //! 经度上的栅格数小于纬度上的栅格数，呈'高大于宽'的数组
 		cout << "vertical" << endl;
@@ -743,7 +746,10 @@ bool cPlotTask::CombineCov()
 	{
 		for (i=0;i<mRows;i++)
 			for (j=0;j<mCols;j++)
+            {
 				mPlot[i][j]=-9999; //! 初始值
+                mPlot2[i][j]=-9999;
+            }
 	}	
 
 	cout << "cPlotTask::CombineCov():  Before Order array;" << endl;
@@ -785,6 +791,7 @@ bool cPlotTask::CombineCov()
 							case Cov: //!
 								if (mActiveRasters[k].sRaster[ki][kj]>mRxMin)
 									mPlot[i][j]= max(mPlot[i][j],mActiveRasters[k].sRaster[ki][kj]);
+                                    mPlot2[i][j] = mPlot[i][j];
 								break;
 							case NumServers:
 								if (mActiveRasters[k].sRaster[ki][kj]>mRxMin)
@@ -857,6 +864,7 @@ bool cPlotTask::CombineCov()
 							case Cov:
 								if (mActiveRasters[k].sRaster[ki][kj]>mRxMin)
 									mPlot[i][j]= max(mPlot[i][j],mActiveRasters[k].sRaster[ki][kj]);
+                                    mPlot2[i][j] = mPlot[i][j];
 								break;
 							case NumServers:
 								if (mActiveRasters[k].sRaster[ki][kj]>mRxMin)
@@ -915,6 +923,30 @@ bool cPlotTask::CombineCov()
 */		}//end for j
 	}//! end horisontal
 	
+
+    for(i=0;i<mRows;i++)
+    {
+        for(j=0;j<mCols;j++)
+        {
+            int sum=0,c=0;
+            for(unsigned k=max((unsigned)0,i-1);k<=min(i+1,mRows-1);k++)
+            {
+                for(unsigned u=max((unsigned)0,j-1); u<=min(j+1,mCols-1);u++)
+                {
+                    sum+=mPlot2[k][u];
+                    c++;
+                }
+            }
+            mPlot[i][j]=(float)sum/c;
+        }
+    }
+    delete_Float2DArray(mPlot2);
+
+
+
+
+
+
 	cout << " Almost end of cPlotTask::CombineCov()" << endl;
 	if (mPlotType!=Cov)
 		for (i=0;i<mRows;i++)
@@ -929,7 +961,7 @@ bool cPlotTask::CombineCov()
 			if (mPlot[i][j]<-200)
 				CoveredPixels--;
 
-	double PercCoverage = 100*CoveredPixels/ mRows*mCols;	
+    double PercCoverage = 100*CoveredPixels/ (mRows*mCols);
 
 	if (mPlotType==SecondServer)
 	{
@@ -1269,7 +1301,7 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 		DoneEdge = N - (Here)*mPlotResolution*0.00083333/90.0; //! here 为0 时， 此值为N
 		FrontEdge = N - (Here+Advance+1)*mPlotResolution*0.00083333/90.0; //! 向南一段距离，单位为纬度Degree
 	}
-	else //horisontal
+    else //! horisontal
 	{
 		for (i=0; i<mActiveRasters.size(); i++)
 		{
@@ -1319,6 +1351,9 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 	cout << "cPlotTask::UpdateActiveRasters. ";
 	cout << "FrontEdge = " << FrontEdge << "	DoneEdge = " <<  DoneEdge << endl;
 
+    //----------------------------------
+    //! loop for each sector
+    //!
 	for (i=0; i<mFixedInsts.size(); i++)
 	{
 		if (((mCols<mRows)&&((mFixedInsts[i].sFEdge>=FrontEdge)
@@ -1361,7 +1396,7 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 					RxSens = mFixedInsts[i].sRxSens;
 				}
 				if (!CovOrInt) mFixedInsts[i].sRange=mMaxRange; 
-				//! 读取和设置一些值
+                //! 读取和设置一些值  	cCoveragePredict Prediction;
 				BTLkey = Prediction.SetCommunicationLink(mFixedInsts[i].sSiteID,
 										mDownlink, EIRP, TxPower, TxSysLoss, 
 										RxSysLoss, RxSens,
@@ -1402,7 +1437,9 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 					if (mUseClutter) //! skip
 						Clutter = new_Float2DArray(tempNumAngles,tempNumDist);
 
+                    //!------------------------------------------------------------
                     //!	vaiable DTM 中each value包含了每个基站周边的高度
+                    //! cRasterFileHandler 	mDEM;
 					mDEM.GetForCoverage(false, mFixedInsts[i].sSitePos, 
 									mFixedInsts[i].sRange, tempPlotRes, tempAngRes,
 									tempNumAngles, tempNumDist, DTM);
@@ -1435,9 +1472,11 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 
                     //----------------------------------
                     //
-                    //----------------------------------
+                    //!----------------------------------
 					Prediction.mBTLPredict.SetMaxPathLoss(mMaxPathLoss);
+
 					//! 返回storeBTL
+                    //! ----------------------------------
 					BTLkey = Prediction.mBTLPredict.PredictBTL(tempNumAngles, tempNumDist, tempPlotRes, 
 										DTM, mUseClutter, mClutterClassGroup, Clutter);
 					mFixedInsts[i].sRange = Prediction.mBTLPredict.GetRange();

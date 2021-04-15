@@ -441,6 +441,7 @@ bool cRasterFileHandler::GetForLink(cGeoP TxLoc, cGeoP RxLoc, double DistRes, cP
 }
 
 //*********************************************************************
+// Fixed = false
 bool cRasterFileHandler::GetForCoverage(bool Fixed, cGeoP SitePos, double &Range,
 					double &DistRes, double &AngRes,
 					unsigned &NumAngles, unsigned &NumDistance,
@@ -485,6 +486,7 @@ bool cRasterFileHandler::GetForCoverage(bool Fixed, cGeoP SitePos, double &Range
 		LoadedRastersList="'";
 		for (i=0; i<mCurrentRasters.size(); i++)
 		{
+            //! 	typedef	vector<pcRaster> VecRaster;
 			IsInSet = IsInSet || ((mCurrentRasters[i]->IsIn(edge))
 					&&(0==mCurrentRasters[i]->mFileSetLevel));
 			LoadedRastersList+=mCurrentRasters[i]->mFilename;
@@ -570,6 +572,8 @@ bool cRasterFileHandler::GetForCoverage(bool Fixed, cGeoP SitePos, double &Range
 	bool ToSwitch=false;
 	bool Available=true;
 
+    //-----------------------------
+    //! 获取各点数据
 	for (i=0; i<NumAngles; i++)
 	{
 		for(j=1; j<NumDistance; j++)

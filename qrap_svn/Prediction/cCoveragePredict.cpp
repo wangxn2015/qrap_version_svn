@@ -173,7 +173,7 @@ bool cCoveragePredict::CalculateRadialCoverage(bool AfterReceiver)
 	if (AfterReceiver) //! true
 	{
 		if (mDownLink) //true
-			LinkOtherGain = mEIRP + mMobileAntenna.mGain - mRxSysLoss;
+            LinkOtherGain = mEIRP + mMobileAntenna.mGain - mRxSysLoss; // 发射+发射天线+接收天线增益
 		else
 			LinkOtherGain = mEIRP + mFixedAntenna.mGain - mRxSysLoss;
 	}
@@ -184,7 +184,7 @@ bool cCoveragePredict::CalculateRadialCoverage(bool AfterReceiver)
 		for (j=0; j<mNumRadialPoints; j++)
 		{
 			AntValue = mFixedAntenna.GetPatternValue(i*mAngleRes, mBTLPredict.mTilt[i][j]);
-			mRxLev[i][j] = - mBTLPredict.mBTL[i][j] + LinkOtherGain - AntValue;
+            mRxLev[i][j] = - mBTLPredict.mBTL[i][j] + LinkOtherGain - AntValue; //减掉路损和天线配置中的计算值
 		}
 //		cout << endl;
 	}
@@ -193,6 +193,8 @@ bool cCoveragePredict::CalculateRadialCoverage(bool AfterReceiver)
 }
 
 //*****************************************************************************
+//! Prediction.InterpolateToSquare(mFixedInsts[i].sSitePos, Corner, newRaster.sRaster,
+//!            mPlotResolution, newRaster.sNSsize,newRaster.sEWsize);
 bool cCoveragePredict::InterpolateToSquare(cGeoP SitePos, cGeoP NW, // the centre of the top-left corner
 					Float2DArray &Result, 
 					double res, int &rows, int&cols)

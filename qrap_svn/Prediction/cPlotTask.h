@@ -228,6 +228,7 @@ enum ePlotType
 			unsigned		mNumFixed;	///< Number of fixed radion installations.
 			vector<tFixed>		mFixedInsts;	///< Inforamtion on the fixed installations
 			Float2DArray		mPlot;		///< Result of the plot
+//            Float2DArray		mPlot2;		///< Result of the plot
 			Float2DArray		mSupportPlot;	///< secodary/supporting information e.g. signal strength incase of Prim Server
 			unsigned		mRows;		///< Number of rows of the plot
 			unsigned		mCols;		///< Number of colunms of the plot

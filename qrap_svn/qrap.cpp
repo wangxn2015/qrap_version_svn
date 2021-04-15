@@ -68,6 +68,7 @@ static const QString sPluginVersion = QObject::tr("Version 0.1");
 //************************************************************************
 QRap::~QRap()
 {
+
 }
 
 //

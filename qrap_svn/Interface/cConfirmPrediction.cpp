@@ -865,10 +865,11 @@ void cConfirmPrediction::on_btnDo_clicked()
  				||(mPlotType==NumServers)||(mPlotType==SN)
 				||(TrafficDist==mPlotType)||(CellCentroid==mPlotType))
  	{
-        //--------------------------
+        //!--------------------------
         //! key implementation here //
-        //-------------------------------
+        //!-------------------------------
         Prediction.CombineCov(); //! 重要函数
+
 		if (CellCentroid==mPlotType) //! skip
 		{
 			Prediction.CellCentriods();
