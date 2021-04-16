@@ -788,6 +788,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 		ClutterSourceList = 1;
 		UseClutterDataInPathLossCalculations = false;
 	}
+
     //---------------------------------
 	PlotResolution=plotResolutionSpinBox->value();
 	if (PlotResolution <= DEMRes.toDouble())
@@ -819,8 +820,9 @@ void cConfirmPrediction::on_btnDo_clicked()
 	bool FileWritten=false;
 	cPlotTask Prediction; //! ! 重要函数
 
-	//----------------------------
-
+    //!----------------------------
+    //!----------------------------
+    //!
 	Prediction.SetPlotTask(	mPlotType, DisplayUnits, DownLink,
 				RequiredSignalToNoise, RequiredMinimumReceiverLevel,
 				FadeMargin, RequiredCoChannelCarrierToInterference,
@@ -869,6 +871,7 @@ void cConfirmPrediction::on_btnDo_clicked()
         //! key implementation here //
         //!-------------------------------
         Prediction.CombineCov(); //! 重要函数
+        //-------------------------------
 
 		if (CellCentroid==mPlotType) //! skip
 		{

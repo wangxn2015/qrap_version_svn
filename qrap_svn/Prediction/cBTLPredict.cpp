@@ -287,7 +287,7 @@ int cBTLPredict::StoreBTL()
 	// \TODO this is not windows ready and it assumes that the directory is complete
 	mBTLfile =mBTLdir;
 	mBTLfile+="S";
-	gcvt(mSiteID,8,tempc);
+    gcvt(mSiteID,8,tempc); //! site
 	mBTLfile += tempc;
 	mBTLfile+="K";
 	
@@ -302,7 +302,7 @@ int cBTLPredict::StoreBTL()
 		pqxx::result r;
 		gDb.GetLastResult(r);
 		BTLkey = atoi(r[0][0].c_str())+1;
-		gcvt(BTLkey,8,tempc);
+        gcvt(BTLkey,8,tempc); //! sequence number
 		mBTLfile+=tempc;
 	}
 	
@@ -455,7 +455,7 @@ int cBTLPredict::PredictBTL(unsigned NumAngles, unsigned NumDistance,
 				mMaxPathLossReached = true;	
 			}
 			if (UseClutter) ClutterProfile.ReduceSize();
-			DTMProfile.ReduceSize();
+            DTMProfile.ReduceSize(); //! 该值的减小是为了上面的pathloss计算
 		}
 		if (((double)i/20.0)==(i/20))
 			cout << "cBTLPredict::PredictBTL. Prediction progress: " << 100.0*i/NumAngles << endl;
