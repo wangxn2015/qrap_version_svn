@@ -70,6 +70,9 @@ void MouseEvents::canvasMoveEvent(QgsMapMouseEvent * e)
 {
     	QgsPoint point = mCanvas->getCoordinateTransform()->toMapCoordinates(e->pos().x(), e->pos().y());
    	emit MouseMove(point);
+
+
+
 }
 
 

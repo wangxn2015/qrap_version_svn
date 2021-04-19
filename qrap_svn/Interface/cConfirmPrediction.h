@@ -80,6 +80,7 @@ public:
 	cConfirmPrediction( QgisInterface * QgisInt, QWidget* parent = 0, Qt::WFlags fl = 0 );
 	virtual ~cConfirmPrediction();
 	bool SetPoints(QList<QgsPoint> Points);
+    QgsRasterLayer *mRasterLayerO;
 
 public slots:
 	void on_btnCancel_clicked();
@@ -133,6 +134,8 @@ private:
 	QList<unsigned> mRadInst;
 	QList<double> mRanges;
 	QList<QgsColorRampShader::ColorRampItem> mColorRampItems;
+
+
 	
 };
 }

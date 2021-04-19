@@ -923,7 +923,7 @@ bool cPlotTask::CombineCov()
 */		}//end for j
 	}//! end horisontal
 	
-
+    // added by wxn
     for(i=0;i<mRows;i++)
     {
         for(j=0;j<mCols;j++)
@@ -942,9 +942,7 @@ bool cPlotTask::CombineCov()
     }
     delete_Float2DArray(mPlot2);
 
-
-
-
+    //-----------------------------------
 
 
 	cout << " Almost end of cPlotTask::CombineCov()" << endl;

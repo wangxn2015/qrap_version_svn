@@ -34,6 +34,7 @@
 #include <QToolBar>
 #include <QMessageBox>
 #include <stdio.h>
+#include <qgsrasteridentifyresult.h> //added by wxn
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -68,7 +69,7 @@ static const QString sPluginVersion = QObject::tr("Version 0.1");
 //************************************************************************
 QRap::~QRap()
 {
-
+    disconnect(Mouse, SIGNAL(MouseMove(QgsPoint&)), 0, 0);
 }
 
 //
@@ -165,6 +166,8 @@ void QRap::initGui()
   	connect(Mouse, SIGNAL(RightPoint(QgsPoint&)), this, SLOT(ReceivedRightPoint(QgsPoint&)));
   	connect(Mouse, SIGNAL(LeftPoint(QgsPoint&)), this, SLOT(ReceivedLeftPoint(QgsPoint&)));
 //	connect(Mouse, SIGNAL(canvasClicked(QgsPoint&, Qt::MouseButton)), this, SLOT(ReceivedLeftPoint(QgsPoint&)));
+
+
 }
 
 //****************************************************************************************
@@ -412,7 +415,8 @@ void QRap::PlaceSite()
 //************************************************************************************
 void QRap::Prediction()
 {
-	cout << " in QRap::Prediction() " << endl;
+    disconnect(Mouse, SIGNAL(MouseMove(QgsPoint&)), 0, 0);
+    cout << " in QRap::Prediction() " << endl;
 	mMouseType = AREA;
 	InitRubberBand(true);
 }
@@ -690,6 +694,58 @@ void QRap::ReceiveMouseMove(QgsPoint &Point)
 	}
 }
 
+
+
+//! added by wxn
+void QRap::ReadMap(QgsPoint &Point)
+{
+    //cout << "QRap::ReceiveMouseMove_ReadMap" << endl;
+
+
+
+           /** \brief Identify raster value(s) found on the point position. The context
+            *         parameters theExtent, theWidth and theHeight are important to identify
+            *         on the same zoom level as a displayed map and to do effective
+            *         caching (WCS). If context params are not specified the highest
+            *         resolution is used. capabilities() may be used to test if format
+            *         is supported by provider. Values are set to 'no data' or empty string
+            *         if point is outside data source extent.
+            *
+            * \note  The arbitraryness of the returned document is enforced by WMS standards
+            *        up to at least v1.3.0
+            * @param thePoint coordinates in data source CRS
+            * @param theFormat result format
+            * @param theExtent context extent
+            * @param theWidth context width
+            * @param theHeight context height
+            * @param theDpi context dpi
+            * @return QgsRaster::IdentifyFormatValue: map of values for each band, keys are band numbers
+            *         (from 1).
+            *         QgsRaster::IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer
+            *         (WMS) - TODO: it is not consistent with QgsRaster::IdentifyFormatValue.
+            *         QgsRaster::IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
+            *         Empty if failed or there are no results (TODO: better error reporting).
+            */
+           //! virtual QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0, int theDpi = 96 );
+            //QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0, int theDpi = 96 );
+
+    QgsRasterLayer *RasterLayerO=this->mConfirmPrediction->mRasterLayerO;
+    if(RasterLayerO)
+    {
+        QgsRasterIdentifyResult tempt = RasterLayerO->dataProvider()->identify(Point,QgsRaster::IdentifyFormatValue);
+        if(tempt.isValid())
+        {
+            cout<<(tempt.results())[1].toInt()<<endl;
+        }
+    }
+
+
+
+
+
+}
+
+
 //***************************************************************************************
 void QRap::UpdateSiteLayer()
 {
@@ -759,14 +815,19 @@ void QRap::PerformLink()
 /***************************************************************/
 bool QRap::PerformPrediction()
 {
-	cConfirmPrediction *ConfirmPrediction = 
-			new cConfirmPrediction(mQGisIface, mQGisIface->mainWindow(), QgisGui::ModalDialogFlags);
-	if (ConfirmPrediction->SetPoints(mPoints)) //!把选取范围的点传递给 预测对象
+//	cConfirmPrediction *ConfirmPrediction =
+//			new cConfirmPrediction(mQGisIface, mQGisIface->mainWindow(), QgisGui::ModalDialogFlags);
+    mConfirmPrediction =
+            new cConfirmPrediction(mQGisIface, mQGisIface->mainWindow(), QgisGui::ModalDialogFlags);
+
+
+    if (mConfirmPrediction->SetPoints(mPoints)) //!把选取范围的点传递给 预测对象
 	{
-		if (ConfirmPrediction->exec()==1) //! 执行显示
+        if (mConfirmPrediction->exec()==1) //! 执行显示
 		{
 			mQGisIface->mapCanvas()->refresh();
 		}//if accepted
+        connect(Mouse, SIGNAL(MouseMove(QgsPoint&)), this, SLOT(ReadMap(QgsPoint&))); //! added by wxn
 	}//if has sites
 	return true;
 }
@@ -929,7 +990,8 @@ void QRap::SelectLink()
 //************************************************************************************
 void QRap::Preferences()
 {
-	PreferencesDialog *Preferences = new PreferencesDialog();
+    disconnect(Mouse, SIGNAL(MouseMove(QgsPoint&)), 0, 0);
+    PreferencesDialog *Preferences = new PreferencesDialog();
 	Preferences->show();
 }
 

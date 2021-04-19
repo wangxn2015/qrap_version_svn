@@ -882,7 +882,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 			Prediction.DetermineTrafficDist(true); // only do packet data
 //			Prediction.DetermineTrafficDist(false);
 		}
-		FileWritten = Prediction.WriteOutput(DEG); //! 看这里 输出
+        FileWritten = Prediction.WriteOutput(DEG); //! 看这里 输出了文件。
  	}
  	else //! skip
  	{
@@ -931,7 +931,8 @@ void cConfirmPrediction::on_btnDo_clicked()
 	QString File = DirectoryToStoreResult.c_str();
 	File +="/"; //\TODO: Windows....
 	File+=OutputFileForResult.c_str();
-	QgsRasterLayer *mRasterLayerO = mQGisIface->addRasterLayer(File); //!把栅格文件加入到qgis图层显示中。 栅格图层
+//	QgsRasterLayer *mRasterLayerO = mQGisIface->addRasterLayer(File); //!把栅格文件加入到qgis图层显示中。 栅格图层
+    mRasterLayerO = mQGisIface->addRasterLayer(File); //!把栅格文件加入到qgis图层显示中。 栅格图层
 	QgsRasterTransparency *Deurskynend= new QgsRasterTransparency();
 
 	QgsRasterTransparency::TransparentSingleValuePixel myTransparentPixel; // setting null value transparancy
@@ -1045,12 +1046,13 @@ void cConfirmPrediction::on_btnDo_clicked()
       		if (discrete)
       			colorRampShader->setColorRampType(QgsColorRampShader::DISCRETE);
       		else
-      			colorRampShader->setColorRampType(QgsColorRampShader::INTERPOLATED);
+                colorRampShader->setColorRampType(QgsColorRampShader::INTERPOLATED); //enter here
  		rasterShader->setRasterShaderFunction( colorRampShader );
   		QgsSingleBandPseudoColorRenderer* r = 
 				new QgsSingleBandPseudoColorRenderer( mRasterLayerO->dataProvider(), 1, rasterShader );
 		r->setRasterTransparency(Deurskynend);
   		mRasterLayerO->setRenderer( r );
+
 
     	} //end if there is a RasterShader
 
@@ -1061,6 +1063,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 	mQGisIface->mapCanvas()->refresh(); 
 	pushButtonPrint->setEnabled(true);
 	btnDone->setEnabled(true);
+    cout<<"do button finish"<<endl;
 }
 
 //*************************************************************************************

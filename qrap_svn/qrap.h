@@ -197,6 +197,7 @@ public slots:
 	void ReceivedRightPoint(QgsPoint &);
 	void ReceivedLeftPoint(QgsPoint &);
 	void ReceiveMouseMove(QgsPoint &);
+    void ReadMap(QgsPoint &);
 
 
 private:
@@ -262,5 +263,7 @@ private:
 	bool mLoaded;
 	// the username and password for the database login.
   	string machinename;
+
+    cConfirmPrediction *mConfirmPrediction;
 };
 #endif //QRap_H
