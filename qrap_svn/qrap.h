@@ -108,6 +108,7 @@ using namespace std;
 #undef CPL_SUPRESS_CPLUSPLUS
 
 //forward declarations
+
 class QAction;
 class QToolBar;
 
@@ -198,6 +199,7 @@ public slots:
 	void ReceivedLeftPoint(QgsPoint &);
 	void ReceiveMouseMove(QgsPoint &);
     void ReadMap(QgsPoint &);
+    void ReadValueFromMap();
 
 
 private:
@@ -238,7 +240,11 @@ private:
   	QAction *mImportExportAction;
   	QAction *mHelpAction;
 	QAction *mMeasAnalysisAction;
+
+    QAction *mReadValueAction; //added by wxn
 //  	QAction *mColourManagerAction;
+//    QgisApp *mQGisApp;
+    QWidget *mQGisApp;
 
   
   	void PlaceSiteDialog(double lat, double lon,bool IsOld);
@@ -265,5 +271,6 @@ private:
   	string machinename;
 
     cConfirmPrediction *mConfirmPrediction;
+    QgsMapTool *mMapToolIdentify;
 };
 #endif //QRap_H

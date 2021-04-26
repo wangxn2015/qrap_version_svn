@@ -35,6 +35,7 @@
 #include <QMessageBox>
 #include <stdio.h>
 #include <qgsrasteridentifyresult.h> //added by wxn
+#include "app/qgsmaptoolidentifyaction.h"
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -93,6 +94,15 @@ void QRap::initGui()
     mDeleteSiteAction = new QAction(QIcon(":/qrap/SiteDelete.png"),tr("Q-Rap: Delete a Site"), this);
     mRadioAction = new QAction(QIcon(":/qrap/Coverage.png"),tr("Q-Rap: Perform a Prediction"), this);
     mPreferencesAction = new QAction(QIcon(":/qrap/Preferences.png"),tr("Q-Rap Preferences"), this);
+    //! add by wxn
+    //!
+    mReadValueAction = new QAction(QIcon(":/qrap/Coverage.png"),tr("Q-Rap: read layer value"), this); //! change icon
+
+//    mQGisApp = static_cast<QgisApp*>(mQGisIface->mainWindow()); //
+
+    mQGisApp = mQGisIface->mainWindow(); //
+
+
     //wangxiaonan
 //	mLinkAction = new QAction(QIcon(":/qrap/Link.png"),tr("Q-Rap: Link Analysis"), this);
 //	mSelectLinkAction = new QAction(QIcon(":/qrap/LinkSelect.png"),tr("Q-Rap: Select a Link"), this);
@@ -115,6 +125,17 @@ void QRap::initGui()
   	connect(mDeleteSiteAction, SIGNAL(activated()), this, SLOT(DeleteSite()));
     connect(mPreferencesAction, SIGNAL(activated()), this, SLOT(Preferences()));
     connect(mRadioAction, SIGNAL(activated()), this, SLOT(Prediction()));
+
+    //-------------------------------------------------------------------------------------
+    //! added by wxn
+    connect(mReadValueAction,SIGNAL(activated()),this,SLOT(ReadValueFromMap()));
+
+    mMapToolIdentify = new QgsMapToolIdentifyAction( mQGisIface->mainWindow(),mQGisIface->mapCanvas() );
+    mMapToolIdentify->setAction( mReadValueAction ); //! for action destroy operation
+    connect( mMapToolIdentify, SIGNAL( copyToClipboard( QgsFeatureStore & ) ),
+             this, SLOT( copyFeatures( QgsFeatureStore & ) ) );
+
+    //---------------------------------------------------------------------------------
 
 //  connect(mLinkAction, SIGNAL(activated()), this, SLOT(CreateLinkAnalysis()));
 //  connect(mDeleteLinkAction, SIGNAL(activated()), this, SLOT(DeleteLink()));
@@ -169,6 +190,15 @@ void QRap::initGui()
 
 
 }
+
+//-----------------------------------------------
+void QRap::ReadValueFromMap()
+{
+   mQGisIface->mapCanvas()->setMapTool( mMapToolIdentify );
+
+
+}
+
 
 //****************************************************************************************
 //method defined in interface
@@ -738,9 +768,6 @@ void QRap::ReadMap(QgsPoint &Point)
             cout<<(tempt.results())[1].toInt()<<endl;
         }
     }
-
-
-
 
 
 }

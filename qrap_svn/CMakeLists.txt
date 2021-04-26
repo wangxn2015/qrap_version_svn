@@ -594,6 +594,14 @@ SET (qrap_SRCS
 	ExportImport/backup/backup.cpp
 	ExportImport/backup/restore.cpp
 	ExportImport/mergedelete/mergedelete.cpp
+
+        app/qgsmaptool.cpp
+        app/qgsidentifymenu.cpp
+        app/qgsmaptoolidentify.cpp
+        app/qgsidentifyresultsdialog.cpp
+        app/qgsmaptoolidentifyaction.cpp
+#        app/qgisapp.cpp
+
 )
 
 SET (qrap_PLUGIN_SRCS
@@ -619,6 +627,9 @@ SET (qrap_UIS
 	Interface/FilterDialog.ui
    	Interface/ConfirmPrediction.ui
 	DataBase/Filter.ui
+        app/qgsidentifyresultsbase.ui
+
+
 )
 
 SET (qrap_MOC_HDRS
@@ -714,6 +725,13 @@ SET (qrap_MOC_HDRS
 	ExportImport/backup/backup.h
 	ExportImport/backup/restore.h
 	ExportImport/mergedelete/mergedelete.h
+
+        app/qgsmaptool.h
+        app/qgsidentifymenu.h
+        app/qgsmaptoolidentify.h
+        app/qgsidentifyresultsdialog.h
+        app/qgsmaptoolidentifyaction.h
+#        app/qgisapp.h
 )
 
 SET (qrap_PLUGIN_MOC_HDRS
