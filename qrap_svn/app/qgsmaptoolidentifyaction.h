@@ -17,7 +17,7 @@
 #define QGSMAPTOOLIDENTIFYACTION_H
 
 #include "qgis.h"
-#include "qgsmaptoolidentify.h"
+#include <qgsmaptoolidentify.h>
 #include "qgspoint.h"
 #include "qgsfeature.h"
 #include "qgsfeaturestore.h"

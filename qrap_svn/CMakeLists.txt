@@ -595,12 +595,17 @@ SET (qrap_SRCS
 	ExportImport/backup/restore.cpp
 	ExportImport/mergedelete/mergedelete.cpp
 
-        app/qgsmaptool.cpp
-        app/qgsidentifymenu.cpp
-        app/qgsmaptoolidentify.cpp
+#        app/qgsmaptool.cpp
+#        app/qgsidentifymenu.cpp
+#        app/qgsmaptoolidentify.cpp
         app/qgsidentifyresultsdialog.cpp
         app/qgsmaptoolidentifyaction.cpp
+        app/qgsattributetabledialog.cpp
+        app/qgsfeatureaction.cpp
 #        app/qgisapp.cpp
+        attributetable/qgsattributetableview.cpp
+        attributetable/qgsfeaturelistview.cpp
+        attributetable/qgsfieldconditionalformatwidget.cpp
 
 )
 
@@ -626,8 +631,11 @@ SET (qrap_UIS
 	Interface/DeleteObject.ui
 	Interface/FilterDialog.ui
    	Interface/ConfirmPrediction.ui
-	DataBase/Filter.ui
+        DataBase/Filter.ui
         app/qgsidentifyresultsbase.ui
+        app/qgsattributetabledialog.ui
+        app/qgsdualviewbase.ui
+        app/qgsfieldconditionalformatwidget.ui
 
 
 )
@@ -726,12 +734,20 @@ SET (qrap_MOC_HDRS
 	ExportImport/backup/restore.h
 	ExportImport/mergedelete/mergedelete.h
 
-        app/qgsmaptool.h
-        app/qgsidentifymenu.h
-        app/qgsmaptoolidentify.h
+#        app/qgsmaptool.h
+#        app/qgsidentifymenu.h
+#        app/qgsmaptoolidentify.h
         app/qgsidentifyresultsdialog.h
         app/qgsmaptoolidentifyaction.h
+        app/qgsattributetabledialog.h
+        app/qgsfeatureaction.h
 #        app/qgisapp.h
+        attributetable/qgsattributetableview.h
+        attributetable/qgsfeaturelistview.h
+        attributetable/qgsfieldconditionalformatwidget.h
+
+
+
 )
 
 SET (qrap_PLUGIN_MOC_HDRS

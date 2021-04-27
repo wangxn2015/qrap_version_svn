@@ -216,8 +216,8 @@ private:
   	QgisInterface *mQGisIface;
   	//!pointer to the qaction for this plugin
   	QAction * mQActionPointer;
-    	//! Pionter to QGIS main application object
-    	QWidget *qgisMainWindow;
+    //! Pionter to QGIS main application object
+    QWidget *qgisMainWindow;
 
   	////////////////////////////////////////////////////////////////////
   	//
@@ -243,7 +243,8 @@ private:
 
     QAction *mReadValueAction; //added by wxn
 //  	QAction *mColourManagerAction;
-//    QgisApp *mQGisApp;
+
+
     QWidget *mQGisApp;
 
   

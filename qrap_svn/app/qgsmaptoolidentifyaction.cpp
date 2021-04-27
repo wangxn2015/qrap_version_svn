@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgisapp.h"
+//#include "qgisapp.h"
 #include "qgsattributetabledialog.h"
 #include "qgscursors.h"
 #include "qgsdistancearea.h"
@@ -73,7 +73,7 @@ QgsIdentifyResultsDialog *QgsMapToolIdentifyAction::resultsDialog()
 {
   if ( !mResultsDialog ) //! if it doesn't exist
   {
-    mResultsDialog = new QgsIdentifyResultsDialog( mCanvas, mCanvas->window() );
+    mResultsDialog = new QgsIdentifyResultsDialog(mQGisApp,mCanvas,mCanvas->window());
 
     connect( mResultsDialog, SIGNAL( formatChanged( QgsRasterLayer * ) ), this, SLOT( formatChanged( QgsRasterLayer * ) ) );
     connect( mResultsDialog, SIGNAL( copyToClipboard( QgsFeatureStore & ) ), this, SLOT( handleCopyToClipboard( QgsFeatureStore & ) ) );
@@ -86,7 +86,7 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer* layer, const QLi
 {
   resultsDialog()->clear();
 
-  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer );
+  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer ); //! learn this
   if ( !vl )
     return;
 

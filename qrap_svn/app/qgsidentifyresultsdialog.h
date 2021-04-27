@@ -288,7 +288,7 @@ class QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdentifyResultsBa
     QgsExpressionContextScope mExpressionContextScope;
 
 //    QgisApp *mQGisApp;
-    QWidget *mQGisApp;
+    QMainWindow *mQGisApp;
 };
 
 class QgsIdentifyResultsDialogMapLayerAction : public QAction

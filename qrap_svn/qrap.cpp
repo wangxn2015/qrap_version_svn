@@ -29,6 +29,7 @@
 #include <qgisinterface.h>
 #include <qgisgui.h>
 
+
 // Qt4 Related Includes
 #include <QAction>
 #include <QToolBar>
@@ -96,12 +97,12 @@ void QRap::initGui()
     mPreferencesAction = new QAction(QIcon(":/qrap/Preferences.png"),tr("Q-Rap Preferences"), this);
     //! add by wxn
     //!
-    mReadValueAction = new QAction(QIcon(":/qrap/Coverage.png"),tr("Q-Rap: read layer value"), this); //! change icon
+    mReadValueAction = new QAction(QIcon(":/qrap/Coverage.png"),tr("Q-Rap: read layer value"), this); //! change icon later..
 
 //    mQGisApp = static_cast<QgisApp*>(mQGisIface->mainWindow()); //
 
     mQGisApp = mQGisIface->mainWindow(); //
-
+//-------------------------------------------------
 
     //wangxiaonan
 //	mLinkAction = new QAction(QIcon(":/qrap/Link.png"),tr("Q-Rap: Link Analysis"), this);
@@ -191,14 +192,17 @@ void QRap::initGui()
 
 }
 
-//-----------------------------------------------
+
+//!------------------------------------------------
+//!-----------------------------------------------
 void QRap::ReadValueFromMap()
 {
    mQGisIface->mapCanvas()->setMapTool( mMapToolIdentify );
 
 
 }
-
+//!------------------------------------------------
+//!
 
 //****************************************************************************************
 //method defined in interface

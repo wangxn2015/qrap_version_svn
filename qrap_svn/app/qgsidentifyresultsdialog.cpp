@@ -22,7 +22,7 @@
 #include "qgsattributedialog.h"
 #include "qgsdockwidget.h"
 #include "qgseditorwidgetregistry.h"
-//#include "qgsfeatureaction.h"
+#include "qgsfeatureaction.h"
 #include "qgsgeometry.h"
 #include "qgshighlight.h"
 #include "qgsidentifyresultsdialog.h"
@@ -61,6 +61,8 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QRegExp>
+#include <QMainWindow>
+
 
 //graph
 #include <qwt_plot.h>
@@ -310,22 +312,26 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QWidget *QGisApp, QgsMapCanv
     , mActionPopup( nullptr )
     , mCanvas( canvas )
     , mDock( nullptr )
-    , mQGisApp(QGisApp)
+
 {
   setupUi( this );
+
+  //!---------------------------
+  mQGisApp = static_cast<QMainWindow*>(QGisApp);
 
   mOpenFormAction->setDisabled( true );
 
   QSettings mySettings;
 //  mDock = new QgsDockWidget( tr( "Identify Results" ), QgisApp::instance() );
     mDock = new QgsDockWidget( tr( "Identify Results" ), mQGisApp );
+
   mDock->setObjectName( "IdentifyResultsDock" );
   mDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   mDock->setWidget( this );
   if ( !mQGisApp->restoreDockWidget( mDock ) )
     mQGisApp->addDockWidget( Qt::RightDockWidgetArea, mDock );
-  else
-    mQGisApp->panelMenu()->addAction( mDock->toggleViewAction() );
+//  else
+//    mQGisApp->panelMenu()->addAction( mDock->toggleViewAction() );
 
   int size = mySettings.value( "/IconSize", 16 ).toInt();
   if ( size > 32 )
@@ -1736,7 +1742,7 @@ void QgsIdentifyResultsDialog::layerProperties( QTreeWidgetItem *item )
   if ( !vlayer )
     return;
 
-  mQGisApp->showLayerProperties( vlayer );
+//  mQGisApp->showLayerProperties( vlayer ); //! to do wxn
 }
 
 void QgsIdentifyResultsDialog::expandAll()
