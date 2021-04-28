@@ -29,7 +29,7 @@
 #include <QPointer>
 
 class QgisApp;
-class QgsIdentifyResultsDialog;
+class QgsReadMapValue;
 class QgsMapLayer;
 class QgsRasterLayer;
 class QgsVectorLayer;
@@ -80,9 +80,9 @@ class QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
   private:
     //! Pointer to the identify results dialog for name/value pairs
-    QPointer<QgsIdentifyResultsDialog> mResultsDialog;
+    QPointer<QgsReadMapValue> mResultsDialog;
 
-    QgsIdentifyResultsDialog *resultsDialog();
+    QgsReadMapValue *resultsDialog();
 
     virtual QGis::UnitType displayDistanceUnits() const override;
     virtual QgsUnitTypes::AreaUnit displayAreaUnits() const override;

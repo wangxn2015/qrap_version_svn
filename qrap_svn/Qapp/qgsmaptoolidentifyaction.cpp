@@ -15,14 +15,17 @@
 
 #include "qgsapplication.h"
 //#include "qgisapp.h"
-#include "qgsattributetabledialog.h"
+//#include "qgsattributetabledialog.h"
 #include "qgscursors.h"
 #include "qgsdistancearea.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
-#include "qgsidentifyresultsdialog.h"
+//#include "qgsidentifyresultsdialog.h"
+
+#include "qgsreadmapvalue.h"
+
 #include "qgsidentifymenu.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
@@ -69,14 +72,16 @@ QgsMapToolIdentifyAction::~QgsMapToolIdentifyAction()
   }
 }
 
-QgsIdentifyResultsDialog *QgsMapToolIdentifyAction::resultsDialog()
+//QgsIdentifyResultsDialog *QgsMapToolIdentifyAction::resultsDialog()
+QgsReadMapValue* QgsMapToolIdentifyAction::resultsDialog()
 {
   if ( !mResultsDialog ) //! if it doesn't exist
   {
-    mResultsDialog = new QgsIdentifyResultsDialog(mQGisApp,mCanvas,mCanvas->window());
+//    mResultsDialog = new QgsIdentifyResultsDialog(mQGisApp,mCanvas,mCanvas->window());
+    mResultsDialog = new QgsReadMapValue(mQGisApp,mCanvas,mCanvas->window());
 
-    connect( mResultsDialog, SIGNAL( formatChanged( QgsRasterLayer * ) ), this, SLOT( formatChanged( QgsRasterLayer * ) ) );
-    connect( mResultsDialog, SIGNAL( copyToClipboard( QgsFeatureStore & ) ), this, SLOT( handleCopyToClipboard( QgsFeatureStore & ) ) );
+//    connect( mResultsDialog, SIGNAL( formatChanged( QgsRasterLayer * ) ), this, SLOT( formatChanged( QgsRasterLayer * ) ) );
+//    connect( mResultsDialog, SIGNAL( copyToClipboard( QgsFeatureStore & ) ), this, SLOT( handleCopyToClipboard( QgsFeatureStore & ) ) );
   }
 
   return mResultsDialog;
@@ -97,9 +102,9 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer* layer, const QLi
   }
   filter = filter.replace( QRegExp( ",$" ), ")" );
 
-  QgsAttributeTableDialog* tableDialog = new QgsAttributeTableDialog( vl );
-  tableDialog->setFilterExpression( filter );
-  tableDialog->show();
+//  QgsAttributeTableDialog* tableDialog = new QgsAttributeTableDialog( vl );
+//  tableDialog->setFilterExpression( filter );
+//  tableDialog->show();
 }
 
 void QgsMapToolIdentifyAction::canvasMoveEvent( QgsMapMouseEvent* e )
@@ -117,29 +122,30 @@ void QgsMapToolIdentifyAction::canvasPressEvent( QgsMapMouseEvent* e )
 void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   resultsDialog()->clear();
-  connect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
-  connect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
+//  QMainWindow *tMainwindow = dynamic_cast<QMainWindow*>(mQGisApp);
+//  connect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
+//  connect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
 
   setClickContextScope( toMapCoordinates( e->pos() ) );
 
-  identifyMenu()->setResultsIfExternalAction( false );
+//  identifyMenu()->setResultsIfExternalAction( false );
 
   // enable the right click for extended menu so it behaves as a contextual menu
   // this would be removed when a true contextual menu is brought in QGIS
   bool extendedMenu = e->modifiers() == Qt::ShiftModifier || e->button() == Qt::RightButton;
-  identifyMenu()->setExecWithSingleResult( extendedMenu );
-  identifyMenu()->setShowFeatureActions( extendedMenu );
+//  identifyMenu()->setExecWithSingleResult( extendedMenu );
+//  identifyMenu()->setShowFeatureActions( extendedMenu );
   IdentifyMode mode = extendedMenu ? LayerSelection : DefaultQgsSetting;
 
   QList<IdentifyResult> results = QgsMapToolIdentify::identify( e->x(), e->y(), mode );
 
-  disconnect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
-  disconnect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
+//  disconnect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
+//  disconnect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
 
   if ( results.isEmpty() )
   {
     resultsDialog()->clear();
-    QgisApp::instance()->statusBar()->showMessage( tr( "No features at this position found." ) );
+//    QgisApp::instance()->statusBar()->showMessage( tr( "No features at this position found." ) );
   }
   else
   {
