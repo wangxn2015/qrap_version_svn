@@ -78,6 +78,11 @@ using namespace std;
 #include <QMouseEvent>
 #undef CPL_SUPRESS_CPLUSPLUS
 
+
+#include "Qapp/qgsidentifyresultsdialog.h"
+#include "Qapp/qgsmaptoolidentifyaction.h"
+
+
 // Radio Planning Tool Includes
 #include "DataBase/Config.h"
 #include "DataBase/MainWindow.h"
@@ -198,6 +203,7 @@ public slots:
 	void ReceivedLeftPoint(QgsPoint &);
 	void ReceiveMouseMove(QgsPoint &);
     void ReadMap(QgsPoint &);
+    void ReadMapValue();
 
 
 private:
@@ -214,8 +220,9 @@ private:
   	QgisInterface *mQGisIface;
   	//!pointer to the qaction for this plugin
   	QAction * mQActionPointer;
-    	//! Pionter to QGIS main application object
-    	QWidget *qgisMainWindow;
+
+    //! Pionter to QGIS main application object
+    QWidget *mQgisMainWindow;
 
   	////////////////////////////////////////////////////////////////////
   	//
@@ -239,6 +246,7 @@ private:
   	QAction *mHelpAction;
 	QAction *mMeasAnalysisAction;
 //  	QAction *mColourManagerAction;
+    QAction *mReadValueAction;
 
   
   	void PlaceSiteDialog(double lat, double lon,bool IsOld);
@@ -263,6 +271,8 @@ private:
 	bool mLoaded;
 	// the username and password for the database login.
   	string machinename;
+    //! add this
+    QgsMapToolIdentifyAction *mMapToolIdentify;
 
     cConfirmPrediction *mConfirmPrediction;
 };
