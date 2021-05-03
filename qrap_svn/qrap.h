@@ -79,7 +79,7 @@ using namespace std;
 #undef CPL_SUPRESS_CPLUSPLUS
 
 
-#include "Qapp/qgsidentifyresultsdialog.h"
+//#include "Qapp/qgsidentifyresultsdialog.h"
 #include "Qapp/qgsmaptoolidentifyaction.h"
 
 
