@@ -62,7 +62,7 @@ static const QString sPluginVersion = QObject::tr("Version 0.1");
 //*************************************************************************
  QRap::QRap(QgisInterface * theQgisInterface):
     QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType ),
-//		qgisMainWindow(theQgisInterface->mainWindow() ),
+        mQgisMainWindow(theQgisInterface->mainWindow() ),
 		mQGisIface (theQgisInterface)
 {
 
@@ -75,6 +75,13 @@ QRap::~QRap()
 }
 
 //
+
+void QRap::ReadMapValue()
+{
+    cout<<"read map value function called."<<endl;
+    mQGisIface->mapCanvas()->setMapTool( mMapToolIdentify );
+}
+
 //*****************************************************************************
 /*
  * Initialize the GUI interface for the plugin - this is only called once when the plugin is 
@@ -82,7 +89,8 @@ QRap::~QRap()
  */
 void QRap::initGui()
 {
-	mToolBarPointer = 0;
+    std::cout<<"initGui"<<std::endl;
+    mToolBarPointer = 0;
 	printf("QRap::initGui\n");
 	mPoints.clear();
 	mMouseType = CLEAN;
@@ -95,6 +103,7 @@ void QRap::initGui()
     mDeleteSiteAction = new QAction(QIcon(":/qrap/SiteDelete.png"),tr("Q-Rap: Delete a Site"), this);
     mRadioAction = new QAction(QIcon(":/qrap/Coverage.png"),tr("Q-Rap: Perform a Prediction"), this);
     mPreferencesAction = new QAction(QIcon(":/qrap/Preferences.png"),tr("Q-Rap Preferences"), this);
+<<<<<<< HEAD
     //! add by wxn
     //!
     mReadValueAction = new QAction(QIcon(":/qrap/Coverage.png"),tr("Q-Rap: read layer value"), this); //! change icon later..
@@ -104,6 +113,19 @@ void QRap::initGui()
     mQGisApp = mQGisIface->mainWindow(); //
 //-------------------------------------------------
 
+=======
+
+    //! added by wxn-----------------------------------------------------------------
+    mReadValueAction = new QAction(QIcon(":/qrap/Coverage.png"),tr("Q-Rap: read layer value"), this); //! change icon later..
+    mMapToolIdentify = new QgsMapToolIdentifyAction( mQgisMainWindow,mQGisIface->mapCanvas() );
+    mMapToolIdentify->setAction( mReadValueAction ); //! for action destroy operation
+    //!---------------------------------------------------------------------------
+//    connect( mMapToolIdentify, SIGNAL( copyToClipboard( QgsFeatureStore & ) ),
+//             this, SLOT( copyFeatures( QgsFeatureStore & ) ) );
+
+    connect(mReadValueAction, SIGNAL(activated()), this, SLOT(ReadMapValue()));
+    //!------------
+>>>>>>> a45fdfe19161c496e8855a3558167228477786fe
     //wangxiaonan
 //	mLinkAction = new QAction(QIcon(":/qrap/Link.png"),tr("Q-Rap: Link Analysis"), this);
 //	mSelectLinkAction = new QAction(QIcon(":/qrap/LinkSelect.png"),tr("Q-Rap: Select a Link"), this);
@@ -174,6 +196,7 @@ void QRap::initGui()
   	mToolBarPointer->addAction(mQActionPointer);
 //  	mToolBarPointer->addAction(mImportExportAction);
 //  	mToolBarPointer->addAction(mHelpAction); 
+    mToolBarPointer->addAction(mReadValueAction);
     cout<<"reduce icon by justin"<<endl;
 	mLoaded = true; 
  
@@ -232,6 +255,8 @@ void QRap::unload()
 		mToolBarPointer->removeAction(mPreferencesAction);
 		mToolBarPointer->removeAction(mMeasAnalysisAction);
 		mToolBarPointer->removeAction(mQActionPointer);
+        mToolBarPointer->removeAction(mReadValueAction);
+
 
 	  	delete mQActionPointer;
 	  	delete mSelectSiteAction;
@@ -245,12 +270,14 @@ void QRap::unload()
 		delete mMultiLinkAction;
 	  	delete mPreferencesAction;
 		delete mMeasAnalysisAction;
-		
+
+//        mQGisIface->removeToolBar(mToolBarPointer);
+
 		delete mToolBarPointer;
 
 	//	disconnect(Mouse);
 	//	delete Mouse;
-//		mQGisIface->removeToolBar(mToolBarPointer);
+
 		mLoaded =false;
 
 	}
@@ -349,7 +376,7 @@ bool QRap::openDatabaseConnection()
 	
 	loginDialog = new LoginDialog(0);
 
-    cout<<"qgisMainWindow:"<<(void*)qgisMainWindow<<endl;
+    cout<<"qgisMainWindow:"<<(void*)mQgisMainWindow<<endl;
 
 	
 	//********************************* Checking the default settings**/
@@ -432,7 +459,7 @@ bool QRap::openDatabaseConnection()
 //* This actually calls the database interface
 void QRap::run()
 {
-    gMainWindow = new MainWindow(qgisMainWindow); // param 'qgisMainWindow' is 0
+    gMainWindow = new MainWindow(mQgisMainWindow); // param 'qgisMainWindow' is 0
     connect(gMainWindow, SIGNAL(SelectArea()),this,  SLOT(SelectArea()));//! not sure what's the use of this line. wxn
 	gMainWindow->show();
 	mQGisIface->mapCanvas()->refresh();
