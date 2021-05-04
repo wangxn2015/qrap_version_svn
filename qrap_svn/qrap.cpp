@@ -103,17 +103,7 @@ void QRap::initGui()
     mDeleteSiteAction = new QAction(QIcon(":/qrap/SiteDelete.png"),tr("Q-Rap: Delete a Site"), this);
     mRadioAction = new QAction(QIcon(":/qrap/Coverage.png"),tr("Q-Rap: Perform a Prediction"), this);
     mPreferencesAction = new QAction(QIcon(":/qrap/Preferences.png"),tr("Q-Rap Preferences"), this);
-<<<<<<< HEAD
-    //! add by wxn
-    //!
-    mReadValueAction = new QAction(QIcon(":/qrap/Coverage.png"),tr("Q-Rap: read layer value"), this); //! change icon later..
 
-//    mQGisApp = static_cast<QgisApp*>(mQGisIface->mainWindow()); //
-
-    mQGisApp = mQGisIface->mainWindow(); //
-//-------------------------------------------------
-
-=======
 
     //! added by wxn-----------------------------------------------------------------
     mReadValueAction = new QAction(QIcon(":/qrap/Coverage.png"),tr("Q-Rap: read layer value"), this); //! change icon later..
@@ -125,7 +115,7 @@ void QRap::initGui()
 
     connect(mReadValueAction, SIGNAL(activated()), this, SLOT(ReadMapValue()));
     //!------------
->>>>>>> a45fdfe19161c496e8855a3558167228477786fe
+
     //wangxiaonan
 //	mLinkAction = new QAction(QIcon(":/qrap/Link.png"),tr("Q-Rap: Link Analysis"), this);
 //	mSelectLinkAction = new QAction(QIcon(":/qrap/LinkSelect.png"),tr("Q-Rap: Select a Link"), this);
@@ -150,13 +140,13 @@ void QRap::initGui()
     connect(mRadioAction, SIGNAL(activated()), this, SLOT(Prediction()));
 
     //-------------------------------------------------------------------------------------
-    //! added by wxn
-    connect(mReadValueAction,SIGNAL(activated()),this,SLOT(ReadValueFromMap()));
+//    //! added by wxn
+//    connect(mReadValueAction,SIGNAL(activated()),this,SLOT(ReadValueFromMap()));
 
-    mMapToolIdentify = new QgsMapToolIdentifyAction( mQGisIface->mainWindow(),mQGisIface->mapCanvas() );
-    mMapToolIdentify->setAction( mReadValueAction ); //! for action destroy operation
-    connect( mMapToolIdentify, SIGNAL( copyToClipboard( QgsFeatureStore & ) ),
-             this, SLOT( copyFeatures( QgsFeatureStore & ) ) );
+//    mMapToolIdentify = new QgsMapToolIdentifyAction( mQGisIface->mainWindow(),mQGisIface->mapCanvas() );
+//    mMapToolIdentify->setAction( mReadValueAction ); //! for action destroy operation
+//    connect( mMapToolIdentify, SIGNAL( copyToClipboard( QgsFeatureStore & ) ),
+//             this, SLOT( copyFeatures( QgsFeatureStore & ) ) );
 
     //---------------------------------------------------------------------------------
 
@@ -216,16 +206,16 @@ void QRap::initGui()
 }
 
 
-//!------------------------------------------------
-//!-----------------------------------------------
-void QRap::ReadValueFromMap()
-{
-   mQGisIface->mapCanvas()->setMapTool( mMapToolIdentify );
+////!------------------------------------------------
+////!-----------------------------------------------
+//void QRap::ReadValueFromMap()
+//{
+//   mQGisIface->mapCanvas()->setMapTool( mMapToolIdentify );
 
 
-}
-//!------------------------------------------------
-//!
+//}
+////!------------------------------------------------
+////!
 
 //****************************************************************************************
 //method defined in interface

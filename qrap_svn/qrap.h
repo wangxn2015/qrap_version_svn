@@ -249,8 +249,6 @@ private:
 
     QAction *mReadValueAction; //added by wxn
 //  	QAction *mColourManagerAction;
-    QAction *mReadValueAction;
-
 
     QWidget *mQGisApp;
 
@@ -281,6 +279,6 @@ private:
     QgsMapToolIdentifyAction *mMapToolIdentify;
 
     cConfirmPrediction *mConfirmPrediction;
-    QgsMapTool *mMapToolIdentify;
+
 };
 #endif //QRap_H
