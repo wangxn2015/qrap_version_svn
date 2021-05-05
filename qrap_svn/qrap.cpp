@@ -35,8 +35,9 @@
 #include <QToolBar>
 #include <QMessageBox>
 #include <stdio.h>
-#include <qgsrasteridentifyresult.h> //added by wxn
+#include <qgsrasteridentifyresult.h> //added by wxn, using moving mouse event to read map value
 #include "app/qgsmaptoolidentifyaction.h"
+
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -71,7 +72,9 @@ static const QString sPluginVersion = QObject::tr("Version 0.1");
 //************************************************************************
 QRap::~QRap()
 {
-    disconnect(Mouse, SIGNAL(MouseMove(QgsPoint&)), 0, 0);
+    //! add this can lead to core dump of qgis
+//    disconnect(Mouse, SIGNAL(MouseMove(QgsPoint&)), 0, 0);
+
 }
 
 //
@@ -79,7 +82,8 @@ QRap::~QRap()
 void QRap::ReadMapValue()
 {
     cout<<"read map value function called."<<endl;
-    mQGisIface->mapCanvas()->setMapTool( mMapToolIdentify );
+    /** \brief Sets the map tool currently being used on the canvas */
+    mQGisIface->mapCanvas()->setMapTool( mMapToolIdentify ); //setMapTool时会调用该tool的activate函数
 }
 
 //*****************************************************************************
@@ -106,8 +110,14 @@ void QRap::initGui()
 
 
     //! added by wxn-----------------------------------------------------------------
-    mReadValueAction = new QAction(QIcon(":/qrap/Coverage.png"),tr("Q-Rap: read layer value"), this); //! change icon later..
-    mMapToolIdentify = new QgsMapToolIdentifyAction( mQgisMainWindow,mQGisIface->mapCanvas() );
+    mReadValueAction = new QAction(QIcon(":/qrap/Coverage.png"),tr("read map layer value"), this); //! change icon later..
+//    mMapToolIdentify = new QgsMapToolIdentify(mQGisIface->mapCanvas());
+    mMapToolIdentify = new _QgsMapToolIdentifyAction( mQgisMainWindow,mQGisIface->mapCanvas() );
+    /** from qgismaptool.h
+     * Use this to associate a QAction to this maptool. Then when the setMapTool
+     * method of mapcanvas is called the action state will be set to on.
+     * Usually this will cause e.g. a toolbutton to appear pressed in and
+     * the previously used toolbutton to pop out. */
     mMapToolIdentify->setAction( mReadValueAction ); //! for action destroy operation
     //!---------------------------------------------------------------------------
 //    connect( mMapToolIdentify, SIGNAL( copyToClipboard( QgsFeatureStore & ) ),
@@ -206,17 +216,6 @@ void QRap::initGui()
 }
 
 
-////!------------------------------------------------
-////!-----------------------------------------------
-//void QRap::ReadValueFromMap()
-//{
-//   mQGisIface->mapCanvas()->setMapTool( mMapToolIdentify );
-
-
-//}
-////!------------------------------------------------
-////!
-
 //****************************************************************************************
 //method defined in interface
 void QRap::help()
@@ -235,15 +234,15 @@ void QRap::unload()
   		mToolBarPointer->removeAction(mSiteAction);
 		mToolBarPointer->removeAction(mSelectSiteAction);
 		mToolBarPointer->removeAction(mDeleteSiteAction);
-  		mToolBarPointer->removeAction(mLinkAction);
-		mToolBarPointer->removeAction(mSelectLinkAction);
-		mToolBarPointer->removeAction(mDeleteLinkAction);
+//  		mToolBarPointer->removeAction(mLinkAction);
+//		mToolBarPointer->removeAction(mSelectLinkAction);
+//		mToolBarPointer->removeAction(mDeleteLinkAction);
 	  	mToolBarPointer->removeAction(mRadioAction);
-		mToolBarPointer->removeAction(mMultiLinkAction);
-		mToolBarPointer->removeAction(mOptimisationAction);
-	  	mToolBarPointer->removeAction(mSpectralAction);
+//		mToolBarPointer->removeAction(mMultiLinkAction);
+//		mToolBarPointer->removeAction(mOptimisationAction);
+//	  	mToolBarPointer->removeAction(mSpectralAction);
 		mToolBarPointer->removeAction(mPreferencesAction);
-		mToolBarPointer->removeAction(mMeasAnalysisAction);
+//		mToolBarPointer->removeAction(mMeasAnalysisAction);
 		mToolBarPointer->removeAction(mQActionPointer);
         mToolBarPointer->removeAction(mReadValueAction);
 
@@ -253,13 +252,13 @@ void QRap::unload()
 		delete mDeleteSiteAction;
 		delete mSiteAction;
 	  	delete mRadioAction;
-	  	delete mLinkAction;
-		delete mSelectLinkAction;
-		delete mDeleteLinkAction;
-	  	delete mSpectralAction;
-		delete mMultiLinkAction;
+//	  	delete mLinkAction;
+//		delete mSelectLinkAction;
+//		delete mDeleteLinkAction;
+//	  	delete mSpectralAction;
+//		delete mMultiLinkAction;
 	  	delete mPreferencesAction;
-		delete mMeasAnalysisAction;
+//		delete mMeasAnalysisAction;
 
 //        mQGisIface->removeToolBar(mToolBarPointer);
 

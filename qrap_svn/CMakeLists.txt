@@ -595,7 +595,7 @@ SET (qrap_SRCS
 	ExportImport/backup/restore.cpp
 	ExportImport/mergedelete/mergedelete.cpp
 
-        Qapp/qgsmaptoolidentifyaction.cpp
+        Qapp/_qgsmaptoolidentifyaction.cpp
         Qapp/qgsreadmapvalue.cpp
 #        Qapp/qgsidentifyresultsdialog.cpp
 )
@@ -723,7 +723,7 @@ SET (qrap_MOC_HDRS
 	ExportImport/backup/restore.h
 	ExportImport/mergedelete/mergedelete.h
 
-        Qapp/qgsmaptoolidentifyaction.h
+        Qapp/_qgsmaptoolidentifyaction.h
 #        Qapp/qgsidentifyresultsdialog.h
         Qapp/qgsreadmapvalue.h
 )

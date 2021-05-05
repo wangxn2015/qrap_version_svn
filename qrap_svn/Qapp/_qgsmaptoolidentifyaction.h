@@ -23,7 +23,7 @@
 #include "qgsfeaturestore.h"
 #include "qgsfield.h"
 #include "qgsdistancearea.h"
-//#include "qgisapp.h"
+
 
 #include <QObject>
 #include <QPointer>
@@ -42,16 +42,16 @@ class QgsVectorLayer;
   - for vector layers shows feature attributes within search radius
     (allows editing values when vector layer is in editing mode)
 */
-//class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
-class QgsMapToolIdentifyAction : public QgsMapToolIdentify
+
+class _QgsMapToolIdentifyAction : public QgsMapToolIdentify
 {
     Q_OBJECT
 
   public:
-//    QgsMapToolIdentifyAction( QgisApp *QGisApp, QgsMapCanvas * canvas );
-    QgsMapToolIdentifyAction( QWidget *QGisApp, QgsMapCanvas * canvas );
 
-    ~QgsMapToolIdentifyAction();
+    _QgsMapToolIdentifyAction( QWidget *QGisApp, QgsMapCanvas * canvas );
+
+    ~_QgsMapToolIdentifyAction();
 
     //! Overridden mouse move event
     virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
@@ -60,11 +60,18 @@ class QgsMapToolIdentifyAction : public QgsMapToolIdentify
     virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+//    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
-    virtual void activate() override;
+//    virtual void activate() override;
 
-    virtual void deactivate() override;
+//    virtual void deactivate() override;
+
+    void canvasReleaseEvent( QgsMapMouseEvent* e );
+
+    void activate() ;
+
+    void deactivate() ;
+
 
   public slots:
     void handleCopyToClipboard( QgsFeatureStore & );
@@ -88,7 +95,6 @@ class QgsMapToolIdentifyAction : public QgsMapToolIdentify
     virtual QgsUnitTypes::AreaUnit displayAreaUnits() const override;
     void setClickContextScope( const QgsPoint &point );
 
-//    QgisApp *mQGisApp;
     QWidget *mQGisApp;
 
     friend class TestQgsMapToolIdentifyAction;

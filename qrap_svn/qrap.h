@@ -80,8 +80,8 @@ using namespace std;
 
 
 //#include "Qapp/qgsidentifyresultsdialog.h"
-#include "Qapp/qgsmaptoolidentifyaction.h"
-
+#include "Qapp/_qgsmaptoolidentifyaction.h"
+#include <qgsmaptoolidentify.h>
 
 // Radio Planning Tool Includes
 #include "DataBase/Config.h"
@@ -276,7 +276,8 @@ private:
 	// the username and password for the database login.
   	string machinename;
     //! add this
-    QgsMapToolIdentifyAction *mMapToolIdentify;
+    _QgsMapToolIdentifyAction *mMapToolIdentify;
+//    QgsMapToolIdentify *mMapToolIdentify;
 
     cConfirmPrediction *mConfirmPrediction;
 
