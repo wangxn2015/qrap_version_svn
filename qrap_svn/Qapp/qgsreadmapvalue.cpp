@@ -6,29 +6,30 @@
 //#include "qgsactionmanager.h"
 //#include "qgsattributedialog.h"
 #include <qgsdockwidget.h>
-//#include "qgseditorwidgetregistry.h"
+#include "qgseditorwidgetregistry.h"
 
 //#include "qgsgeometry.h"
 //#include "qgshighlight.h"
 //#include "qgsidentifyresultsdialog.h"
 //#include "qgslogger.h"
 //#include "qgsmapcanvas.h"
-//#include "qgsmaplayeractionregistry.h"
+#include "qgsmaplayeractionregistry.h"
 #include "qgsmaplayer.h"
 //#include "qgsnetworkaccessmanager.h"
 //#include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
-//#include "qgsvectordataprovider.h"
+#include "qgsvectordataprovider.h"
 //#include "qgswebview.h"
 //#include "qgswebframe.h"
-//#include "qgsstringutils.h"
+#include "qgsstringutils.h"
 //#include "qgsfiledownloader.h"
+
 
 #include <QCloseEvent>
 #include <QLabel>
 #include <QAction>
-#include <QTreeWidgetItem>
+#include <QTreeWidgetItem>  //
 #include <QPixmap>
 #include <QSettings>
 #include <QMenu>
@@ -75,10 +76,10 @@ QgsReadMapValue::QgsReadMapValue( QWidget *QGisApp, QgsMapCanvas *canvas, QWidge
   mHelpToolButton->hide();
   cbxAutoFeatureForm->hide();
 
-//  QSettings mySettings;
-    mDock = new QgsDockWidget( tr( "wireless map reader" ), mQGisApp );
+  QSettings mySettings;
+  mDock = new QgsDockWidget( tr( "wireless map reader" ), mQGisApp );
 
-  mDock->setObjectName( "wireless map reader" );
+  mDock->setObjectName( "Wireless Map Reader" );
   mDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   mDock->setWidget( this );
 //  if ( !mQGisApp->restoreDockWidget( mDock ) )
@@ -86,8 +87,21 @@ QgsReadMapValue::QgsReadMapValue( QWidget *QGisApp, QgsMapCanvas *canvas, QWidge
 
     lstResults->setColumnCount( 2 );
     lstResults->sortByColumn( -1 );
-    setColumnText( 0, tr( "Feature" ) );
+    setColumnText( 0, tr( "Layer" ) );
     setColumnText( 1, tr( "Value" ) );
+
+    int width = mySettings.value( "/Windows/Identify/columnWidth", "0" ).toInt();
+    if ( width > 0 )
+    {
+      lstResults->setColumnWidth( 0, width );
+    }
+    width = mySettings.value( "/Windows/Identify/columnWidthTable", "0" ).toInt();
+    if ( width > 0 )
+    {
+      tblResults->setColumnWidth( 0, width );
+    }
+
+
 
 
 }
@@ -434,6 +448,54 @@ void QgsReadMapValue::addFeature( QgsVectorLayer *vlayer, const QgsFeature &f, c
 
 
 
+void QgsReadMapValue::highlightFeature( QTreeWidgetItem *item )
+{
+//  QgsMapLayer *layer;
+//  QgsVectorLayer *vlayer = vectorLayer( item );
+//  QgsRasterLayer *rlayer = rasterLayer( item );
+
+//  layer = vlayer ? static_cast<QgsMapLayer *>( vlayer ) : static_cast<QgsMapLayer *>( rlayer );
+
+//  if ( !layer ) return;
+
+//  QgsIdentifyResultsFeatureItem *featItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( item ) );
+//  if ( !featItem )
+//    return;
+
+//  if ( mHighlights.contains( featItem ) )
+//    return;
+
+//  if ( !featItem->feature().constGeometry() || featItem->feature().constGeometry()->wkbType() == QGis::WKBUnknown )
+//    return;
+
+//  QgsHighlight *highlight = nullptr;
+//  if ( vlayer )
+//  {
+//    highlight = new QgsHighlight( mCanvas, featItem->feature(), vlayer );
+//  }
+//  else
+//  {
+//    highlight = new QgsHighlight( mCanvas, featItem->feature().constGeometry(), layer );
+//    highlight->setWidth( 2 );
+//  }
+
+//  QSettings settings;
+//  QColor color = QColor( settings.value( "/Map/highlight/color", QGis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+//  int alpha = settings.value( "/Map/highlight/colorAlpha", QGis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
+//  double buffer = settings.value( "/Map/highlight/buffer", QGis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
+//  double minWidth = settings.value( "/Map/highlight/minWidth", QGis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
+
+//  highlight->setColor( color ); // sets also fill with default alpha
+//  color.setAlpha( alpha );
+//  highlight->setFillColor( color ); // sets fill with alpha
+//  highlight->setBuffer( buffer );
+//  highlight->setMinWidth( minWidth );
+//  highlight->show();
+//  mHighlights.insert( featItem, highlight );
+}
+
+
+
 void QgsReadMapValue::setExpressionContextScope( const QgsExpressionContextScope &scope )
 {
 
@@ -579,11 +641,94 @@ void QgsReadMapValue::addFeature( QgsRasterLayer *layer,
   }
   //tblResults->resizeColumnToContents( 1 );
 
-  // graph
-  if ( !attributes.isEmpty() )
+//  // graph
+//  if ( !attributes.isEmpty() )
+//  {
+//    mPlotCurves.append( new QgsIdentifyPlotCurve( attributes, mPlot, layer->name() ) );
+//  }
+}
+
+
+
+QTreeWidgetItem *QgsReadMapValue::featureItem( QTreeWidgetItem *item )
+{
+  if ( !item )
+    return nullptr;
+
+  QTreeWidgetItem *featItem = nullptr;
+  if ( item->parent() )
   {
-    mPlotCurves.append( new QgsIdentifyPlotCurve( attributes, mPlot, layer->name() ) );
+    if ( item->parent()->parent() )
+    {
+      if ( item->parent()->parent()->parent() )
+      {
+        // derived or action attribute item
+        featItem = item->parent()->parent();
+      }
+      else
+      {
+        // attribute item
+        featItem = item->parent();
+      }
+    }
+    else
+    {
+      // feature item
+      featItem = item;
+    }
   }
+  else
+  {
+    // top level layer item, return feature item if only one
+#if 0
+    if ( item->childCount() > 1 )
+      return 0;
+    featItem = item->child( 0 );
+#endif
+
+    int count = 0;
+
+    for ( int i = 0; i < item->childCount(); i++ )
+    {
+      QgsIdentifyResultsFeatureItem *fi = dynamic_cast<QgsIdentifyResultsFeatureItem *>( item->child( i ) );
+      if ( fi )
+      {
+        count++;
+        if ( !featItem )
+          featItem = fi;
+      }
+    }
+
+    if ( count != 1 )
+      return nullptr;
+  }
+
+  return featItem;
+}
+
+
+
+QTreeWidgetItem *QgsReadMapValue::layerItem( QTreeWidgetItem *item )
+{
+  if ( item && item->parent() )
+  {
+    item = featureItem( item )->parent();
+  }
+
+  return item;
+}
+
+QTreeWidgetItem *QgsReadMapValue::layerItem( QObject *object )
+{
+  for ( int i = 0; i < lstResults->topLevelItemCount(); i++ )
+  {
+    QTreeWidgetItem *item = lstResults->topLevelItem( i );
+
+    if ( item->data( 0, Qt::UserRole ).value<QObject *>() == object )
+      return item;
+  }
+
+  return nullptr;
 }
 
 
@@ -611,3 +756,39 @@ QgsRasterLayer *QgsReadMapValue::rasterLayer( QTreeWidgetItem *item )
   return qobject_cast<QgsRasterLayer *>( item->data( 0, Qt::UserRole ).value<QObject *>() );
 }
 
+
+QString QgsReadMapValue::representValue( QgsVectorLayer* vlayer, const QString& fieldName, const QVariant& value )
+{
+  QVariant cache;
+  QMap<QString, QVariant>& layerCaches = mWidgetCaches[vlayer->id()];
+
+  QString widgetType = vlayer->editFormConfig()->widgetType( fieldName );
+  QgsEditorWidgetFactory* factory = QgsEditorWidgetRegistry::instance()->factory( widgetType );
+
+  int idx = vlayer->fieldNameIndex( fieldName );
+
+  if ( !factory )
+    return value.toString();
+
+  if ( layerCaches.contains( fieldName ) )
+  {
+    cache = layerCaches[ fieldName ];
+  }
+  else
+  {
+    cache = factory->createCache( vlayer, idx, vlayer->editFormConfig()->widgetConfig( fieldName ) );
+    layerCaches.insert( fieldName, cache );
+  }
+
+  return factory->representValue( vlayer, idx, vlayer->editFormConfig()->widgetConfig( fieldName ), cache, value );
+}
+
+
+
+QgsIdentifyResultsFeatureItem::QgsIdentifyResultsFeatureItem( const QgsFields &fields, const QgsFeature &feature, const QgsCoordinateReferenceSystem &crs, const QStringList & strings )
+    : QTreeWidgetItem( strings )
+    , mFields( fields )
+    , mFeature( feature )
+    , mCrs( crs )
+{
+}
