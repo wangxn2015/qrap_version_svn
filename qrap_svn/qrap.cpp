@@ -36,7 +36,7 @@
 #include <QMessageBox>
 #include <stdio.h>
 #include <qgsrasteridentifyresult.h> //added by wxn, using moving mouse event to read map value
-#include "app/qgsmaptoolidentifyaction.h"
+#include "Qapp/_qgsmaptoolidentifyaction.h"
 
 
 //////////////////////////////////////////////////////////////////////
@@ -874,7 +874,7 @@ bool QRap::PerformPrediction()
 		{
 			mQGisIface->mapCanvas()->refresh();
 		}//if accepted
-        connect(Mouse, SIGNAL(MouseMove(QgsPoint&)), this, SLOT(ReadMap(QgsPoint&))); //! added by wxn
+//        connect(Mouse, SIGNAL(MouseMove(QgsPoint&)), this, SLOT(ReadMap(QgsPoint&))); //! added by wxn
 	}//if has sites
 	return true;
 }

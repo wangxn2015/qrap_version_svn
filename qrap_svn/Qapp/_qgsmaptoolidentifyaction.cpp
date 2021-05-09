@@ -142,8 +142,8 @@ void _QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent* e )
 //  identifyMenu()->setShowFeatureActions( extendedMenu );
   IdentifyMode mode = extendedMenu ? LayerSelection : DefaultQgsSetting;
     //! 结果
-  QList<IdentifyResult> results = QgsMapToolIdentify::identify( e->x(), e->y(), mode );
-
+//  QList<IdentifyResult> results = QgsMapToolIdentify::identify( e->x(), e->y(), mode );
+    QList<IdentifyResult> results = QgsMapToolIdentify::identify( e->x(), e->y(), ActiveLayer );
 //  disconnect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
 //  disconnect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
 

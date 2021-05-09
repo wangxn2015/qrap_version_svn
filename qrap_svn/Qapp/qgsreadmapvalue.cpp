@@ -145,12 +145,51 @@ void QgsReadMapValue::activate()
 }
 
 
+void QgsReadMapValue::disconnectLayer( QObject *layer )
+{
+  if ( !layer )
+    return;
 
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  if ( vlayer )
+  {
+    disconnect( vlayer, SIGNAL( layerDeleted() ), this, SLOT( layerDestroyed() ) );
+    disconnect( vlayer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
+    disconnect( vlayer, SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ),
+                this, SLOT( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ) );
+    disconnect( vlayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
+    disconnect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
+  }
+  else
+  {
+    disconnect( layer, SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
+  }
+}
 
 
 //!------------------------------------------
 void QgsReadMapValue::clear()
 {
+    for ( int i = 0; i < lstResults->topLevelItemCount(); i++ )
+    {
+      disconnectLayer( lstResults->topLevelItem( i )->data( 0, Qt::UserRole ).value<QObject *>() );
+    }
+
+    lstResults->clear();
+    lstResults->sortByColumn( -1 );
+//    clearHighlights();
+
+    tblResults->clearContents();
+    tblResults->setRowCount( 0 );
+
+    mPlot->setVisible( false );
+//    Q_FOREACH ( QgsIdentifyPlotCurve *curve, mPlotCurves )
+//      delete curve;
+//    mPlotCurves.clear();
+
+    // keep it visible but disabled, it can switch from disabled/enabled
+    // after raster format change
+    mActionPrint->setDisabled( true );
 
 }
 

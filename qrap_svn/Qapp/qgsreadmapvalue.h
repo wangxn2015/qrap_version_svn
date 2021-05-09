@@ -136,6 +136,7 @@ class QgsReadMapValue: public QDialog, private Ui::QgsIdentifyResultsBase
     QgsRasterLayer *rasterLayer( QTreeWidgetItem *item );
     QString representValue( QgsVectorLayer* vlayer, const QString& fieldName, const QVariant& value );
     QMap< QString, QMap< QString, QVariant > > mWidgetCaches;
+    void disconnectLayer( QObject *layer );
 
     enum ItemDataRole
     {
