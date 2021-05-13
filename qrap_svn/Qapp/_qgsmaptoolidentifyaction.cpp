@@ -55,6 +55,8 @@ _QgsMapToolIdentifyAction::_QgsMapToolIdentifyAction(QWidget *QGisApp, QgsMapCan
   // set cursor
   QPixmap myIdentifyQPixmap = QPixmap(( const char ** ) select_cursor );
   mCursor = QCursor( myIdentifyQPixmap, 1, 1 );
+
+  //! may need to test this function
   //! signal belongs to parent QgsMapToolIdentify
   connect( this, SIGNAL( changedRasterResults( QList<IdentifyResult>& ) ), this, SLOT( handleChangedRasterResults( QList<IdentifyResult>& ) ) );
   //! belongs to parent QgsMapToolIdentify
@@ -140,10 +142,12 @@ void _QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent* e )
   bool extendedMenu = e->modifiers() == Qt::ShiftModifier || e->button() == Qt::RightButton;
 //  identifyMenu()->setExecWithSingleResult( extendedMenu );
 //  identifyMenu()->setShowFeatureActions( extendedMenu );
+
   IdentifyMode mode = extendedMenu ? LayerSelection : DefaultQgsSetting;
     //! 结果
 //  QList<IdentifyResult> results = QgsMapToolIdentify::identify( e->x(), e->y(), mode );
     QList<IdentifyResult> results = QgsMapToolIdentify::identify( e->x(), e->y(), ActiveLayer );
+
 //  disconnect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
 //  disconnect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
 
@@ -152,7 +156,7 @@ void _QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent* e )
     resultsDialog()->clear();
 //    QgisApp::instance()->statusBar()->showMessage( tr( "No features at this position found." ) );
   }
-  else
+  else //! if results not empty
   {
     // Show the dialog before items are inserted so that items can resize themselves
     // according to dialog size also the first time, see also #9377
@@ -162,6 +166,7 @@ void _QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent* e )
     QList<IdentifyResult>::const_iterator result;
     for ( result = results.begin(); result != results.end(); ++result )
     {
+      //! add the feature upon the widget /wxn key func
       resultsDialog()->addFeature( *result );
     }
 
@@ -175,6 +180,7 @@ void _QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent* e )
 
 void _QgsMapToolIdentifyAction::handleChangedRasterResults( QList<IdentifyResult> &results )
 {
+  std::cout<<"slot triggered: _QgsMapToolIdentifyAction::handleChangedRasterResults"<<std::endl;
   // Add new result after raster format change
   QgsDebugMsg( QString( "%1 raster results" ).arg( results.size() ) );
   QList<IdentifyResult>::const_iterator rresult;

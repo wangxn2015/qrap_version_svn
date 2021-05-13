@@ -150,6 +150,7 @@ class QgsReadMapValue: public QDialog, private Ui::QgsIdentifyResultsBase
     void show();
     void updateViewModes();
     void clear();
+    void layerDestroyed();
 
   private:
 //    QMenu *mActionPopup;

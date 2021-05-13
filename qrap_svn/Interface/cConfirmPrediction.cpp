@@ -100,7 +100,7 @@ bool cConfirmPrediction::SetPoints(QList<QgsPoint> Points)
 	        query += " ";
 		gcvt(Points[0].y(),12,text);
 	        query += text;
-	        query += "))',4326)) order by radioinstallation_view.id;";	
+            query += "))',4326)) order by radioinstallation_view.id;";	//! 4326 earth ref system
 		cout << query << endl;
 		if (!gDb.PerformRawSql(query))
 		{
@@ -114,7 +114,7 @@ bool cConfirmPrediction::SetPoints(QList<QgsPoint> Points)
 			tableWidget->setRowCount(SitesIn.size());
 			for (int i = 0; i < SitesIn.size();i++)
 			{
-				QCheckBox *Enabled = new QCheckBox(SitesIn[i]["sitename"].c_str());
+                QCheckBox *Enabled = new QCheckBox(SitesIn[i]["sitename"].c_str()); //"checkbox init using 'sitename'"
 				Enabled->setCheckState(Qt::Checked);
 				tableWidget->setCellWidget(i,0,Enabled);
 				tableWidget->setItem(i,1,new QTableWidgetItem(SitesIn[i]["sector"].c_str()));
@@ -256,6 +256,10 @@ void cConfirmPrediction::LoadDefaults()
 		useClutterCheckBox->setChecked(true);
 	else
 		useClutterCheckBox->setChecked(false);
+    useClutterCheckBox->setChecked(false);
+    useClutterCheckBox->hide(); //hide clutter checkbox for now
+
+
 	
 	setting = gDb.GetSetting("BTLDir");
 	if(setting!="")
@@ -527,6 +531,8 @@ void cConfirmPrediction::on_btnDo_clicked()
 	btnDo->setEnabled(false);
 	radioArea->setEnabled(false);
 	radioRadius->setEnabled(false);
+
+    // how about making a dialog showing "in processing"
 
 	mRadInst.clear(); 	//!	QList<unsigned> mRadInst; 存储基站的id
     mRanges.clear(); 	//!	QList<double> mRanges; unit is kilometer

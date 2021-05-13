@@ -75,9 +75,13 @@ QgsReadMapValue::QgsReadMapValue( QWidget *QGisApp, QgsMapCanvas *canvas, QWidge
   mOpenFormAction->setDisabled( true );
   mHelpToolButton->hide();
   cbxAutoFeatureForm->hide();
+  lblIdentifyMode->hide();
+  lblIdentifyMode->hide();
+  cmbIdentifyMode->hide();
+  cmbViewMode->hide();
 
   QSettings mySettings;
-  mDock = new QgsDockWidget( tr( "wireless map reader" ), mQGisApp );
+  mDock = new QgsDockWidget( tr( "Wireless Map Reader" ), mQGisApp );
 
   mDock->setObjectName( "Wireless Map Reader" );
   mDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
@@ -139,12 +143,12 @@ void QgsReadMapValue::activate()
     std::cout<<"qgsreadmapvalue activate called"<<std::endl;
     if ( lstResults->topLevelItemCount() > 0 )
     {
-      raise();
+      raise();  //! raise this widget to the top of the parent widget's stack
     }
 
 }
 
-
+//! problems here. please find what called this func?
 void QgsReadMapValue::disconnectLayer( QObject *layer )
 {
   if ( !layer )
@@ -594,7 +598,7 @@ void QgsReadMapValue::addFeature( QgsRasterLayer *layer,
     {
       delete formatCombo;
     }
-
+    //! No such slot QgsReadMapValue::layerDestroyed()
     connect( layer, SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
     connect( layer, SIGNAL( layerCrsChanged() ), this, SLOT( layerDestroyed() ) );
   }
@@ -830,4 +834,38 @@ QgsIdentifyResultsFeatureItem::QgsIdentifyResultsFeatureItem( const QgsFields &f
     , mFeature( feature )
     , mCrs( crs )
 {
+}
+
+
+void QgsReadMapValue::layerDestroyed()
+{
+  QObject *theSender = sender();
+
+  for ( int i = 0; i < lstResults->topLevelItemCount(); i++ )
+  {
+    QTreeWidgetItem *layItem = lstResults->topLevelItem( i );
+
+    if ( layItem->data( 0, Qt::UserRole ).value<QObject *>() == sender() )
+    {
+      for ( int j = 0; j < layItem->childCount(); j++ )
+      {
+//        delete mHighlights.take( layItem->child( j ) );
+      }
+    }
+  }
+
+  disconnectLayer( theSender );
+  delete layerItem( theSender );
+
+  // remove items, starting from last
+  for ( int i = tblResults->rowCount() - 1; i >= 0; i-- )
+  {
+    QgsDebugMsg( QString( "item %1 / %2" ).arg( i ).arg( tblResults->rowCount() ) );
+    QTableWidgetItem *layItem = tblResults->item( i, 0 );
+    if ( layItem && layItem->data( Qt::UserRole ).value<QObject *>() == sender() )
+    {
+      QgsDebugMsg( QString( "removing row %1" ).arg( i ) );
+      tblResults->removeRow( i );
+    }
+  }
 }

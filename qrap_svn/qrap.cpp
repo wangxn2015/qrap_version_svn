@@ -36,7 +36,10 @@
 #include <QMessageBox>
 #include <stdio.h>
 #include <qgsrasteridentifyresult.h> //added by wxn, using moving mouse event to read map value
+
+
 #include "Qapp/_qgsmaptoolidentifyaction.h"
+
 
 
 //////////////////////////////////////////////////////////////////////
@@ -83,7 +86,8 @@ void QRap::ReadMapValue()
 {
     cout<<"read map value function called."<<endl;
     /** \brief Sets the map tool currently being used on the canvas */
-    mQGisIface->mapCanvas()->setMapTool( mMapToolIdentify ); //setMapTool时会调用该tool的activate函数
+    //! setMapTool时会调用该tool的activate函数
+    mQGisIface->mapCanvas()->setMapTool( mMapToolIdentify );
 }
 
 //*****************************************************************************
@@ -110,16 +114,18 @@ void QRap::initGui()
 
 
     //! added by wxn-----------------------------------------------------------------
-    mReadValueAction = new QAction(QIcon(":/qrap/Coverage.png"),tr("read map layer value"), this); //! change icon later..
-//    mMapToolIdentify = new QgsMapToolIdentify(mQGisIface->mapCanvas());
+    mReadValueAction = new QAction(QIcon(":/qrap/Questionmark.jpg"),tr("read map layer value"), this); //! change icon later..
+
     mMapToolIdentify = new _QgsMapToolIdentifyAction( mQgisMainWindow,mQGisIface->mapCanvas() );
-    /** from qgismaptool.h
+
+    /** from qgismaptool.h about setAction
      * Use this to associate a QAction to this maptool. Then when the setMapTool
      * method of mapcanvas is called the action state will be set to on.
      * Usually this will cause e.g. a toolbutton to appear pressed in and
      * the previously used toolbutton to pop out. */
     mMapToolIdentify->setAction( mReadValueAction ); //! for action destroy operation
     //!---------------------------------------------------------------------------
+    //!
 //    connect( mMapToolIdentify, SIGNAL( copyToClipboard( QgsFeatureStore & ) ),
 //             this, SLOT( copyFeatures( QgsFeatureStore & ) ) );
 
@@ -196,8 +202,8 @@ void QRap::initGui()
   	mToolBarPointer->addAction(mQActionPointer);
 //  	mToolBarPointer->addAction(mImportExportAction);
 //  	mToolBarPointer->addAction(mHelpAction); 
-    mToolBarPointer->addAction(mReadValueAction);
-    cout<<"reduce icon by justin"<<endl;
+    mToolBarPointer->addAction(mReadValueAction); //! new function
+
 	mLoaded = true; 
  
   	cout << "VOOR DataBase Connect" << endl;
@@ -874,7 +880,7 @@ bool QRap::PerformPrediction()
 		{
 			mQGisIface->mapCanvas()->refresh();
 		}//if accepted
-//        connect(Mouse, SIGNAL(MouseMove(QgsPoint&)), this, SLOT(ReadMap(QgsPoint&))); //! added by wxn
+//        connect(Mouse, SIGNAL(MouseMove(QgsPoint&)), this, SLOT(ReadMap(QgsPoint&))); //! added by wxn //read raster layer value and show it via terminal
 	}//if has sites
 	return true;
 }
