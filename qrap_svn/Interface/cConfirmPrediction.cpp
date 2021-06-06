@@ -542,8 +542,10 @@ void cConfirmPrediction::on_btnDo_clicked()
 	NorthWestCorner.Get(North,West);
 	SouthEastCorner.Get(South,East);
 	cout << "North: " << North << "	South: " << South << "	East: " << East << "	West: " << West << endl;
-	if (plotTypeCombo->currentIndex()!=11) //! 0---Coverage
-	{
+
+
+//	if (plotTypeCombo->currentIndex()!=11) //! 0---Coverage              //comment this after add RSRP and SINR
+//	{
 		for (int i = 0; i < tableWidget->rowCount();i++)//! 几个站
 		{
             void *Wid = tableWidget->cellWidget(i,0); //void* pointer
@@ -651,27 +653,37 @@ void cConfirmPrediction::on_btnDo_clicked()
 				}
 			}
 		}
-	}
+//	}
 
 	switch (plotTypeCombo->currentIndex())
 	{
-		case 0:		mPlotType = Cov;		break;//! 0
-		case 1:		mPlotType = PrimServer;		break;
-		case 2:		mPlotType = SecondServer;	break;
-		case 3:		mPlotType = NumServers;		break;
-		case 4:		mPlotType = IntRatioCo;		break;
-		case 5:		mPlotType = IntRatioAd;		break;
-		case 6:		mPlotType = IntAreas;		break;
-		case 7:		mPlotType = NumInt;		break;
-		case 8:		mPlotType = PrimIntCo;		break;
-		case 9:		mPlotType = PrimIntAd;		break;
-		case 10:	mPlotType = SN;			break;
-		case 11:	mPlotType = DEM;		break;
-		case 12:	mPlotType = CellCentroid;	break;
-		case 13:	mPlotType = TrafficDist;	break;
-//		case 14:	mPlotType =  EbNo;		break;
-//		case 15:	mPlotType = ServiceLimits;	break;
-		default:	mPlotType = Cov;		break;			
+    case 0:		mPlotType = Cov;		break;//! 0
+    case 1:    mPlotType = RSRP;       break; //added by wxn
+    case 2:    mPlotType = SINR;       break;  //added by wxn
+
+    default:	mPlotType = Cov;		break;
+
+
+
+//		case 0:		mPlotType = Cov;		break;//! 0
+//		case 1:		mPlotType = PrimServer;		break;
+//		case 2:		mPlotType = SecondServer;	break;
+//		case 3:		mPlotType = NumServers;		break;
+//		case 4:		mPlotType = IntRatioCo;		break;
+//		case 5:		mPlotType = IntRatioAd;		break;
+//		case 6:		mPlotType = IntAreas;		break;
+//		case 7:		mPlotType = NumInt;		break;
+//		case 8:		mPlotType = PrimIntCo;		break;
+//		case 9:		mPlotType = PrimIntAd;		break;
+//		case 10:	mPlotType = SN;			break;
+//		case 11:	mPlotType = DEM;		break;
+//		case 12:	mPlotType = CellCentroid;	break;
+//		case 13:	mPlotType = TrafficDist;	break;
+//        case 14:    mPlotType = RSRP;       break; //added by wxn
+//        case 15:    mPlotType = SINR;       break;  //added by wxn
+////		case 14:	mPlotType =  EbNo;		break;
+////		case 15:	mPlotType = ServiceLimits;	break;
+//		default:	mPlotType = Cov;		break;
 	}
 	switch (displayUnitsCombo->currentIndex())
 	{
@@ -806,7 +818,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 	
 	///////////// MOBILE KEY!!!!!!!
 	cout << "cConfirmPrediction::on_btnDo_clicked(). Mobile key: ";
-	QString Mob = mobileCombo->currentText();
+    QString Mob = mobileCombo->currentText();  // "1:lte_ue_test"
 	Mob=Mob.mid(0,Mob.indexOf(":"));
 	MobileInstallationKey=(unsigned int)Mob.toDouble();//! 接收机对应key
 	cout << MobileInstallationKey << endl;
@@ -818,7 +830,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 	for (int i = 0; i < NumberOfFixedInstallations;i++)
 	{
 		FixedInstallationKeys[i] = mRadInst[i]; //! 基站id
-		CoverangeRanges[i] = mRanges[i]; //! 基站范围
+        CoverangeRanges[i] = mRanges[i]; //! 基站范围 unit km
 	}
 	DirectoryToStoreResult = outputDirectoryEdit->text().latin1();
 	OutputFileForResult = outputFileNameEdit->text().latin1();
@@ -871,7 +883,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 	}//end if DEM
 	else if ((mPlotType==Cov)||(mPlotType==PrimServer)||(mPlotType==SecondServer) //! enter here as Cov
  				||(mPlotType==NumServers)||(mPlotType==SN)
-				||(TrafficDist==mPlotType)||(CellCentroid==mPlotType))
+                ||(TrafficDist==mPlotType)||(CellCentroid==mPlotType)||(mPlotType==RSRP)||(mPlotType==SINR))
  	{
         //!--------------------------
         //! key implementation here //
@@ -917,21 +929,27 @@ void cConfirmPrediction::on_btnDo_clicked()
 	switch(mPlotType) // set up of the prediction's colour type
 	{
 		case Cov:		Plot = "Coverage";			getFromDB = true;	discrete = false;	break; //!
-		case PrimServer:	Plot = "Primary Server";		getFromDB = false;	discrete = false;	break;
-		case CellCentroid:	Plot = "Primary Server";		getFromDB = false;	discrete = false;	break;
-		case TrafficDist:	Plot = "Primary Server";		getFromDB = false;	discrete = false;	break;
-		case SecondServer:	Plot = "Secondary Server";		getFromDB = false;	discrete = false;	break;
-		case NumServers:	Plot = "Number of Servers";		getFromDB = true;	discrete = false;	break;
-		case DEM:		Plot = "Digital Elevation Model";	getFromDB = true;	discrete = false;	break;
-		case IntRatioCo:	Plot = "Carrier to Co-channel Interference Ratio"; 	getFromDB = true;	discrete = false;	break;
-		case IntRatioAd:	Plot = "Carrier to Adjacent-channel Interf Ratio";	getFromDB = true;	discrete = false;	break;
-		case IntAreas:		Plot = "Interfered Areas"; 		getFromDB = false;	discrete = false;	break;
-		case NumInt:		Plot = "Number of Interferers"; 	getFromDB = true;	discrete = false;	break;
-		case PrimIntCo:		Plot = "Primary Co-channel Interferers";	getFromDB = false;	discrete = false;	break;
-		case PrimIntAd:		Plot = "Primary Adjacent-channel Interferers"; 	getFromDB = false;	discrete = false;	break;
-		case SN:		Plot = "Signal to Noise Ratio"; 	getFromDB = true;	discrete = false;	break;	
+        //-----commented by wxn-------------
+//		case PrimServer:	Plot = "Primary Server";		getFromDB = false;	discrete = false;	break;
+//		case CellCentroid:	Plot = "Primary Server";		getFromDB = false;	discrete = false;	break;
+//		case TrafficDist:	Plot = "Primary Server";		getFromDB = false;	discrete = false;	break;
+//		case SecondServer:	Plot = "Secondary Server";		getFromDB = false;	discrete = false;	break;
+//		case NumServers:	Plot = "Number of Servers";		getFromDB = true;	discrete = false;	break;
+//		case DEM:		Plot = "Digital Elevation Model";	getFromDB = true;	discrete = false;	break;
+//		case IntRatioCo:	Plot = "Carrier to Co-channel Interference Ratio"; 	getFromDB = true;	discrete = false;	break;
+//		case IntRatioAd:	Plot = "Carrier to Adjacent-channel Interf Ratio";	getFromDB = true;	discrete = false;	break;
+//		case IntAreas:		Plot = "Interfered Areas"; 		getFromDB = false;	discrete = false;	break;
+//		case NumInt:		Plot = "Number of Interferers"; 	getFromDB = true;	discrete = false;	break;
+//		case PrimIntCo:		Plot = "Primary Co-channel Interferers";	getFromDB = false;	discrete = false;	break;
+//		case PrimIntAd:		Plot = "Primary Adjacent-channel Interferers"; 	getFromDB = false;	discrete = false;	break;
+//		case SN:		Plot = "Signal to Noise Ratio"; 	getFromDB = true;	discrete = false;	break;
+        //---------------------------------------
+
 //		case EbNo:		Plot = "Energy per Bit to Noise Power"; getFromDB = true;	discrete = false;	break;
 //		case ServiceLimits;	Plot = "Service Limiters"; 		getFromDB = true;	discrete = false;	break;	
+
+        case RSRP:		Plot = "RSRP";			getFromDB = true;	discrete = false;	break; //!    added by wxn
+        case SINR:		Plot = "SINR";			getFromDB = true;	discrete = false;	break; //!      added by wxn
 		default:		Plot = "";				getFromDB = true;	discrete = false;	break;
 	}
 	QString File = DirectoryToStoreResult.c_str();
@@ -1077,6 +1095,8 @@ void cConfirmPrediction::on_plotTypeCombo_currentIndexChanged(QString File)
 {
 	 File = File.remove(" ");
 	 outputFileNameEdit->setText(QString("%1.img").arg(File));
+
+     //! the list sequence for plotTypeCombo has been changed, the function below need to be modifed later
 	 if ((File == "DigitalElevationModel")||(plotTypeCombo->currentIndex()==11))
 	 {
 	 	displayUnitsCombo->setEnabled(false);

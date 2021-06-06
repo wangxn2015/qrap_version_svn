@@ -585,8 +585,12 @@ void QRap::ReceivedLeftPoint(QgsPoint &Point)
 		if (mMouseType == MOVESITE)
 		{
 			cout << " movesite " << endl;
-			QMessageBox::information(mQGisIface->mainWindow(), "Q-Rap", "Wait: getting height data at point");
-			MoveSiteDialog((Point.y()),(Point.x()));
+            QMessageBox::information(mQGisIface->mainWindow(), "Q-Rap", "Wait: getting height data at point");
+//            QMessageBox *box = new QMessageBox(QMessageBox::Information,"Q-rap", "Wait: getting height data at point");
+//            QTimer::singleShot(1200,box,SLOT(close));
+//            box->show();
+
+            MoveSiteDialog((Point.y()),(Point.x()));
 			mMouseType = CLEAN;
 			mQGisIface->mapCanvas()->setCursor(Qt::OpenHandCursor);
 			mQGisIface->mapCanvas()->refresh();
@@ -594,7 +598,13 @@ void QRap::ReceivedLeftPoint(QgsPoint &Point)
 		else if (mMouseType == PLACESITE) //! 
 		{
 			cout << " placesite " << endl;
-			QMessageBox::information(mQGisIface->mainWindow(), "Q-Rap", "Wait: getting height data at point");
+//			QMessageBox::information(mQGisIface->mainWindow(), "Q-Rap", "Wait: getting height data at point");
+            QMessageBox *box = new QMessageBox(QMessageBox::Information,tr("Q-rap"), tr("Wait: getting height data at point..."));
+            box->addButton(QMessageBox::Ok);
+            box->button(QMessageBox::Ok)->hide();
+            QTimer::singleShot(1500,box,SLOT(accept()));
+            box->exec();
+
 			PlaceSiteDialog((Point.y()),(Point.x()),false); //! 在函数中，打开对话窗口
 			if (mMouseType!=MOVESITE)
 			{

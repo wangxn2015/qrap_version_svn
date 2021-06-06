@@ -60,7 +60,10 @@ enum ePlotType
 	PrimIntAd,	///< The dominant adjacent channel interferer.Implemented in InterferencePlot.
 	SN,		///< Signal to Noise Ratio. Implemented in CombineCov
 	EbNo,		///< Energy per Bit to Noise energy ratio -- not yet implemented
-	ServiceLimits	///< -- not yet implemented
+    ServiceLimits,	///< -- not yet implemented
+    RSRP,       // wxn
+    SINR          //wxn
+
 };	
 	/**
 	 * typedef vPred:
