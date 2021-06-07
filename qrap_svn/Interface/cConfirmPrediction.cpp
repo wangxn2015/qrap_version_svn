@@ -900,7 +900,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 			Prediction.DetermineTrafficDist(true); // only do packet data
 //			Prediction.DetermineTrafficDist(false);
 		}
-        FileWritten = Prediction.WriteOutput(DEG); //! 看这里 输出了文件。
+        FileWritten = Prediction.WriteOutput(DEG); //! 看这里 输出了文件。 save to file
  	}
  	else //! skip
  	{
@@ -956,7 +956,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 	File +="/"; //\TODO: Windows....
 	File+=OutputFileForResult.c_str();
 //	QgsRasterLayer *mRasterLayerO = mQGisIface->addRasterLayer(File); //!把栅格文件加入到qgis图层显示中。 栅格图层
-    mRasterLayerO = mQGisIface->addRasterLayer(File); //!把栅格文件加入到qgis图层显示中。 栅格图层
+    mRasterLayerO = mQGisIface->addRasterLayer(File); //!把栅格文件加入到qgis图层显示中。 栅格图层.read raster file
 	QgsRasterTransparency *Deurskynend= new QgsRasterTransparency();
 
 	QgsRasterTransparency::TransparentSingleValuePixel myTransparentPixel; // setting null value transparancy
@@ -1064,7 +1064,9 @@ void cConfirmPrediction::on_btnDo_clicked()
    		     			mColorRampItems.push_back(myNewColorRampItem);
 				}// for number of inst
    	   		}//end found db info for primary/secondary servers
+
 		}// end Database success
+
     		colorRampShader->setColorRampItemList(mColorRampItems);
   	
       		if (discrete)

@@ -212,7 +212,7 @@ bool cPlotTask::SetPlotTask(	ePlotType PlotType,
 	else 
 		mNorthWest.Get(dummy, mCurrentEdge);
 	bool FoundRasterSet = mDEM.SetRasterFileRules(mDEMsource); //! DEM file id
-	if (!FoundRasterSet)
+    if (!FoundRasterSet)
 	{
 		string err = "Trouble getting DEM list. Using default";
 		QRAP_WARN(err.c_str());
@@ -753,16 +753,27 @@ bool cPlotTask::CombineCov()
 	}	
 
 	cout << "cPlotTask::CombineCov():  Before Order array;" << endl;
+    //!!------------------------------------------------
+    //!!------------------------------------------------
 	if (OrderAllPred()==0) //! 处理 重点1
 		return false;
-	
+    //!!------------------------------------------------
+    //!!------------------------------------------------
+    //!
+    //!
 	cout << "cPlotTask::CombineCov():  First UpdateActiveRasters;" << endl;
 	double RangeSum=0;
 	for (k=0; k<mFixedInsts.size(); k++)
 		RangeSum += mFixedInsts[k].sRange;
 	Advance = RangeSum/mFixedInsts.size(); //! 范围均值 单位为米
-	
+
+    //!!------------------------------------------------
+    //!!------------------------------------------------
 	UpdateActiveRasters(0,Advance+2); //! 重点2
+    //!!------------------------------------------------
+    //!!------------------------------------------------
+    //!
+
 /*	for (k=0;k<mActiveRasters.size();k++)
 	{
 		cout << "	Top: " << mActiveRasters[k].sTop;
@@ -1338,7 +1349,7 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 	int BTLkey;
 	bool AfterReceiver = (mUnits==dBW)||(mUnits==dBm)||(mUnits==dBuV); //! true
 	bool CovOrInt = ((mPlotType==Cov)||(mPlotType==PrimServer)||(mPlotType==CellCentroid)||
-			(mPlotType==TrafficDist)||(mPlotType==SecondServer)||(mPlotType==NumServers));
+            (mPlotType==TrafficDist)||(mPlotType==SecondServer)||(mPlotType==NumServers)||(mPlotType==RSRP)||(mPlotType==SINR));
 	double kFactor = 1.33;
 	if (CovOrInt)
 		kFactor = mkFactorServ; //! 值被替换
@@ -1570,6 +1581,7 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 //				else Corner.FromHere(Temp,-newRaster.sTop*mPlotResolution,0);
 //				newRaster.sSize = (int)ceil(2.0*mFixedInsts[i].sRange/mPlotResolution)+2;
 				//!
+                //
 				newRaster.sInstKey = mFixedInsts[i].sInstKey;
 				newRaster.sFreqList.clear();
 				cout << "NumFreq:  " << mFixedInsts[i].sFreqList.size() << endl;

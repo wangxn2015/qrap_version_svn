@@ -589,7 +589,7 @@ bool cRasterFileHandler::GetForCoverage(bool Fixed, cGeoP SitePos, double &Range
 				ToSwitch=false;
 			}
 
-			Data[i][j] = mCurrentRasters[Current]->GetValue(point,mSampleMethod); //! point处的值
+            Data[i][j] = mCurrentRasters[Current]->GetValue(point,mSampleMethod); //! point处的值 height
 			if ((Data[i][j] <-440.0)||(Data[i][j] >8880)||(Data[i][j]==OUTOFRASTER))
 				Available=point.Between(mAvailableSetNW,mAvailableSetSE);
 
