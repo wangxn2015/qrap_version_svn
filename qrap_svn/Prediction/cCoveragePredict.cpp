@@ -193,7 +193,8 @@ bool cCoveragePredict::CalculateRadialCoverage(bool AfterReceiver)
 }
 
 //*****************************************************************************
-//! Prediction.InterpolateToSquare(mFixedInsts[i].sSitePos, Corner, newRaster.sRaster,
+//! Prediction.InterpolateToSquare(mFixedInsts[i].sSitePos, Corner,
+//!                 newRaster.sRaster,
 //!            mPlotResolution, newRaster.sNSsize,newRaster.sEWsize);
 bool cCoveragePredict::InterpolateToSquare(cGeoP SitePos, cGeoP NW, // the centre of the top-left corner
 					Float2DArray &Result, 

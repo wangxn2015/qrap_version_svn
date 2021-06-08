@@ -194,7 +194,7 @@ bool cPlotTask::SetPlotTask(	ePlotType PlotType,
 //					mSouthWest.Distance(mSouthEast));
 //	mRows = (int)ceil(mNorthWest.Distance(mSouthWest)/mPlotResolution);
 //	mCols = (int)ceil(WE/mPlotResolution);
-    mNSres = mPlotResolution*cDegResT; //! cDegResT=0.000833/90.0; 90米代表的经纬度 // derive resolution in lat or long
+    mNSres = mPlotResolution*cDegResT; //! cDegResT=0.000833/90.0; 90米代表的经纬度 // derive resolution in lat or long //degree per resolution
 	mEWres = mPlotResolution*cDegResT;
 	mRows = (unsigned)((N-S)/(mNSres)); //! 行： 纬度差/纬度分辨率 ----关联栅格
 	mCols = (unsigned)((E-W)/(mEWres)); //! 列
@@ -1542,21 +1542,25 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
                 //--------------------------------------------
 				//!  CalculateRadialCoverage
 				Prediction.CalculateRadialCoverage(AfterReceiver);  //! 这里有计算 func(true)
-
+                //--------------------------------------
+                //--------------------------------------------
 				Temp.FromHere(mFixedInsts[i].sSitePos,mFixedInsts[i].sRange,0.0);
 				Temp.SetGeoType(DEG);
 				Temp.Get(pLat,dummy);
 				Temp.FromHere(mFixedInsts[i].sSitePos,mFixedInsts[i].sRange,270.0);
 				Temp.SetGeoType(DEG);
 				Temp.Get(dummy,pLon);
+
+
 				mFixedInsts[i].sSitePos.SetGeoType(DEG);
-				mFixedInsts[i].sSitePos.Get(pLat,pLon);
+                mFixedInsts[i].sSitePos.Get(pLat,pLon); // get the lat, long of BS
                 newRaster.sNSsize = 2*(int)ceil((gLat-pLat)/(mPlotResolution*cDegResT))+1; //!compare with northwest point of the chosen area
                 newRaster.sEWsize = 2*(int)ceil((pLon-gLon)/(mPlotResolution*cDegResT))+1;
 				pLat += ((double)newRaster.sNSsize * mPlotResolution * cDegResT)/2.0;
 				pLon -= ((double)newRaster.sEWsize * mPlotResolution * cDegResT)/2.0;
-				newRaster.sTop = (int)((gLat-pLat)/(mPlotResolution*cDegResT));
-				newRaster.sLeft = (int)((pLon-gLon)/(mPlotResolution*cDegResT));
+
+                newRaster.sTop = (int)((gLat-pLat)/(mPlotResolution*cDegResT)); //not used?
+                newRaster.sLeft = (int)((pLon-gLon)/(mPlotResolution*cDegResT)); //not used?
 				Corner.Set(pLat,pLon,DEG);
 
 //				Temp.FromHere(mFixedInsts[i].sSitePos,mFixedInsts[i].sRange,0);
@@ -1590,9 +1594,12 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 					newRaster.sFreqList.push_back(mFixedInsts[i].sFreqList[ii]);
 				}
 				newRaster.sRaster = new_Float2DArray(newRaster.sNSsize,newRaster.sEWsize);
-				//!
+                //!--------------------------------------------------
+                //!
 				Prediction.InterpolateToSquare(mFixedInsts[i].sSitePos, Corner, newRaster.sRaster, 
 							mPlotResolution, newRaster.sNSsize,newRaster.sEWsize);
+                //!--------------------------------------------------
+                //!
 /*				for (unsigned ii = 0; ii< newRaster.sNSsize; ii++)
 				{
 					for (unsigned jj=0; jj<newRaster.sEWsize; jj++)
@@ -1680,10 +1687,10 @@ int cPlotTask::OrderAllPred()
 	if (mCols<=mRows) //! vertical
 		for (i=0; i<mFixedInsts.size(); i++)
 		{
-			Edge.FromHere(mFixedInsts[i].sSitePos,mFixedInsts[i].sRange,0); //! 0 表示正北方向？ distance in meter
-			Edge.Get(mFixedInsts[i].sFEdge, dummy); //! 此时获取纬度相关
-			Edge.FromHere(mFixedInsts[i].sSitePos,mFixedInsts[i].sRange,180);
-			Edge.Get(mFixedInsts[i].sBEdge, dummy);
+            Edge.FromHere(mFixedInsts[i].sSitePos,mFixedInsts[i].sRange,0); //! 0 表示正北方向. distance in meter, anti clockwise rotating
+            Edge.Get(mFixedInsts[i].sFEdge, dummy); //! 此时获取纬度相关 north
+            Edge.FromHere(mFixedInsts[i].sSitePos,mFixedInsts[i].sRange,180); // south point of BS
+            Edge.Get(mFixedInsts[i].sBEdge, dummy);
 		}
 	else
 		for (i=0; i<mFixedInsts.size(); i++)

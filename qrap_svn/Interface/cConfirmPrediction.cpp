@@ -852,7 +852,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 				NumberOfFixedInstallations, FixedInstallationKeys,
 				CoverangeRanges, // In Kilometer
 				DirectoryToStoreResult, OutputFileForResult);
-	if (mPlotType == DEM) //! skip here
+    if (mPlotType == DEM) //! skip here //enter this function when plot DEM
 	{	
 		cout << "Entering DEM in cConfirmPrediction::on_btnDo_clicked()" << endl;
 		cRaster Output;
@@ -1020,46 +1020,46 @@ void cConfirmPrediction::on_btnDo_clicked()
 		 		srand(NumberOfFixedInstallations);
 		 		for(int i =0; i < NumberOfFixedInstallations; i++)
 		      		{
-		 			int Kies=0;
-		 			int BeginV=0;
+                        int Kies=0;
+                        int BeginV=0;
 		      			QgsColorRampShader::ColorRampItem myNewColorRampItem;
 		      			myNewColorRampItem.value = FixedInstallationKeys[i];
 		      			if (j < res.size())
 		      			{
 			      			//if (j == res.size())
  		    				//j = 0;	
-   		   				r = (int)atof(res[j]["r"].c_str());
-   		   				g = (int)atof(res[j]["g"].c_str());
-   		   				b = (int)atof(res[j]["b"].c_str());
-   		   				a = (int)atof(res[j]["a"].c_str());
-   		   				j++;
-						myNewColorRampItem.label = res[i]["label"].c_str();
-   		   			}
-   		   			else  // generate random colours if no colours are found
-   		   			{
-   		   				if (i<6)
-   		   				{
-   			     				Kies = (i%3);
-   			     				BeginV = 2*((i/3)%2); // has value of 0 or 2
-   		   					r = 127.5*BeginV;
-   		   					g = 127.5*BeginV;
-   		   					b = 127.5*BeginV;
-   		   					if (Kies==0) 		r += 127.5*2.0*(1-BeginV);  
-   		   					else if (Kies==1) 	b += 127.5*2.0*(1-BeginV);
-   		   					else if (Kies==2) 	g += 127.5*2.0*(1-BeginV);
-   		   				}
-   		   				else
-   		   				{
-   		   					r = (int) (rand() %7)*255.0/7.0;
-   		   					g = (int) (rand() %4)*255.0/4.0;
-   		   					b = (int) (rand()% 5)*255.0/5.0;
-   		   				}
-   		   				a = (int) 255;
- //  		   				cout << "r: " << r << "  g: " << g << "  b: " << b << "  a: " << a << endl;
-   		   				myNewColorRampItem.label = myNewColorRampItem.value;
-   		   			}
+                            r = (int)atof(res[j]["r"].c_str());
+                            g = (int)atof(res[j]["g"].c_str());
+                            b = (int)atof(res[j]["b"].c_str());
+                            a = (int)atof(res[j]["a"].c_str());
+                            j++;
+                            myNewColorRampItem.label = res[i]["label"].c_str();
+                        }
+                        else  // generate random colours if no colours are found
+                        {
+                            if (i<6)
+                            {
+                                    Kies = (i%3);
+                                    BeginV = 2*((i/3)%2); // has value of 0 or 2
+                                r = 127.5*BeginV;
+                                g = 127.5*BeginV;
+                                b = 127.5*BeginV;
+                                if (Kies==0) 		r += 127.5*2.0*(1-BeginV);
+                                else if (Kies==1) 	b += 127.5*2.0*(1-BeginV);
+                                else if (Kies==2) 	g += 127.5*2.0*(1-BeginV);
+                            }
+                            else
+                            {
+                                r = (int) (rand() %7)*255.0/7.0;
+                                g = (int) (rand() %4)*255.0/4.0;
+                                b = (int) (rand()% 5)*255.0/5.0;
+                            }
+                            a = (int) 255;
+     //  		   				cout << "r: " << r << "  g: " << g << "  b: " << b << "  a: " << a << endl;
+                            myNewColorRampItem.label = myNewColorRampItem.value;
+                        }
    	   				
-   	   				QColor Col =  QColor(r,g,b,a);
+                        QColor Col =  QColor(r,g,b,a);
    		     			myNewColorRampItem.color = Col;
    		     			mColorRampItems.push_back(myNewColorRampItem);
 				}// for number of inst
@@ -1072,7 +1072,8 @@ void cConfirmPrediction::on_btnDo_clicked()
       		if (discrete)
       			colorRampShader->setColorRampType(QgsColorRampShader::DISCRETE);
       		else
-                colorRampShader->setColorRampType(QgsColorRampShader::INTERPOLATED); //enter here
+                colorRampShader->setColorRampType(QgsColorRampShader::INTERPOLATED); //enter here //commented by wxn
+//                colorRampShader->setColorRampType(QgsColorRampShader::DISCRETE);
  		rasterShader->setRasterShaderFunction( colorRampShader );
   		QgsSingleBandPseudoColorRenderer* r = 
 				new QgsSingleBandPseudoColorRenderer( mRasterLayerO->dataProvider(), 1, rasterShader );
