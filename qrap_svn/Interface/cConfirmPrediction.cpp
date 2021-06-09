@@ -963,7 +963,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 	QList<QgsRasterTransparency::TransparentSingleValuePixel> myTransparentSingleValuePixelList;// setting null value transparancy
 	myTransparentPixel.percentTransparent = 100.00;// setting null value transparancy
 	myTransparentPixel.min = -10000;// setting null value transparancy
-	myTransparentPixel.max = -9998;// setting null value transparancy
+    myTransparentPixel.max = -150;// setting null value transparancy
 	myTransparentSingleValuePixelList.append(myTransparentPixel);// setting null value transparancy //! 加入到pixel list
 	//
 	Deurskynend->setTransparentSingleValuePixelList( myTransparentSingleValuePixelList );//! 用pixel list 设置 deurskynend
@@ -1072,8 +1072,8 @@ void cConfirmPrediction::on_btnDo_clicked()
       		if (discrete)
       			colorRampShader->setColorRampType(QgsColorRampShader::DISCRETE);
       		else
-                colorRampShader->setColorRampType(QgsColorRampShader::INTERPOLATED); //enter here //commented by wxn
-//                colorRampShader->setColorRampType(QgsColorRampShader::DISCRETE);
+//                colorRampShader->setColorRampType(QgsColorRampShader::INTERPOLATED); //enter here //commented by wxn
+                colorRampShader->setColorRampType(QgsColorRampShader::DISCRETE);
  		rasterShader->setRasterShaderFunction( colorRampShader );
   		QgsSingleBandPseudoColorRenderer* r = 
 				new QgsSingleBandPseudoColorRenderer( mRasterLayerO->dataProvider(), 1, rasterShader );

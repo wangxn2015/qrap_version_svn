@@ -442,6 +442,10 @@ bool cRasterFileHandler::GetForLink(cGeoP TxLoc, cGeoP RxLoc, double DistRes, cP
 
 //*********************************************************************
 // Fixed = false
+//mDEM.GetForCoverage(false, mFixedInsts[i].sSitePos, mFixedInsts[i].sRange,
+//                  tempPlotRes, tempAngRes,
+//                tempNumAngles, tempNumDist,
+//                  DTM);
 bool cRasterFileHandler::GetForCoverage(bool Fixed, cGeoP SitePos, double &Range,
 					double &DistRes, double &AngRes,
 					unsigned &NumAngles, unsigned &NumDistance,
@@ -479,6 +483,7 @@ bool cRasterFileHandler::GetForCoverage(bool Fixed, cGeoP SitePos, double &Range
 		AddRaster(SitePos,LoadedRastersList);
 	}
 
+    // add raster files to the list considering edge
 	for (j=0; j<12; j++) //Check for preferred files for all the edges.
 	{
 		edge.FromHere(SitePos,Range,j*30); //基站地址对应半径和旋转方向
@@ -503,8 +508,8 @@ bool cRasterFileHandler::GetForCoverage(bool Fixed, cGeoP SitePos, double &Range
 	if (!Fixed)
 	{
 		for (i=0; i<mCurrentRasters.size(); i++)
-			DistRes = min(DistRes,mCurrentRasters[i]->GetRes());
-		NumDistance = (int)ceil(Range/DistRes);
+            DistRes = min(DistRes,mCurrentRasters[i]->GetRes()); //resolution of the raster file in meter
+        NumDistance = (int)ceil(Range/DistRes); //number of steps
 		Range = NumDistance*DistRes;
 		NumDistance++;
 	}

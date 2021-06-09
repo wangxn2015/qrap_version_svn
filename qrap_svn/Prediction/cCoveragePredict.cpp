@@ -227,7 +227,7 @@ bool cCoveragePredict::InterpolateToSquare(cGeoP SitePos, cGeoP NW, // the centr
 	rRes = mDistRes;
 	nsRes = res*cDegResT;
 	ewRes = res*cDegResT;
-	SiteX = (int)((CornerN-SiteN)/nsRes+0.5);
+    SiteX = (int)((CornerN-SiteN)/nsRes+0.5); // number of steps from NW point to BS
 	SiteY = (int)((SiteW-CornerW)/ewRes+0.5);
 //	RfromNWtoSite = NW.Distance(SitePos);
 //	AfromNWtoSite = NW.Bearing(SitePos);
@@ -252,14 +252,14 @@ bool cCoveragePredict::InterpolateToSquare(cGeoP SitePos, cGeoP NW, // the centr
 //			if (Aij<0) Aij+=2*PI;
 //			cout << "  " << Aij*180/PI;			
 //			Rij = sqrt(X*X+Y*Y);
-			point.Set(CornerN-(double)i*nsRes,CornerW+(double)j*ewRes,DEG);
-			Rij = point.Distance(SitePos);
-			Aij = SitePos.Bearing(point);
+            point.Set(CornerN-(double)i*nsRes,CornerW+(double)j*ewRes,DEG); //get the point according to NW corner
+            Rij = point.Distance(SitePos); //distance between BS and the point
+            Aij = SitePos.Bearing(point);   //angle?
 			if (Rij<R)
 			{
 //				Aij = atan2(X,-Y);
 //				if (Aij<0) Aij+=2*PI;
-				iR = (int)(Rij/rRes);
+                iR = (int)(Rij/rRes); //derive the step number to the point
 				iA = (int)(Aij/aRes);
 //				cout << "iA: " << iA << "   Aij: " << Aij*180/PI << endl;
 				if ((iA>mNumAngles-1)||(iA<0)||(iR<0)||(iR>mNumRadialPoints-1))
@@ -267,6 +267,7 @@ bool cCoveragePredict::InterpolateToSquare(cGeoP SitePos, cGeoP NW, // the centr
 				{
 //					cout << "NumDist: " << mNumRadialPoints<<"   NumAngles=" << mNumAngles << endl;
 //					cout << "    iR="<<iR << " iA=" << iA << endl;
+
 					if ((iA==mNumAngles)&&(iR>-1)&&(iR<mNumRadialPoints))
 						Result[i][j] = mRxLev[iA-1][iR];
 					else if ((iR==mNumRadialPoints)&&(iA>-1)&&(iA<mNumAngles))
@@ -307,7 +308,9 @@ bool cCoveragePredict::InterpolateToSquare(cGeoP SitePos, cGeoP NW, // the centr
 					}
 				} // end else (not out of range)
 			} //end if (Rij<R)
-			else Result[i][j]= -9999;
+            else Result[i][j]= MIN_LEVEL;
+//			else Result[i][j]= -9999;
+
 		} // end for (j
 //		if (((double)i/100.0)==(i/100))
 //			cout << "Interpolate to Square: " << 100*i/rows << endl;

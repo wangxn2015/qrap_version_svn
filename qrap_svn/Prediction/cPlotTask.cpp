@@ -714,7 +714,7 @@ bool cPlotTask::CombineCov()
 	Float2DArray Test2;
 	Float2DArray Inst;
     Float2DArray mPlot2;
-    mPlot2 = new_Float2DArray(mRows,mCols);
+    mPlot2 = new_Float2DArray(mRows,mCols); //the whole raster matrix
 
     if (mCols<mRows) //! 经度上的栅格数小于纬度上的栅格数，呈'高大于宽'的数组
 		cout << "vertical" << endl;
@@ -734,7 +734,8 @@ bool cPlotTask::CombineCov()
 	
 	for (i=0;i<mRows;i++)
 		for (j=0;j<mCols;j++)
-			mSupportPlot[i][j]=-9999; //!初始值
+//			mSupportPlot[i][j]=-9999; //!初始值
+            mSupportPlot[i][j]= MIN_LEVEL; //!初始值
 	
 	if ((mPlotType==NumServers)||(mPlotType==NumInt)) //! skip
 	{
@@ -747,15 +748,15 @@ bool cPlotTask::CombineCov()
 		for (i=0;i<mRows;i++)
 			for (j=0;j<mCols;j++)
             {
-				mPlot[i][j]=-9999; //! 初始值
-                mPlot2[i][j]=-9999;
+                mPlot[i][j]= MIN_LEVEL; //! 初始值
+                mPlot2[i][j]= MIN_LEVEL;
             }
 	}	
 
-	cout << "cPlotTask::CombineCov():  Before Order array;" << endl;
+    cout << "cPlotTask::CombineCov():  Before Order the array;" << endl;
     //!!------------------------------------------------
     //!!------------------------------------------------
-	if (OrderAllPred()==0) //! 处理 重点1
+    if (OrderAllPred()==0) //! 处理 重点1
 		return false;
     //!!------------------------------------------------
     //!!------------------------------------------------
@@ -940,9 +941,9 @@ bool cPlotTask::CombineCov()
         for(j=0;j<mCols;j++)
         {
             int sum=0,c=0;
-            for(unsigned k=max((unsigned)0,i-1);k<=min(i+1,mRows-1);k++)
+            for(unsigned k=max((unsigned)0,i-5);k<=min(i+1,mRows-5);k++)
             {
-                for(unsigned u=max((unsigned)0,j-1); u<=min(j+1,mCols-1);u++)
+                for(unsigned u=max((unsigned)0,j-5); u<=min(j+5,mCols-5);u++)
                 {
                     sum+=mPlot2[k][u];
                     c++;
@@ -1434,8 +1435,8 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 					cout << err << endl;
 //					QRAP_INFO(err.c_str());
 
-					tempPlotRes = mPlotResolution;
-					tempNumAngles = mNumAngles;
+                    tempPlotRes = mPlotResolution;  //degree parameter that set up in the dialog. 30 or 20
+                    tempNumAngles = mNumAngles;     //angles
 					tempAngRes = 360.0/tempNumAngles;
 					tempNumDist = (int)(mFixedInsts[i].sRange/tempPlotRes);
 					Float2DArray DTM;
@@ -1447,7 +1448,7 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 						Clutter = new_Float2DArray(tempNumAngles,tempNumDist);
 
                     //!------------------------------------------------------------
-                    //!	vaiable DTM 中each value包含了每个基站周边的高度
+                    //!	output:vaiable DTM 中each value包含了每个基站周边的高度
                     //! cRasterFileHandler 	mDEM;
 					mDEM.GetForCoverage(false, mFixedInsts[i].sSitePos, 
 									mFixedInsts[i].sRange, tempPlotRes, tempAngRes,
@@ -1487,7 +1488,8 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 					//! 返回storeBTL
                     //! ----------------------------------
 					BTLkey = Prediction.mBTLPredict.PredictBTL(tempNumAngles, tempNumDist, tempPlotRes, 
-										DTM, mUseClutter, mClutterClassGroup, Clutter);
+                                        DTM, mUseClutter, mClutterClassGroup, Clutter);//! 返回storeBTL
+
 					mFixedInsts[i].sRange = Prediction.mBTLPredict.GetRange();
 //					cout << endl<< endl<< endl<< endl<< endl<< endl<< endl<< "BTL" << endl << endl;
 /*					for (unsigned ii = 0; ii< tempNumAngles; ii++)
@@ -1540,17 +1542,19 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 
                 //--------------------------------------
                 //--------------------------------------------
-				//!  CalculateRadialCoverage
+                //!  CalculateRadialCoverage  store signal strength in mRxLev[i][j]
 				Prediction.CalculateRadialCoverage(AfterReceiver);  //! 这里有计算 func(true)
                 //--------------------------------------
                 //--------------------------------------------
+
+                //------------seem not used-----------
 				Temp.FromHere(mFixedInsts[i].sSitePos,mFixedInsts[i].sRange,0.0);
 				Temp.SetGeoType(DEG);
-				Temp.Get(pLat,dummy);
-				Temp.FromHere(mFixedInsts[i].sSitePos,mFixedInsts[i].sRange,270.0);
+                Temp.Get(pLat,dummy); // lat of north point
+                Temp.FromHere(mFixedInsts[i].sSitePos,mFixedInsts[i].sRange,270.0); // unclockwise rotate 270
 				Temp.SetGeoType(DEG);
-				Temp.Get(dummy,pLon);
-
+                Temp.Get(dummy,pLon);   //lon of east point
+                //------------seem not used-----------
 
 				mFixedInsts[i].sSitePos.SetGeoType(DEG);
                 mFixedInsts[i].sSitePos.Get(pLat,pLon); // get the lat, long of BS
@@ -1559,8 +1563,9 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 				pLat += ((double)newRaster.sNSsize * mPlotResolution * cDegResT)/2.0;
 				pLon -= ((double)newRaster.sEWsize * mPlotResolution * cDegResT)/2.0;
 
-                newRaster.sTop = (int)((gLat-pLat)/(mPlotResolution*cDegResT)); //not used?
-                newRaster.sLeft = (int)((pLon-gLon)/(mPlotResolution*cDegResT)); //not used?
+                newRaster.sTop = (int)((gLat-pLat)/(mPlotResolution*cDegResT)); //this param not used?
+                newRaster.sLeft = (int)((pLon-gLon)/(mPlotResolution*cDegResT)); //this param not used?
+
 				Corner.Set(pLat,pLon,DEG);
 
 //				Temp.FromHere(mFixedInsts[i].sSitePos,mFixedInsts[i].sRange,0);

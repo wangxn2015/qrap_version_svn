@@ -33,7 +33,7 @@
 #include "../DataBase/cBase.h"
 #include "cGeoP.h"
 
-
+#define MIN_LEVEL -130 //added by wxn
 namespace Qrap
 {
 	/**

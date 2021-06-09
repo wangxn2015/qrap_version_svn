@@ -7,6 +7,7 @@
  *    File        : cPthlssp.h
  *    Copyright   : (c) Meraka Institute CSIR (1997) & University of Pretoria
  *    Author      : Magdaleen Ballot (magdaleen.ballot@up.ac.za)
+ *
  *    Description : Core propagation prediction algorithm
  *
  **************************************************************************
