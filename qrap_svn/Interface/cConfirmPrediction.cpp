@@ -961,7 +961,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 
 	QgsRasterTransparency::TransparentSingleValuePixel myTransparentPixel; // setting null value transparancy
 	QList<QgsRasterTransparency::TransparentSingleValuePixel> myTransparentSingleValuePixelList;// setting null value transparancy
-	myTransparentPixel.percentTransparent = 100.00;// setting null value transparancy
+    myTransparentPixel.percentTransparent = 100.00;// setting null value transparancy
 	myTransparentPixel.min = -10000;// setting null value transparancy
     myTransparentPixel.max = -150;// setting null value transparancy
 	myTransparentSingleValuePixelList.append(myTransparentPixel);// setting null value transparancy //! 加入到pixel list

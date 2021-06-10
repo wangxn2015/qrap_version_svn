@@ -1361,8 +1361,8 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 	cout << "cPlotTask::UpdateActiveRasters. ";
 	cout << "FrontEdge = " << FrontEdge << "	DoneEdge = " <<  DoneEdge << endl;
 
-    //----------------------------------
-    //! loop for each sector
+    //!----------------------------------
+    //! loop for each sector of all BS selected
     //!
 	for (i=0; i<mFixedInsts.size(); i++)
 	{
@@ -1405,6 +1405,8 @@ unsigned cPlotTask::UpdateActiveRasters(int Here, int Advance)
 					RxSysLoss = mFixedInsts[i].sRxSysLoss;
 					RxSens = mFixedInsts[i].sRxSens;
 				}
+
+
 				if (!CovOrInt) mFixedInsts[i].sRange=mMaxRange; 
                 //! 读取和设置一些值  	cCoveragePredict Prediction;
 				BTLkey = Prediction.SetCommunicationLink(mFixedInsts[i].sSiteID,

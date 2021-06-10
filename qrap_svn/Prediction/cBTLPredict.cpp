@@ -188,10 +188,17 @@ int cBTLPredict::Check_and_SetBTL(	int SiteID,
 			mAngleRes = 360.0/(double)mNumAngles;
 			mDistanceRes = atof(r[0]["distanceres"].c_str());
 			mRange = atof(r[0]["radius"].c_str());
-			Radius = mRange;
+            //!-------------------
+            //! by wxn below
+            Radius = mRange;    //!by wxn
+//            Radius = mRange*2;
 			string text = r[0]["maxr"].c_str();
 			mMaxPathLossReached = (text[0]='T')||(text[0]='t');
-			mNumRadialPoints = (int)floor(mRange/mDistanceRes+0.5);
+            //!-------------------------
+            //! by wxn below
+            mNumRadialPoints = (int)floor(mRange/mDistanceRes+0.5);
+//            mNumRadialPoints = (int)floor(mRange*2/mDistanceRes+0.5);
+
 			mFrequency = atof(r[0]["frequency"].c_str());
 			mBTLfile = string(r[0]["btlplot"].c_str());
 			DistanceRes=mDistanceRes;
