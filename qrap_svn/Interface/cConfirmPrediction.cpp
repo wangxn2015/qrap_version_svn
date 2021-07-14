@@ -595,8 +595,9 @@ void cConfirmPrediction::on_btnDo_clicked()
 						South = min(South,Lat);
 						East = max(East,Lon);
 						West = min(West,Lon);
+
 						cGeoP NewPoint;
-                        NewPoint.FromHere(Temp,Radius,0); //! 半径单位为m, 第三个参数为0, point to north or one specific direction
+                        NewPoint.FromHere(Temp,1.5*Radius,0); //! 半径单位为m, 第三个参数为0, point to north or one specific direction
 						Temp.Display();
 						NewPoint.Display();
 					
@@ -610,7 +611,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 						East = max(East,Lon);
 						West = min(West,Lon);
 						//Check East
-                        NewPoint.FromHere(Temp,Radius,90); //! 半径单位为m, 第三个参数为90, point to East
+                        NewPoint.FromHere(Temp,1.5*Radius,90); //! 半径单位为m, 第三个参数为90, point to East
 						NewPoint.Get(Lat,Lon);
 						North = max(North,Lat);
 						South = min(South,Lat);
@@ -619,7 +620,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 						cout << "Dist: " << Temp.Distance(NewPoint) << endl;
 						cout << "East: " << East << "	Lon: " << Lon << endl;
 						//Check South
-						NewPoint.FromHere(Temp,Radius,180); //! 半径单位为m, 第三个参数为180
+                        NewPoint.FromHere(Temp,1.5*Radius,180); //! 半径单位为m, 第三个参数为180
 						NewPoint.Get(Lat,Lon);
 						North = max(North,Lat);
 						South = min(South,Lat);
@@ -628,7 +629,7 @@ void cConfirmPrediction::on_btnDo_clicked()
 						cout << "Dist: " << Temp.Distance(NewPoint) << endl;
 						cout << "South: " << South << "	Lat: " << Lat<< endl;
 						//Check West
-						NewPoint.FromHere(Temp,Radius,270); //! 半径单位为m, 第三个参数为270
+                        NewPoint.FromHere(Temp,1.5*Radius,270); //! 半径单位为m, 第三个参数为270
 						NewPoint.Get(Lat,Lon);
 						North = max(North,Lat);
 						South = min(South,Lat);

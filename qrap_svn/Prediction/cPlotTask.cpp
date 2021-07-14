@@ -158,13 +158,16 @@ bool cPlotTask::SetPlotTask(	ePlotType PlotType,
 	{
 		tFixed tempInst;
 		tempInst.sInstKey = FixedInstallationKeys[i];
-		tempInst.sRange = CoverangeRanges[i];
+        tempInst.sRange = CoverangeRanges[i]*2; //! km //x2 by wxn
         tempInst.sRange *= 1000; //! transform to meter
 		tempInst.sCentroidX = 0;
 		tempInst.sCentroidY = 0;
 		tempInst.sPixelCount = 0;
 		if (tempInst.sRange>mMaxRange) 
 			mMaxRange = tempInst.sRange;
+        //!----------------------------------
+        //! pushin to become radio instance! //wxn
+        //!
         mFixedInsts.push_back(tempInst); //! push in to all sector installtions
 	}
 	if (mMaxRange>0)
@@ -288,7 +291,7 @@ bool cPlotTask::SetPlotTask(	ePlotType PlotType,
 			fprintf(fp,"Fixed\n");
 			for (unsigned i = 0; i < NumberOfFixedInstallations ; i++)
 			{
-				fprintf(fp,"%d %f\n",FixedInstallationKeys[i],CoverangeRanges[i]);
+                fprintf(fp,"%d %f\n",FixedInstallationKeys[i],CoverangeRanges[i]*2); //! *2 added by wxn
 			}
 			fprintf(fp,"Area\n");
 			fprintf(fp,"N %f S %f W %f E %f\n",N,S,W,E);
